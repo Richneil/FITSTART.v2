@@ -115,6 +115,16 @@ For quick evaluation during defense presentations:
 - **Password**: `password123`
 - **2FA Demo Code**: `123456`
 
+## 🤝 Contributing & Pull Requests
+
+We welcome community and peer contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.
+
+### Quick Pull Request Steps:
+1. **Fork & Clone**: Fork [https://github.com/CLBulawan/FitStart](https://github.com/CLBulawan/FitStart) and clone locally.
+2. **Branch**: `git checkout -b feature/my-new-feature`
+3. **Build Check**: Run `npm run build` to confirm 0 errors.
+4. **Push & Open PR**: Push to your fork and submit a PR via GitHub. Our automated PR template will guide you through the review requirements!
+
 ---
 
 ## 📄 Academic Citation & Credits
