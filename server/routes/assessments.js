@@ -1,18 +1,32 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import { db } from '../config/database.js';
 import { requireAuth } from '../middleware/auth.js';
 import { scoreMetrics } from '../utils/scoreMetrics.js';
 import { parqTemplate } from '../data/parqTemplate.js';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'fitstart_thesis_super_secret_jwt_key_2026';
+
+function getOptionalUserId(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  try {
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded.id || null;
+  } catch (_) {
+    return null;
+  }
+}
 
 // GET /assessments/parq-template - Return standardized PAR-Q structure
 router.get('/parq-template', (req, res) => {
   return res.json(parqTemplate);
 });
 
-// POST /assessments - Create new assessment profile
-router.post('/', requireAuth, async (req, res) => {
+// POST /assessments - Create new assessment profile (supports both members and guests)
+router.post('/', async (req, res) => {
   try {
     const { fitMao_report_data, parq_answers, assessed_date } = req.body;
 
@@ -20,8 +34,10 @@ router.post('/', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Both fitMao_report_data and parq_answers are required.' });
     }
 
+    const userId = getOptionalUserId(req);
+
     const profile = await db.createProfile({
-      user_id: req.user.id,
+      user_id: userId,
       fitMao_report_data,
       parq_answers,
       assessed_date: assessed_date || new Date().toISOString()
@@ -30,7 +46,8 @@ router.post('/', requireAuth, async (req, res) => {
     return res.status(201).json({
       message: 'Assessment created successfully.',
       profile_id: profile.id,
-      profile
+      profile,
+      isGuest: !userId
     });
   } catch (err) {
     console.error('[Assessment Create Error]:', err);
@@ -51,10 +68,11 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// GET /assessments/:id - Fetch specific assessment
-router.get('/:id', requireAuth, async (req, res) => {
+// GET /assessments/:id - Fetch specific assessment (supports both members and guests)
+router.get('/:id', async (req, res) => {
   try {
-    const profile = await db.getProfileById(req.params.id, req.user.id);
+    const userId = getOptionalUserId(req);
+    const profile = await db.getProfileById(req.params.id, userId);
     if (!profile) {
       return res.status(404).json({ error: 'Assessment not found.' });
     }

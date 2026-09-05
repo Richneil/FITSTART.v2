@@ -11,16 +11,11 @@ import ResultsView from './components/Results/ResultsView.jsx';
 import GlossaryPage from './components/Glossary/GlossaryPage.jsx';
 import UserProfile from './components/Profile/UserProfile.jsx';
 import { api } from './utils/api.js';
-import { getInitialTheme, applyTheme } from './utils/theme.js';
+import { ThemeProvider } from './utils/theme.js';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Initialize theme on application mount
-  useEffect(() => {
-    applyTheme(getInitialTheme());
-  }, []);
 
   // Check auth session on startup
   useEffect(() => {
@@ -46,43 +41,45 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <div className="bg-surface-100 dark:bg-surface-950 min-h-screen font-sans text-surface-900 dark:text-surface-100 antialiased selection:bg-brand-100 dark:selection:bg-brand-900 transition-colors duration-200">
-        {/* Persistent Nav */}
-        <Nav user={user} onLogout={() => setUser(null)} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <div className="bg-surface-50 dark:bg-surface-950 min-h-screen font-sans text-surface-900 dark:text-surface-100 antialiased selection:bg-brand-500 selection:text-white transition-colors duration-200">
+          {/* Persistent Nav */}
+          <Nav user={user} onLogout={() => setUser(null)} />
 
-        {/* Application Routes */}
-        <Routes>
-          {/* Public Routes */}
-          <Route
-            path="/login"
-            element={user ? <Navigate to="/dashboard" replace /> : <Login onLoginSuccess={setUser} />}
-          />
-          <Route
-            path="/signup"
-            element={user ? <Navigate to="/dashboard" replace /> : <Signup onLoginSuccess={setUser} />}
-          />
-          <Route path="/glossary" element={<GlossaryPage />} />
-
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute user={user} loading={loading} />}>
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route path="/assessment" element={<AssessmentFlow />} />
-            <Route path="/results/:profileId" element={<ResultsView />} />
+          {/* Application Routes */}
+          <Routes>
+            {/* Public Routes */}
             <Route
-              path="/profile"
-              element={<UserProfile user={user} onUserUpdated={setUser} onLogout={() => setUser(null)} />}
+              path="/login"
+              element={user ? <Navigate to="/dashboard" replace /> : <Login onLoginSuccess={setUser} />}
             />
-          </Route>
+            <Route
+              path="/signup"
+              element={user ? <Navigate to="/dashboard" replace /> : <Signup onLoginSuccess={setUser} />}
+            />
+            <Route path="/glossary" element={<GlossaryPage />} />
+            <Route path="/assessment" element={<AssessmentFlow user={user} />} />
+            <Route path="/results/:profileId" element={<ResultsView user={user} onAuthSuccess={setUser} />} />
 
-          {/* Root Redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute user={user} loading={loading} />}>
+              <Route path="/dashboard" element={<Dashboard user={user} />} />
+              <Route
+                path="/profile"
+                element={<UserProfile user={user} onUserUpdated={setUser} onLogout={() => setUser(null)} />}
+              />
+            </Route>
 
-        {/* Modern Mobile Bottom Navigation Dock */}
-        <BottomNav user={user} />
-      </div>
-    </BrowserRouter>
+            {/* Root Redirect */}
+            <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Navigate to="/assessment" replace />} />
+            <Route path="*" element={<Navigate to={user ? "/dashboard" : "/assessment"} replace />} />
+          </Routes>
+
+          {/* Modern Mobile Bottom Navigation Dock */}
+          <BottomNav user={user} />
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

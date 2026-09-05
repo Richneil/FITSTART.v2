@@ -54,10 +54,11 @@ export const parqTemplate = {
     },
     {
       id: 'goals',
-      title: '2. Primary Fitness Goals',
-      subtitle: 'Select the primary outcomes you want to achieve at KSYN Fitness.',
-      field: 'goals',
-      type: 'multiselect',
+      title: '2. Fitness Objectives',
+      subtitle: 'Specify your main and secondary focus areas to prioritize your starting points.',
+      type: 'objectives_split',
+      primaryField: 'primaryGoal',
+      secondaryField: 'secondaryGoal',
       options: [
         { id: 'fat_loss', label: 'Lose Body Fat & Weight Management', desc: 'Reduce visceral & overall body fat while preserving lean tissue' },
         { id: 'muscle_gain', label: 'Build Muscle & Increase Strength', desc: 'Increase skeletal muscle mass and functional physical power' },
@@ -68,16 +69,16 @@ export const parqTemplate = {
     },
     {
       id: 'activity_profile',
-      title: '3. Activity Preferences (ACSM Categories)',
-      subtitle: 'Which modes of physical activity do you enjoy or plan to do?',
-      field: 'activityCategories',
-      type: 'multiselect',
+      title: '3. Main Activity Style',
+      subtitle: 'Which single exercise style best matches your routine at KSYN Fitness? (Choose 1)',
+      field: 'activityCategory',
+      type: 'singleselect',
       options: [
-        { id: 'aerobic', label: 'Aerobic & Fat-Burn Cardiovascular', desc: 'Running, stationary cycling, rowing, elliptical, treadmill fat-loss intervals' },
-        { id: 'strength', label: 'Strength & Resistance Training', desc: 'Free weights, dumbbells, barbells, gym selectorized machines, cables' },
-        { id: 'cardio_conditioning', label: 'Cardiovascular & Stamina Conditioning', desc: 'Heart-rate targeted endurance, brisk incline walking, swimming laps' },
-        { id: 'athletic_agility', label: 'Athletic Conditioning & Sport Drills', desc: 'Plyometrics, sports (basketball, badminton), agility ladders, reaction footwork' },
-        { id: 'mobility_flexibility', label: 'Posture, Mobility & Joint Flexibility', desc: 'Dynamic stretching, foam rolling, yoga, pilates, desk posture corrective exercises' }
+        { id: 'aerobic', label: 'Cardio & Fat-Burn', desc: 'Treadmill intervals, stationary bike, elliptical, incline cardio' },
+        { id: 'strength', label: 'Strength & Weight Training', desc: 'Gym machines, free weights, dumbbells, barbells, cables' },
+        { id: 'cardio_conditioning', label: 'Heart Health & Stamina', desc: 'Endurance cardio, brisk incline walking, swimming laps' },
+        { id: 'athletic_agility', label: 'Sports & Agility Drills', desc: 'Basketball, badminton, plyometrics, speed and reaction work' },
+        { id: 'mobility_flexibility', label: 'Stretching & Joint Mobility', desc: 'Yoga, pilates, foam rolling, desk posture correction exercises' }
       ]
     },
     {

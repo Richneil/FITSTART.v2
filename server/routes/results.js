@@ -1,14 +1,28 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import { db } from '../config/database.js';
-import { requireAuth } from '../middleware/auth.js';
 import { scoreMetrics } from '../utils/scoreMetrics.js';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'fitstart_thesis_super_secret_jwt_key_2026';
 
-// POST /results/:profileId - Calculate and store results
-router.post('/:profileId', requireAuth, async (req, res) => {
+function getOptionalUserId(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
   try {
-    const profile = await db.getProfileById(req.params.profileId, req.user.id);
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded.id || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+// POST /results/:profileId - Calculate and store results (supports both members and guests)
+router.post('/:profileId', async (req, res) => {
+  try {
+    const userId = getOptionalUserId(req);
+    const profile = await db.getProfileById(req.params.profileId, userId);
     if (!profile) {
       return res.status(404).json({ error: 'Assessment profile not found.' });
     }
@@ -33,7 +47,8 @@ router.post('/:profileId', requireAuth, async (req, res) => {
         firstSteps: calculation.firstSteps,
         becauseYouToldUs: calculation.becauseYouToldUs
       },
-      profile
+      profile,
+      isGuest: !userId
     });
   } catch (err) {
     console.error('[Results Calculate Error]:', err);
@@ -41,10 +56,11 @@ router.post('/:profileId', requireAuth, async (req, res) => {
   }
 });
 
-// GET /results/:profileId - Fetch stored results or calculate if missing
-router.get('/:profileId', requireAuth, async (req, res) => {
+// GET /results/:profileId - Fetch stored results or calculate if missing (supports both members and guests)
+router.get('/:profileId', async (req, res) => {
   try {
-    const profile = await db.getProfileById(req.params.profileId, req.user.id);
+    const userId = getOptionalUserId(req);
+    const profile = await db.getProfileById(req.params.profileId, userId);
     if (!profile) {
       return res.status(404).json({ error: 'Assessment profile not found.' });
     }
@@ -72,7 +88,8 @@ router.get('/:profileId', requireAuth, async (req, res) => {
         firstSteps: calculation.firstSteps,
         becauseYouToldUs: calculation.becauseYouToldUs
       },
-      profile
+      profile,
+      isGuest: !userId
     });
   } catch (err) {
     console.error('[Results Fetch Error]:', err);

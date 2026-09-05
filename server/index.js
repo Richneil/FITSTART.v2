@@ -11,11 +11,11 @@ import glossaryRoutes from './routes/glossary.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:8080',
   credentials: true
 }));
 app.use(express.json());
@@ -52,8 +52,8 @@ app.get('/', (req, res) => {
       <div class="card">
         <div class="badge"><div class="pulse"></div> Backend API Online & Healthy</div>
         <h1>FitStart REST API</h1>
-        <p>This is the backend API server running on port 3001. The interactive web application UI is hosted on port 5173.</p>
-        <a href="http://localhost:5173" class="btn">🚀 Open FitStart Web App (Port 5173)</a>
+        <p>This is the backend API server running on port 5000. The interactive web application UI is hosted on port 8080.</p>
+        <a href="http://localhost:8080" class="btn">🚀 Open FitStart Web App (Port 8080)</a>
         <div class="endpoints">
           <h3>Active API Endpoints</h3>
           <code>GET  /api/health</code>
@@ -84,18 +84,24 @@ app.use('/glossary', glossaryRoutes);
 app.use('/api/glossary', glossaryRoutes);
 
 // Start Server and Initialize DB
+let serverHandle = null;
+
 async function startServer() {
   try {
     await initDatabase();
-    app.listen(PORT, () => {
+    serverHandle = app.listen(PORT, () => {
       console.log(`===================================================`);
       console.log(`🚀 FitStart Backend API running on http://localhost:${PORT}`);
       console.log(`📡 Endpoints: /auth, /assessments, /results, /chat, /glossary`);
       console.log(`===================================================`);
     });
+
+    // Keep event loop alive
+    setInterval(() => {}, 60000);
   } catch (err) {
     console.error('Failed to start FitStart server:', err);
   }
 }
 
 startServer();
+

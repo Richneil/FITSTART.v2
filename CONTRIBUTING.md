@@ -1,4 +1,4 @@
-﻿# Contributing to FitStart
+# Contributing to FitStart
 
 Thank you for your interest in contributing to **FitStart**! This guide outlines the workflow for creating, testing, and submitting Pull Requests (PRs).
 
@@ -37,13 +37,13 @@ git checkout -b fix/issue-description
    ```bash
    node server/index.js
    ```
-   *Runs on `http://localhost:3001` (utilizes local JSON fallback if PostgreSQL is not configured).*
+   *Runs on `http://localhost:5000` (utilizes local JSON fallback if PostgreSQL is not configured).*
 
 2. **Start the Frontend Dev Server**:
    ```bash
    npm run dev
    ```
-   *Runs on `http://localhost:5173` with Hot Module Replacement (HMR).*
+   *Runs on `http://localhost:8080` with Hot Module Replacement (HMR).*
 
 ---
 

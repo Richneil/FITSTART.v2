@@ -231,13 +231,13 @@ export const db = {
       const res = await pool.query(
         `INSERT INTO user_profiles (user_id, fitMao_report_data, parq_answers, assessed_date)
          VALUES ($1, $2, $3, $4) RETURNING *`,
-        [user_id, JSON.stringify(fitMao_report_data), JSON.stringify(parq_answers), assessed_date || new Date()]
+        [user_id || null, JSON.stringify(fitMao_report_data), JSON.stringify(parq_answers), assessed_date || new Date()]
       );
       return res.rows[0];
     }
     const newProfile = {
       id: localDb.user_profiles.length + 1,
-      user_id: Number(user_id),
+      user_id: user_id ? Number(user_id) : null,
       fitMao_report_data,
       parq_answers,
       assessed_date: assessed_date || new Date().toISOString(),
@@ -247,6 +247,23 @@ export const db = {
     localDb.user_profiles.push(newProfile);
     saveLocalDb();
     return newProfile;
+  },
+
+  async linkGuestProfileToUser(profile_id, user_id) {
+    if (usePostgres) {
+      const res = await pool.query(
+        `UPDATE user_profiles SET user_id = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
+        [user_id, profile_id]
+      );
+      return res.rows[0] || null;
+    }
+    const profile = localDb.user_profiles.find(p => p.id === Number(profile_id));
+    if (profile) {
+      profile.user_id = Number(user_id);
+      profile.updated_at = new Date().toISOString();
+      saveLocalDb();
+    }
+    return profile;
   },
 
   async getProfilesByUserId(user_id) {
@@ -277,13 +294,18 @@ export const db = {
 
   async getProfileById(id, user_id) {
     if (usePostgres) {
-      const res = await pool.query(
-        `SELECT * FROM user_profiles WHERE id = $1 AND user_id = $2`,
-        [id, user_id]
-      );
+      const query = user_id 
+        ? `SELECT * FROM user_profiles WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)`
+        : `SELECT * FROM user_profiles WHERE id = $1`;
+      const params = user_id ? [id, user_id] : [id];
+      const res = await pool.query(query, params);
       return res.rows[0] || null;
     }
-    return localDb.user_profiles.find(p => p.id === Number(id) && p.user_id === Number(user_id)) || null;
+    return localDb.user_profiles.find(p => {
+      if (p.id !== Number(id)) return false;
+      if (!user_id || p.user_id === null) return true;
+      return p.user_id === Number(user_id);
+    }) || null;
   },
 
   async updateProfile(id, user_id, { parq_answers, fitMao_report_data }) {
@@ -293,12 +315,16 @@ export const db = {
          SET parq_answers = COALESCE($1, parq_answers), 
              fitMao_report_data = COALESCE($2, fitMao_report_data),
              updated_at = NOW()
-         WHERE id = $3 AND user_id = $4 RETURNING *`,
-        [parq_answers ? JSON.stringify(parq_answers) : null, fitMao_report_data ? JSON.stringify(fitMao_report_data) : null, id, user_id]
+         WHERE id = $3 AND (user_id = $4 OR user_id IS NULL) RETURNING *`,
+        [parq_answers ? JSON.stringify(parq_answers) : null, fitMao_report_data ? JSON.stringify(fitMao_report_data) : null, id, user_id || null]
       );
       return res.rows[0] || null;
     }
-    const profile = localDb.user_profiles.find(p => p.id === Number(id) && p.user_id === Number(user_id));
+    const profile = localDb.user_profiles.find(p => {
+      if (p.id !== Number(id)) return false;
+      if (!user_id || p.user_id === null) return true;
+      return p.user_id === Number(user_id);
+    });
     if (!profile) return null;
     if (parq_answers) profile.parq_answers = parq_answers;
     if (fitMao_report_data) profile.fitMao_report_data = fitMao_report_data;
@@ -309,11 +335,11 @@ export const db = {
 
   async deleteProfile(id, user_id) {
     if (usePostgres) {
-      const res = await pool.query('DELETE FROM user_profiles WHERE id = $1 AND user_id = $2 RETURNING id', [id, user_id]);
+      const res = await pool.query('DELETE FROM user_profiles WHERE id = $1 AND (user_id = $2 OR user_id IS NULL) RETURNING id', [id, user_id || null]);
       return res.rowCount > 0;
     }
     const initialLen = localDb.user_profiles.length;
-    localDb.user_profiles = localDb.user_profiles.filter(p => !(p.id === Number(id) && p.user_id === Number(user_id)));
+    localDb.user_profiles = localDb.user_profiles.filter(p => !(p.id === Number(id) && (!user_id || p.user_id === Number(user_id) || p.user_id === null)));
     localDb.assessment_results = localDb.assessment_results.filter(r => r.profile_id !== Number(id));
     saveLocalDb();
     return localDb.user_profiles.length < initialLen;

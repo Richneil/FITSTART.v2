@@ -1,47 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { 
   Activity, 
   ChevronLeft, 
-  Columns, 
   Sparkles, 
-  Info, 
-  Check, 
-  ArrowRight, 
   AlertCircle,
-  X,
-  Flame,
-  Target,
-  Droplet,
+  Award, 
+  Scale, 
+  Target, 
   HeartPulse,
-  Scale
+  PlusCircle,
+  LayoutDashboard
 } from 'lucide-react';
-import WeightBreakdown from './WeightBreakdown.jsx';
-import OldVsNew from './OldVsNew.jsx';
-import TargetTrajectory from './TargetTrajectory.jsx';
+import MainFocusCard from './MainFocusCard.jsx';
+import BecauseYouToldUs from './BecauseYouToldUs.jsx';
+import PriorityList from './PriorityList.jsx';
+import SaveResultsPrompt from './SaveResultsPrompt.jsx';
+import PrintableSummary from './PrintableSummary.jsx';
 import { api } from '../../utils/api.js';
 
-const METRIC_ICONS = {
-  bodyFat: Flame,
-  muscleMass: Target,
-  visceralFat: Activity,
-  bodyWater: Droplet,
-  bmr: HeartPulse,
-  bmi: Scale
-};
-
-export default function ResultsView() {
+export default function ResultsView({ user }) {
   const { profileId } = useParams();
-  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [profile, setProfile] = useState(null);
   const [resultsData, setResultsData] = useState(null);
 
-  const [showComparison, setShowComparison] = useState(false);
   const [showRawReport, setShowRawReport] = useState(false);
-  const [dismissedChangeLog, setDismissedChangeLog] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -58,13 +45,13 @@ export default function ResultsView() {
       }
     }
     loadData();
-  }, [profileId]);
+  }, [profileId, user]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center font-sans">
         <div className="w-10 h-10 border-4 border-surface-200 border-t-brand-500 rounded-full animate-spin mb-3"></div>
-        <p className="text-xs text-surface-500 font-semibold">Loading your personalized interpretation...</p>
+        <p className="text-xs text-surface-500 font-display font-semibold">Loading your personalized interpretation...</p>
       </div>
     );
   }
@@ -75,164 +62,277 @@ export default function ResultsView() {
         <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-3">
           <AlertCircle className="w-6 h-6" />
         </div>
-        <h2 className="text-xl font-bold text-surface-900 mb-1">Results Unavailable</h2>
-        <p className="text-xs text-surface-500 mb-6">{error || 'Could not find the requested record.'}</p>
-        <Link to="/dashboard" className="btn-primary text-xs">
-          Return to Dashboard
+        <h2 className="text-xl font-display font-bold text-surface-900 dark:text-white mb-1">Results Unavailable</h2>
+        <p className="text-xs text-surface-500 dark:text-surface-400 mb-6">{error || 'Could not find the requested record.'}</p>
+        <Link to={user ? "/dashboard" : "/assessment"} className="btn-primary text-xs">
+          {user ? "Return to Dashboard" : "Start Assessment"}
         </Link>
       </div>
     );
   }
 
-  const { main_focus: mainFocus, top_priorities: topPriorities = [], change_log: changeLog = [], becauseYouToldUs } = resultsData;
+  const isGuest = !user || profile?.user_id === null || resultsData?.isGuest || profileId === 'guest';
+  const { 
+    main_focus: mainFocus, 
+    top_priorities: topPriorities = [], 
+    otherPriorities = [],
+    becauseYouToldUs, 
+    weights 
+  } = resultsData;
   const rawMetrics = profile?.fitMao_report_data || {};
-
-  const MainIcon = METRIC_ICONS[mainFocus?.id] || Activity;
+  const parqAnswers = profile?.parq_answers || {};
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pb-28 max-w-md sm:max-w-lg mx-auto sm:border-x sm:border-surface-200 dark:sm:border-surface-800 sm:shadow-xl relative font-sans animate-slide-up transition-colors duration-200">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pb-28 max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 relative font-sans animate-slide-up transition-colors duration-200">
       
-      {/* Top Navigation Bar */}
-      <div className="p-3.5 sm:p-4 border-b border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 flex items-center justify-between sticky top-0 z-30 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-        <Link to="/dashboard" className="flex items-center gap-1.5 text-xs font-bold text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white p-1">
-          <ChevronLeft className="w-4 h-4" /> Dashboard
-        </Link>
-        <button
-          onClick={() => setShowComparison(true)}
-          className="text-xs font-extrabold text-brand-800 dark:text-brand-300 hover:text-brand-900 bg-brand-50 dark:bg-brand-950/60 hover:bg-brand-100 px-3 py-1.5 rounded-xl border border-brand-200 dark:border-brand-800 flex items-center gap-1.5 transition-colors shadow-sm"
-        >
-          <Columns className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> See the Difference
-        </button>
-      </div>
-
-      {/* Change Note Alert Banner */}
-      {changeLog.length > 0 && !dismissedChangeLog && (
-        <div className="bg-amber-50 dark:bg-amber-950/50 border-b border-amber-200 dark:border-amber-900 px-4 py-3 text-amber-900 dark:text-amber-200 text-xs flex items-start justify-between gap-3 animate-fade-in">
-          <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <div className="leading-snug">
-              <strong>Answer updated:</strong> You modified your survey answers during review. FitStart prioritized these results using your final selection.
-            </div>
+      {/* Top Action Toolbar */}
+      <div className="py-3.5 sm:py-4 border-b border-surface-200 dark:border-surface-800 bg-white/95 dark:bg-surface-900/95 backdrop-blur-md flex items-center justify-between sticky top-0 z-30 shadow-subtle rounded-b-2xl mb-5 px-4 sm:px-6">
+        {user ? (
+          <Link to="/dashboard" className="flex items-center gap-1.5 text-xs font-display font-bold text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white p-1">
+            <ChevronLeft className="w-4 h-4" /> Dashboard
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+            <span className="text-xs font-display font-bold text-surface-800 dark:text-surface-200">
+              Personalized Assessment Report
+            </span>
           </div>
-          <button onClick={() => setDismissedChangeLog(true)} className="text-amber-500 hover:text-amber-900 dark:hover:text-amber-100 p-1">
-            <X className="w-4 h-4" />
+        )}
+
+        <div className="flex items-center gap-2">
+          {/* Export PDF Button */}
+          <button
+            onClick={() => setShowPrintModal(true)}
+            className="text-xs font-display font-bold text-surface-700 dark:text-surface-200 hover:text-brand-600 dark:hover:text-brand-400 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 px-3.5 py-2 rounded-xl border border-surface-200 dark:border-surface-700 flex items-center gap-1.5 transition-colors shadow-subtle cursor-pointer"
+            title="Export 1-Page PDF Summary"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> Export PDF
           </button>
         </div>
-      )}
+      </div>
 
-      {/* Main Focus Hero Section (Warm Terracotta & Sunburst Accent) */}
-      <div className="bg-white dark:bg-surface-900 p-5 sm:p-6 pt-5 rounded-b-[2.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border-b border-surface-200 dark:border-surface-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-accent-100 dark:bg-accent-950/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-70"></div>
-        
-        <div className="flex items-center gap-1.5 text-accent-700 dark:text-accent-400 text-xs font-extrabold uppercase tracking-wider mb-2 relative z-10">
-          <Sparkles className="w-4 h-4 text-accent-500" /> Personalized Starting Point
+      {/* 1. FitMao Assessment Profile Header Card */}
+      <div className="card p-5 sm:p-6 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-sans mb-5">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-display font-bold text-xs uppercase tracking-wider">
+            <Activity className="w-4 h-4" /> FitMao Assessment Profile
+          </div>
+          <h1 className="text-xl sm:text-2xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
+            {rawMetrics?.memberName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Alex Rivera')}
+          </h1>
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-surface-500 dark:text-surface-400 text-xs">
+            <span className="font-medium">{rawMetrics?.gender || 'Male'} • {rawMetrics?.age || '28 yrs'}</span>
+            <span>•</span>
+            <span className="font-mono">{rawMetrics?.height || '175 cm'}</span>
+            <span>•</span>
+            <span className="font-mono">{rawMetrics?.testDate || profile?.assessed_date?.split('T')[0] || '2026-09-05'} {rawMetrics?.testTime || ''}</span>
+          </div>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-surface-900 dark:text-white mb-4 relative z-10 tracking-tight">Your Main Focus</h1>
-        
-        <div className="bg-gradient-to-br from-accent-50/90 dark:from-accent-950/50 to-orange-50/50 dark:to-surface-800/80 p-4 sm:p-5 rounded-3xl border border-accent-200 dark:border-accent-800/60 relative z-10 shadow-sm">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-accent-100 dark:bg-accent-900/60 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-accent-300 dark:border-accent-700">
-              <MainIcon className="w-7 h-7 sm:w-8 sm:h-8 text-accent-600 dark:text-accent-400" />
-            </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-surface-900 dark:text-white">{mainFocus?.title}</h2>
-              <p className="text-2xl sm:text-3xl font-black text-accent-600 dark:text-accent-400 tracking-tight">{mainFocus?.value}</p>
-            </div>
-          </div>
-
-          {/* Metric Calculation Waterfall Math (Weight Breakdown) */}
-          <WeightBreakdown metric={mainFocus} />
+        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface-100 dark:border-surface-800">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-emerald-800 dark:text-emerald-300 font-display font-extrabold text-xs shadow-subtle">
+            <Award className="w-4 h-4 text-emerald-600" /> Score: {rawMetrics?.healthScore || '74 / 100'}
+          </span>
+          <span className="block text-xs text-surface-400 dark:text-surface-500 font-mono">
+            {rawMetrics?.bodyType || 'Standard Overweight'}
+          </span>
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-5">
-        
-        {/* Section: Because You Told Us (Explainable Decision Support) */}
-        <div className="card p-4 sm:p-5 bg-teal-50/70 dark:bg-teal-950/40 border-teal-200 dark:border-teal-800/70 rounded-3xl shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <Info className="w-4 h-4 text-teal-700 dark:text-teal-400" />
-            <h3 className="font-extrabold text-teal-950 dark:text-teal-200 text-xs uppercase tracking-wider">Because You Told Us...</h3>
-          </div>
-          <p className="text-teal-950 dark:text-teal-100 text-xs leading-relaxed font-medium whitespace-pre-wrap">
-            {becauseYouToldUs || `We are prioritizing ${mainFocus?.title} (${mainFocus?.value}) based on your declared goals and assessment measurements.`}
-          </p>
-        </div>
+      <div className="space-y-5">
+        {/* 2. Main Focus Hero Section (with Ask Why & Waterfall math) */}
+        <MainFocusCard mainFocus={mainFocus} />
 
-        {/* Section: Top Priorities */}
-        <div>
-          <div className="flex justify-between items-baseline mb-3">
-            <h3 className="font-extrabold text-surface-900 dark:text-white text-lg tracking-tight">Top Priorities</h3>
-            <span className="text-xs text-surface-500 dark:text-surface-400 font-semibold">Ranked by relevance</span>
-          </div>
-          <div className="space-y-3">
-            {topPriorities.map((p, i) => {
-              const bgClass = i === 0 
-                ? 'bg-brand-50/70 dark:bg-brand-950/40 border-brand-200 dark:border-brand-800 shadow-sm' 
-                : 'bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 shadow-sm';
-              return (
-                <div key={p.id || i} className={`card p-4 flex flex-col gap-1 border rounded-2xl ${bgClass}`}>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-extrabold text-surface-900 dark:text-white text-sm sm:text-base flex items-center gap-2">
-                      <span className="text-xs font-black bg-brand-100 dark:bg-brand-900 text-brand-800 dark:text-brand-200 w-5 h-5 rounded-full flex items-center justify-center">
-                        {i + 2}
-                      </span>
-                      {p.title}
-                    </span>
-                    <span className="font-black text-brand-700 dark:text-brand-300 text-sm sm:text-base">{p.value}</span>
-                  </div>
-                  <p className="text-xs text-surface-600 dark:text-surface-400 leading-relaxed font-medium pl-7">{p.desc}</p>
-                  
-                  {/* Step math for top priority */}
-                  <WeightBreakdown metric={p} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/* 3. Top Priorities (with individual Ask Why triggers) */}
+        <PriorityList topPriorities={topPriorities} otherPriorities={otherPriorities} />
 
-        {/* Feature: Recomposition Benchmarks & Target Trajectory */}
-        <TargetTrajectory rawMetrics={rawMetrics} mainFocus={mainFocus} />
+        {/* 4. Dynamic "Because You Told Us" Decision Support */}
+        <BecauseYouToldUs 
+          text={becauseYouToldUs} 
+          mainFocus={mainFocus} 
+          parqAnswers={parqAnswers} 
+        />
 
-        {/* Raw FitMao Report Toggle */}
+        {/* 5. Complete Raw FitMao Scanner Metrics (Collapsible) */}
         <div>
           <button
             onClick={() => setShowRawReport(!showRawReport)}
-            className="w-full py-3.5 px-4 bg-white dark:bg-surface-900 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-2xl border border-surface-200 dark:border-surface-800 text-xs font-bold text-surface-700 dark:text-surface-300 flex items-center justify-between transition-colors shadow-sm"
+            className="w-full py-3.5 px-4 bg-white dark:bg-surface-900 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-2xl border border-surface-200 dark:border-surface-800 text-xs font-display font-bold text-surface-700 dark:text-surface-300 flex items-center justify-between transition-colors shadow-sm cursor-pointer"
           >
-            <span>{showRawReport ? 'Hide Raw FitMao Scanner Metrics' : `View Full Raw FitMao Report (${Object.keys(rawMetrics).length} Metrics)`}</span>
+            <span className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-brand-600" />
+              <span>{showRawReport ? 'Hide Complete Assessment Metrics' : `View Complete Assessment Metrics (${Object.keys(rawMetrics).length} Data Points)`}</span>
+            </span>
             <span>{showRawReport ? '▲' : '▼'}</span>
           </button>
 
           {showRawReport && (
-            <div className="mt-3 card overflow-hidden bg-white dark:bg-surface-900 shadow-sm divide-y divide-surface-100 dark:divide-surface-800 animate-slide-up rounded-2xl">
-              {Object.entries(rawMetrics).map(([key, value]) => (
-                <div key={key} className="p-3 flex justify-between items-center text-xs">
-                  <span className="text-surface-600 dark:text-surface-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-                  <span className="font-black text-surface-900 dark:text-white">{value}</span>
+            <div className="mt-3 space-y-3 animate-slide-up">
+              {/* Section 1: Member Demographics & Test Details */}
+              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
+                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
+                  <Activity className="w-3.5 h-3.5 text-brand-600" /> Member Information & Test Session
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Member Name</span>
+                    <strong className="text-surface-900 dark:text-white font-sans">{rawMetrics.memberName || 'Alex Rivera'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Gender / Age</span>
+                    <strong className="text-surface-900 dark:text-white font-sans">{rawMetrics.gender || 'Male'} • {rawMetrics.age || '28 yrs'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Height</span>
+                    <strong className="text-surface-900 dark:text-white font-mono">{rawMetrics.height || '175 cm'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Body Age</span>
+                    <strong className="text-surface-900 dark:text-white font-mono">{rawMetrics.bodyAge || '31 yrs'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Scan Date & Time</span>
+                    <strong className="text-surface-900 dark:text-white font-mono text-[11px]">{rawMetrics.testDate || '2026-09-05'} {rawMetrics.testTime || '10:30 AM'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Scanner Device</span>
+                    <strong className="text-surface-900 dark:text-white text-[11px] font-sans">{rawMetrics.scannerDevice || 'FitMao 3D Pro'}</strong>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Section 2: Body Composition Analysis */}
+              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
+                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
+                  <Scale className="w-3.5 h-3.5 text-brand-600" /> Body Composition Analysis
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Total Weight</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.weight || '78.0 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-accent-50/60 dark:bg-accent-950/40 rounded-xl flex justify-between items-center border border-accent-200/60 dark:border-accent-800/50">
+                    <span className="text-accent-800 dark:text-accent-300 font-bold">Body Fat %</span>
+                    <strong className="font-mono text-accent-700 dark:text-accent-300">{rawMetrics.bodyFatPercentage || '24.5%'}</strong>
+                  </div>
+                  <div className="p-2 bg-brand-50/60 dark:bg-brand-950/40 rounded-xl flex justify-between items-center border border-brand-200/60 dark:border-brand-800/50">
+                    <span className="text-brand-800 dark:text-brand-300 font-bold">Skeletal Muscle</span>
+                    <strong className="font-mono text-brand-700 dark:text-brand-300">{rawMetrics.skeletalMuscleMass || '32.1 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Fat Mass</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.fatMass || '19.1 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Muscle Mass</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.muscleMass || '55.4 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Fat-Free Mass</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.fatFreeMass || '58.9 kg'}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Target Control Recommendations */}
+              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
+                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
+                  <Target className="w-3.5 h-3.5 text-accent-600" /> Target & Control Recommendations
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Target Weight</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.targetWeight || '72.0 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Weight Control</span>
+                    <strong className="font-mono text-amber-700 dark:text-amber-400">{rawMetrics.weightControl || '-6.0 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Fat Control</span>
+                    <strong className="font-mono text-accent-600 dark:text-accent-400">{rawMetrics.fatControl || '-6.0 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Muscle Control</span>
+                    <strong className="font-mono text-brand-600 dark:text-brand-400">{rawMetrics.muscleControl || '0.0 kg'}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 4: Metabolic & Health Evaluation */}
+              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
+                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
+                  <HeartPulse className="w-3.5 h-3.5 text-red-500" /> Metabolic & Health Indices
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Visceral Fat</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.visceralFat || 'Level 11'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">BMR</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bmr || '1,650 kcal'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">BMI</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bmi || '25.4'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Body Water</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bodyWater || '42.3 L'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Protein Content</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.proteinMass || '12.8 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
+                    <span className="text-surface-600 dark:text-surface-400">Bone Minerals</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.boneMineralContent || '3.8 kg'}</strong>
+                  </div>
+                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center col-span-2">
+                    <span className="text-surface-600 dark:text-surface-400">Waist-to-Hip Ratio (WHR)</span>
+                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.waistToHipRatio || '0.88'}</strong>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        <div className="text-center pt-3">
-          <Link
-            to="/dashboard"
-            className="btn-secondary w-full py-3 text-xs font-bold flex items-center justify-center gap-1.5"
-          >
-            ← Return to Member Dashboard
-          </Link>
-        </div>
+        {/* 8. End of Results: Optional Save Card for Guests / Member Actions */}
+        {isGuest ? (
+          <div className="pt-2">
+            <SaveResultsPrompt onContinueAsGuest={() => {}} />
+          </div>
+        ) : (
+          <div className="space-y-2.5 pt-4">
+            <Link
+              to="/assessment"
+              className="btn-primary w-full py-4 text-xs font-display font-bold flex items-center justify-center gap-2 shadow-md"
+            >
+              <PlusCircle className="w-4 h-4" /> Start New Assessment
+            </Link>
+
+            <Link
+              to="/dashboard"
+              className="btn-secondary w-full py-3.5 text-xs font-display font-bold flex items-center justify-center gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" /> Return to Member Dashboard
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Side-by-Side Comparison Modal (Old vs New) */}
-      {showComparison && (
-        <OldVsNew
-          rawMetrics={rawMetrics}
-          mainFocus={mainFocus}
-          topPriorities={topPriorities}
-          onClose={() => setShowComparison(false)}
+      {/* 1-Page PDF Printable Modal */}
+      {showPrintModal && (
+        <PrintableSummary
+          profile={profile}
+          fitMao={rawMetrics}
+          parq={profile?.parq_answers}
+          weights={weights}
+          user={profile?.user}
+          onClose={() => setShowPrintModal(false)}
         />
       )}
     </div>

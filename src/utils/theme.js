@@ -1,13 +1,21 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const ThemeContext = createContext({
+  theme: 'light',
+  toggleTheme: () => {},
+  setTheme: () => {},
+  isDark: false
+});
 
 export function getInitialTheme() {
   if (typeof window === 'undefined') return 'light';
-  const saved = localStorage.getItem('fitstart_theme');
-  if (saved === 'dark' || saved === 'light') return saved;
-  // Check system preference
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
+  try {
+    const saved = localStorage.getItem('fitstart_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+  } catch (_) {}
   return 'light';
 }
 
@@ -19,10 +27,12 @@ export function applyTheme(theme) {
   } else {
     root.classList.remove('dark');
   }
-  localStorage.setItem('fitstart_theme', theme);
+  try {
+    localStorage.setItem('fitstart_theme', theme);
+  } catch (_) {}
 }
 
-export function useTheme() {
+export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(getInitialTheme);
 
   useEffect(() => {
@@ -30,8 +40,39 @@ export function useTheme() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
+    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  return { theme, toggleTheme, isDark: theme === 'dark' };
+  const setTheme = (newTheme) => {
+    if (newTheme === 'dark' || newTheme === 'light') {
+      setThemeState(newTheme);
+    }
+  };
+
+  const value = {
+    theme,
+    toggleTheme,
+    setTheme,
+    isDark: theme === 'dark'
+  };
+
+  return React.createElement(
+    ThemeContext.Provider,
+    { value },
+    children
+  );
 }
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    return {
+      theme: 'light',
+      toggleTheme: () => {},
+      setTheme: () => {},
+      isDark: false
+    };
+  }
+  return context;
+}
+

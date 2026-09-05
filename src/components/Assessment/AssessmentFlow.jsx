@@ -4,10 +4,11 @@ import UploadStep from './UploadStep.jsx';
 import ParQForm from './ParQForm.jsx';
 import GoalCheckIn from './GoalCheckIn.jsx';
 import ProcessingScreen from './ProcessingScreen.jsx';
-import { api } from '../../utils/api.js';
+import { api, setPendingGuestAssessment } from '../../utils/api.js';
 
-export default function AssessmentFlow() {
+export default function AssessmentFlow({ user }) {
   const navigate = useNavigate();
+
   const [step, setStep] = useState('upload'); // 'upload', 'parq', 'checkin', 'processing'
   const [fitMaoData, setFitMaoData] = useState(null);
   const [parqAnswers, setParqAnswers] = useState(null);
@@ -38,16 +39,26 @@ export default function AssessmentFlow() {
   const handleConfirmGoal = async () => {
     setStep('processing');
     try {
-      // 1. Create Assessment profile in DB
+      // 1. Create Assessment profile in DB or guest session
       const created = await api.createAssessment({
         fitMao_report_data: fitMaoData,
         parq_answers: parqAnswers,
         assessed_date: new Date().toISOString()
       });
 
-      const profileId = created.profile_id;
+      const profileId = created.profile_id || 'guest';
 
-      // 2. Compute and store results in DB
+      // Store in guest session state for account linking prompt
+      setPendingGuestAssessment({
+        profileId,
+        fitMao_report_data: fitMaoData,
+        parq_answers: parqAnswers,
+        assessed_date: new Date().toISOString(),
+        changeLog,
+        isGuest: !user
+      });
+
+      // 2. Compute results
       await api.calculateResults(profileId, { changeLog });
 
       // 3. Navigate to results page
@@ -55,17 +66,29 @@ export default function AssessmentFlow() {
         navigate(`/results/${profileId}`);
       }, 1200);
     } catch (err) {
-      alert(err.message || 'Failed to process assessment. Please try again.');
-      setStep('checkin');
+      console.warn('Proceeding with guest local calculation:', err.message);
+      setPendingGuestAssessment({
+        profileId: 'guest',
+        fitMao_report_data: fitMaoData,
+        parq_answers: parqAnswers,
+        assessed_date: new Date().toISOString(),
+        changeLog,
+        isGuest: !user
+      });
+      setTimeout(() => {
+        navigate('/results/guest');
+      }, 1200);
     }
   };
 
   return (
-    <div className="min-h-screen bg-surface-50 font-sans">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 font-sans transition-colors duration-200">
       {step === 'upload' && (
         <UploadStep
           onDataExtracted={handleUploadDone}
-          onCancel={() => navigate('/dashboard')}
+          onCancel={() => {
+            if (user) navigate('/dashboard');
+          }}
         />
       )}
 
