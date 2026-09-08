@@ -1,66 +1,94 @@
-// Shared Glossary Dataset: FitMao Body Composition Terms
+// FitMao terminology shown throughout FitStart. Definitions are educational,
+// plain-language explanations and are not medical diagnoses.
 export const GLOSSARY_TERMS = [
-  {
-    id: 'bodyFatPercentage',
-    term: 'Body Fat % (Body Fat Percentage)',
-    shortLabel: 'Body Fat %',
-    category: 'Body Composition',
-    definition: 'The proportion of your total body weight that is composed of fat tissue compared to lean mass (muscle, bone, water).',
-    whyItMatters: 'Tracking body fat percentage tells you whether weight loss is coming from actual fat rather than valuable muscle tissue.',
-    healthyRange: 'Men: 10% – 20% | Women: 18% – 28%'
-  },
   {
     id: 'skeletalMuscleMass',
     term: 'Skeletal Muscle Mass (SMM)',
     shortLabel: 'Skeletal Muscle Mass',
     category: 'Muscle & Strength',
-    definition: 'The total weight of the voluntary muscles attached to your skeleton that you can actively train and grow through resistance exercise.',
-    whyItMatters: 'Muscle tissue elevates your resting metabolism, stabilizes joints, improves insulin sensitivity, and supports daily physical energy.',
-    healthyRange: 'Varies by height and build; higher ratio relative to body weight is generally optimal.'
+    definition: 'The estimated weight of the muscles attached to your skeleton—the muscles you intentionally use and strengthen during movement and resistance training.',
+    whyItMatters: 'Tracking SMM helps show whether a program is building or preserving useful muscle rather than changing body weight alone.',
+    healthyRange: 'Best interpreted for your height, sex, age, and training history.'
   },
   {
-    id: 'visceralFat',
-    term: 'Visceral Fat Level',
-    shortLabel: 'Visceral Fat',
-    category: 'Cardiovascular & Internal Health',
-    definition: 'Fat stored deep within the abdominal cavity, surrounding internal organs such as the liver, stomach, and intestines.',
-    whyItMatters: 'Unlike subcutaneous fat under the skin, excessive visceral fat is closely linked to cardiovascular disease, insulin resistance, and systemic inflammation.',
-    healthyRange: 'Level 1 – 9: Healthy / Low Risk | Level 10 – 14: Elevated | Level 15+: High Risk'
+    id: 'bodyFatPercentage',
+    term: 'Percent Body Fat (PBF)',
+    shortLabel: 'Percent Body Fat',
+    category: 'Body Composition',
+    definition: 'The percentage of your total body weight estimated to come from fat tissue.',
+    whyItMatters: 'PBF adds context to scale weight and helps distinguish fat change from changes in muscle, water, or other lean tissue.',
+    healthyRange: 'Men: commonly 10–20% | Women: commonly 18–28%'
   },
   {
-    id: 'bodyWater',
-    term: 'Total Body Water (TBW)',
-    shortLabel: 'Body Water',
-    category: 'Hydration & Recovery',
-    definition: 'The total volume of fluids inside and outside your cells, making up the majority of muscle and lean tissues.',
-    whyItMatters: 'Muscle tissue is over 70% water. Good cellular hydration is vital for workout stamina, nutrient transport, joint lubrication, and scan measurement accuracy.',
-    healthyRange: 'Men: ~50% – 65% of body weight | Women: ~45% – 60% of body weight'
+    id: 'fatMass',
+    term: 'Body Fat Mass (BFM)',
+    shortLabel: 'Body Fat Mass',
+    category: 'Body Composition',
+    definition: 'The estimated total weight of fat tissue in your body, normally displayed in kilograms.',
+    whyItMatters: 'BFM shows the absolute amount of fat and can make progress easier to interpret when body weight also changes.',
+    healthyRange: 'Individual; interpret together with PBF and guidance from a qualified professional.'
   },
   {
     id: 'bmr',
     term: 'Basal Metabolic Rate (BMR)',
-    shortLabel: 'BMR',
+    shortLabel: 'Basal Metabolic Rate',
     category: 'Energy & Metabolism',
-    definition: 'The minimum number of calories your body burns in 24 hours at complete rest just to keep vital organs functioning.',
-    whyItMatters: 'Your BMR is your caloric baseline floor. Eating below your BMR triggers fatigue, metabolic adaptation, and muscle loss.',
-    healthyRange: 'Determined by total lean muscle mass, age, sex, and height.'
+    definition: 'An estimate of the calories your body uses each day at complete rest to support essential functions such as breathing and circulation.',
+    whyItMatters: 'BMR is a useful starting point for estimating daily energy needs, but it is not a calorie target by itself.',
+    healthyRange: 'Varies with body size, lean mass, age, and biological sex.'
+  },
+  {
+    id: 'bodyWater',
+    term: 'Body Water (BW)',
+    shortLabel: 'Body Water',
+    category: 'Hydration & Recovery',
+    definition: 'The estimated amount of water inside and outside your cells, reported as a volume or percentage.',
+    whyItMatters: 'Hydration can affect performance, recovery, and the consistency of body-composition measurements.',
+    healthyRange: 'Men: about 50–65% | Women: about 45–60%'
   },
   {
     id: 'bmi',
     term: 'Body Mass Index (BMI)',
-    shortLabel: 'BMI',
+    shortLabel: 'Body Mass Index',
     category: 'General Baseline',
-    definition: 'A simple mathematical ratio comparing your total weight against your height squared (kg/m²).',
-    whyItMatters: 'Provides a quick screening baseline, but cannot distinguish between dense muscle and fat. Best interpreted alongside Body Fat % and Muscle Mass.',
-    healthyRange: '18.5 – 24.9: Normal weight | 25.0 – 29.9: Overweight | 30.0+: Obese'
+    definition: 'A screening ratio calculated from weight and height: kilograms divided by height in metres squared.',
+    whyItMatters: 'BMI is a quick population-level screen, but it does not distinguish muscle from fat and should be read with other metrics.',
+    healthyRange: '18.5–24.9 is the standard adult reference range.'
   },
   {
-    id: 'targetWeight',
-    term: 'Target Weight & Body Control Values',
-    shortLabel: 'Target & Control',
-    category: 'Recomposition Guidance',
-    definition: 'FitMao-calculated suggestions for target weight, fat mass adjustment (Fat Control), and muscle mass increase (Muscle Control) to reach recommended ranges.',
-    whyItMatters: 'Clarifies whether body recomposition should focus on losing fat mass, building lean muscle mass, or maintaining current numbers.',
-    healthyRange: 'Personalized based on individual height, current body fat %, and skeletal muscle mass.'
+    id: 'visceralFat',
+    term: 'Visceral Fat Level (VFL)',
+    shortLabel: 'Visceral Fat Level',
+    category: 'Cardiovascular & Internal Health',
+    definition: 'A device-estimated level representing fat stored around organs in the abdominal area.',
+    whyItMatters: 'Higher visceral fat is associated with increased cardiometabolic risk, so trends can be useful to discuss with a health professional.',
+    healthyRange: 'FitMao level 1–9: lower range | 10–14: elevated | 15+: high'
+  },
+  {
+    id: 'waistToHipRatio',
+    term: 'Waist-Hip Ratio (WHR)',
+    shortLabel: 'Waist-Hip Ratio',
+    category: 'Body Composition',
+    definition: 'The circumference of your waist divided by the circumference of your hips.',
+    whyItMatters: 'WHR provides a simple indication of where body fat is distributed, especially around the abdomen.',
+    healthyRange: 'Common reference: below 0.90 for men and 0.85 for women.'
+  },
+  {
+    id: 'proteinMass',
+    term: 'Protein Mass',
+    shortLabel: 'Protein Mass',
+    category: 'Muscle & Strength',
+    definition: 'An estimate of protein contained in lean body tissues, including muscle and organs.',
+    whyItMatters: 'The trend can support interpretation of lean tissue status, but it should not be treated as a direct measure of dietary protein intake.',
+    healthyRange: 'Device- and body-size-specific; compare consistent scans over time.'
+  },
+  {
+    id: 'boneMineralContent',
+    term: 'Bone Mineral Content (BMC)',
+    shortLabel: 'Bone Mineral Content',
+    category: 'General Baseline',
+    definition: 'An estimate of the mineral mass contained in bone.',
+    whyItMatters: 'BMC contributes to overall lean mass context, but a body-composition scanner is not a diagnostic bone-density test.',
+    healthyRange: 'Varies by body size, age, and sex; diagnostic concerns require a DEXA scan.'
   }
 ];

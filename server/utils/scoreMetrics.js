@@ -3,7 +3,7 @@
 // Maintains a transparent explanation trace (contributing factors) for every scored metric.
 
 export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
-  // Extract numeric values safely without hallucinating defaults if absent
+  // Read only measurements that exist in the confirmed FitMao record.
   const rawBodyFat = fitMaoData.bodyFatPercentage !== undefined && fitMaoData.bodyFatPercentage !== null
     ? parseFloat(String(fitMaoData.bodyFatPercentage).replace(/[^0-9.]/g, ''))
     : null;
@@ -16,58 +16,70 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
     ? parseFloat(String(fitMaoData.skeletalMuscleMass).replace(/[^0-9.]/g, ''))
     : null;
 
+  const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== '';
+  const withUnit = (value, unit) => {
+    if (!hasValue(value)) return 'Not available';
+    return String(value).toLowerCase().includes(unit.toLowerCase()) ? String(value) : `${value} ${unit}`;
+  };
+
   const METRICS_DB = {
     bodyFat: { 
       id: 'bodyFat',
       key: 'bodyFatPercentage',
       title: 'Body Fat %', 
-      value: rawBodyFat !== null ? `${rawBodyFat.toFixed(1)}%` : (fitMaoData.bodyFatPercentage || '24.5%'), 
+      value: rawBodyFat !== null ? `${rawBodyFat.toFixed(1)}%` : 'Not available',
+      available: rawBodyFat !== null,
       baseScore: 3,
-      desc: 'Tracking body fat reveals true physical recomposition and fat reduction beyond the bathroom scale.' 
+      desc: 'Shows how much of your total body weight is estimated to come from fat.'
     },
     muscleMass: { 
       id: 'muscleMass',
       key: 'skeletalMuscleMass',
       title: 'Skeletal Muscle Mass', 
-      value: rawMuscle !== null ? `${rawMuscle.toFixed(1)} kg` : (fitMaoData.skeletalMuscleMass || '32.1 kg'), 
+      value: rawMuscle !== null ? `${rawMuscle.toFixed(1)} kg` : 'Not available',
+      available: rawMuscle !== null,
       baseScore: 3,
-      desc: 'Preserving and building muscle boosts your resting metabolism and protects posture and joint integrity.' 
+      desc: 'Helps you follow changes in the muscles used for movement and strength.'
     },
     visceralFat: { 
       id: 'visceralFat',
       key: 'visceralFat',
       title: 'Visceral Fat', 
-      value: rawVisceral !== null ? `Level ${rawVisceral}` : (fitMaoData.visceralFat || 'Level 11'), 
+      value: rawVisceral !== null ? `Level ${rawVisceral}` : 'Not available',
+      available: rawVisceral !== null,
       baseScore: 2,
-      desc: 'Internal organ fat level. Keeping this within healthy ranges is the cornerstone of cardiovascular health.' 
+      desc: 'A device-estimated level representing fat stored around the abdominal organs.'
     },
     bodyWater: { 
       id: 'bodyWater',
       key: 'bodyWater',
       title: 'Body Water', 
-      value: fitMaoData.bodyWater ? (String(fitMaoData.bodyWater).includes('L') ? fitMaoData.bodyWater : `${fitMaoData.bodyWater} L`) : '42.3 L', 
+      value: withUnit(fitMaoData.bodyWater, 'L'),
+      available: hasValue(fitMaoData.bodyWater),
       baseScore: 2,
-      desc: 'Key indicator of cellular hydration, workout stamina, and recovery efficiency after exercise.' 
+      desc: 'Shows FitMao’s estimate of the total amount of water in your body.'
     },
     bmr: { 
       id: 'bmr',
       key: 'bmr',
       title: 'Basal Metabolic Rate', 
-      value: fitMaoData.bmr ? (String(fitMaoData.bmr).includes('kcal') ? fitMaoData.bmr : `${fitMaoData.bmr} kcal`) : '1,650 kcal', 
+      value: withUnit(fitMaoData.bmr, 'kcal'),
+      available: hasValue(fitMaoData.bmr),
       baseScore: 2,
-      desc: 'Your baseline daily calorie burn at rest, serving as the floor for sustainable energy balance.' 
+      desc: 'An estimate of the energy your body uses each day while at rest.'
     },
     bmi: { 
       id: 'bmi',
       key: 'bmi',
       title: 'BMI', 
-      value: fitMaoData.bmi ? String(fitMaoData.bmi) : '25.4', 
+      value: hasValue(fitMaoData.bmi) ? String(fitMaoData.bmi) : 'Not available',
+      available: hasValue(fitMaoData.bmi),
       baseScore: 1,
-      desc: 'General weight-to-height ratio indicator, best viewed in tandem with body fat percentage.' 
+      desc: 'A general weight-to-height screening value that is best read with other measurements.'
     }
   };
 
-  let results = Object.keys(METRICS_DB).map(key => {
+  let results = Object.keys(METRICS_DB).filter((key) => METRICS_DB[key].available).map(key => {
     const item = METRICS_DB[key];
     return {
       ...item,
@@ -77,7 +89,7 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
           delta: `+${item.baseScore}`, 
           deltaVal: item.baseScore, 
           category: 'Baseline',
-          reason: 'Baseline clinical relevance score', 
+          reason: 'Starting relevance for body-composition interpretation',
           subtotal: item.baseScore 
         }
       ],
@@ -85,7 +97,7 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
         {
           category: 'Baseline',
           weight: item.baseScore,
-          reason: 'Standard baseline weight for introductory body composition evaluation'
+          reason: 'Starting weight used consistently for every available measurement'
         }
       ],
       reasons: []
@@ -122,8 +134,8 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
   // 1. Primary Goal Relevance (+4 / +3 / +2 points)
   if (primaryGoal === 'fat_loss') {
     applyRule('bodyFat', 4, 'Primary Goal', 'Your declared primary goal is fat reduction & body recomposition');
-    applyRule('visceralFat', 3, 'Primary Goal', 'Reducing overall body fat directly reduces internal visceral organ fat');
-    applyRule('bmr', 2, 'Primary Goal', 'Understanding your BMR prevents counterproductive crash dieting');
+    applyRule('visceralFat', 3, 'Primary Goal', 'Visceral Fat provides additional context for a fat-reduction goal');
+    applyRule('bmr', 2, 'Primary Goal', 'BMR provides background information about your estimated resting energy use');
   } else if (primaryGoal === 'muscle_gain') {
     applyRule('muscleMass', 4, 'Primary Goal', 'Your declared primary goal is building muscle and functional strength');
     applyRule('bodyWater', 3, 'Primary Goal', 'Muscle tissue is 70%+ water, making cellular hydration critical for growth');
@@ -160,10 +172,10 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
   
   if (act === 'strength') {
     applyRule('muscleMass', 3, 'Activity Style', 'Your chosen workout style is resistance and strength training');
-    applyRule('bmr', 1, 'Activity Style', 'Resistance training elevates basal metabolic rate and calorie burning');
+    applyRule('bmr', 1, 'Activity Style', 'BMR adds energy-use context to a strength-training goal');
   } else if (act === 'aerobic') {
-    applyRule('bodyFat', 3, 'Activity Style', 'Cardiovascular cardio directly supports calorie deficit and fat oxidation');
-    applyRule('visceralFat', 2, 'Activity Style', 'Aerobic exercise directly mobilizes internal visceral organ fat');
+    applyRule('bodyFat', 3, 'Activity Style', 'Body Fat is relevant when following changes alongside regular cardio activity');
+    applyRule('visceralFat', 2, 'Activity Style', 'Visceral Fat provides additional body-composition context for cardio activity');
   } else if (act === 'cardio_conditioning') {
     applyRule('visceralFat', 3, 'Activity Style', 'Endurance cardio conditioning targets heart stamina and visceral health');
     applyRule('bodyWater', 2, 'Activity Style', 'Stamina training places high demands on cellular hydration');
@@ -184,21 +196,21 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
   }
 
   if (parqAnswers.dailyStyle === 'desk') {
-    applyRule('visceralFat', 2, 'Daily Lifestyle', 'A sedentary desk lifestyle correlates with higher visceral fat storage');
+    applyRule('visceralFat', 2, 'Daily Lifestyle', 'You reported spending much of the day seated, making this a useful measurement to monitor');
   }
 
   // 4. Nutrition & Hydration
   if (parqAnswers.nutritionPattern === 'irregular') {
-    applyRule('bmr', 3, 'Nutrition Pattern', 'Irregular meal timing makes understanding your BMR floor essential to avoid under-eating');
-    applyRule('visceralFat', 1, 'Nutrition Pattern', 'Inconsistent meal schedules can destabilize metabolic regulation');
+    applyRule('bmr', 3, 'Nutrition Pattern', 'You reported an irregular eating schedule, so BMR provides useful energy-use context');
+    applyRule('visceralFat', 1, 'Nutrition Pattern', 'Visceral Fat provides supporting context for the eating pattern you reported');
   } else if (parqAnswers.nutritionPattern === 'low_calorie') {
-    applyRule('bmr', 3, 'Nutrition Pattern', 'Aggressive calorie deficits make your BMR your non-negotiable floor to protect metabolism');
-    applyRule('muscleMass', 2, 'Nutrition Pattern', 'During caloric restriction, preserving skeletal muscle mass is vital');
+    applyRule('bmr', 3, 'Nutrition Pattern', 'You reported restricting calories, so BMR provides useful energy-use context');
+    applyRule('muscleMass', 2, 'Nutrition Pattern', 'Skeletal Muscle Mass is useful to monitor while body weight is changing');
   } else if (parqAnswers.nutritionPattern === 'dining_out') {
     applyRule('bodyFat', 2, 'Nutrition Pattern', 'Frequent dining out makes tracking body composition more reliable than scale weight');
-    applyRule('visceralFat', 2, 'Nutrition Pattern', 'Higher convenience dining often correlates with elevated visceral fat storage');
+    applyRule('visceralFat', 2, 'Nutrition Pattern', 'Visceral Fat provides supporting context for the eating pattern you reported');
   } else if (parqAnswers.nutritionPattern === 'high_protein') {
-    applyRule('muscleMass', 2, 'Nutrition Pattern', 'Your protein-conscious diet directly supports skeletal muscle recovery and synthesis');
+    applyRule('muscleMass', 2, 'Nutrition Pattern', 'Your protein-conscious eating pattern makes Skeletal Muscle Mass relevant to monitor');
   }
 
   if (parqAnswers.waterIntake === 'low') {
@@ -207,7 +219,7 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
 
   // 5. Physical Barriers / Safety
   if (parqAnswers.barriers === 'injury' || parqAnswers.hasBoneJointProblem === 'yes') {
-    applyRule('muscleMass', 2, 'Safety & History', 'Joint sensitivity or past injury requires joint-protective muscle support');
+    applyRule('muscleMass', 2, 'Safety & History', 'You reported joint sensitivity or a past injury, so this measurement may be useful to discuss with a professional');
   }
 
   // 6. Grounded Assessment Measurements
@@ -224,31 +236,8 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
 
   results.sort((a, b) => b.finalScore - a.finalScore);
 
-  const mainFocus = results[0];
-  const topPriorities = [results[1], results[2]];
-
-  const quickWins = [];
-  if (parqAnswers.availability === '1-2') {
-    quickWins.push({ id: 'schedule', text: 'Block out your 1–2 workout slots on your calendar this week', completed: false });
-  } else {
-    quickWins.push({ id: 'schedule', text: 'Pick your fixed weekly workout days to build consistency', completed: false });
-  }
-
-  if (parqAnswers.nutritionPattern === 'irregular' || parqAnswers.nutritionPattern === 'low_calorie') {
-    quickWins.push({ id: 'bmr_floor', text: `Check your BMR (${METRICS_DB.bmr.value}) to ensure you never eat below your metabolic floor`, completed: false });
-  } else if (parqAnswers.waterIntake === 'low') {
-    quickWins.push({ id: 'water_glass', text: 'Drink 500ml of water upon waking up tomorrow morning', completed: false });
-  } else if (mainFocus.id === 'muscleMass') {
-    quickWins.push({ id: 'protein_habit', text: 'Include a palm-sized portion of protein with your next two meals', completed: false });
-  } else {
-    quickWins.push({ id: 'walk_habit', text: 'Take a 15-minute brisk recovery walk today to jumpstart habit building', completed: false });
-  }
-
-  const firstSteps = [
-    { num: '01', title: 'Review Your Starting Numbers', desc: `Focus on your ${mainFocus.title} baseline (${mainFocus.value}) as your primary benchmark.` },
-    { num: '02', title: 'Schedule Your Guided Walkthrough', desc: 'Meet with a KSYN Fitness coach to walk through the gym floor and review movement form.' },
-    { num: '03', title: 'Re-assess in 4–6 Weeks', desc: 'Book your follow-up FitMao scan on the kiosk to track your progress.' }
-  ];
+  const mainFocus = results[0] || null;
+  const topPriorities = results.slice(1, 3);
 
   // Dynamic Because You Told Us builder
   const userGoalLabel = primaryGoal === 'fat_loss' ? 'fat reduction & body recomposition'
@@ -263,7 +252,9 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
     : act === 'athletic_agility' ? 'athletic agility drills'
     : act === 'mobility_flexibility' ? 'mobility and flexibility routines' : 'physical training';
 
-  let becauseYouToldUs = `You indicated your primary goal is **${userGoalLabel}**, with an activity focus on **${userActLabel}**. Based on this context combined with your FitMao assessment (${mainFocus.title}: ${mainFocus.value}), FitStart prioritizes **${mainFocus.title}** as your starting anchor. Tracking this metric gives you the clearest picture of initial progress without getting overwhelmed.`;
+  let becauseYouToldUs = mainFocus
+    ? `You selected ${userGoalLabel} as your main goal and ${userActLabel} as your activity style. FitStart combined these answers with your confirmed FitMao measurement (${mainFocus.title}: ${mainFocus.value}), making ${mainFocus.title} your most relevant starting point.`
+    : 'FitStart could not rank the assessment because no supported FitMao measurements were available.';
 
   if (parqAnswers.otherActivity && String(parqAnswers.otherActivity).trim()) {
     becauseYouToldUs += `\n\n*(Note: You also mentioned "${parqAnswers.otherActivity.trim()}" — while not part of the standard scoring matrix, your coaches will factor this into your programming.)*`;
@@ -274,8 +265,6 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
     mainFocus,
     topPriorities,
     otherPriorities: results.slice(3),
-    quickWins,
-    firstSteps,
     becauseYouToldUs
   };
 }

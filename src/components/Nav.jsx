@@ -6,8 +6,9 @@ import {
   Moon, 
   Sliders, 
   PlusCircle, 
-  BookOpen, 
-  LayoutDashboard
+  BookOpen,
+  LayoutDashboard,
+  Clock3
 } from 'lucide-react';
 import { api } from '../utils/api.js';
 import { useTheme } from '../utils/theme.js';
@@ -67,6 +68,20 @@ export default function Nav({ user, onLogout }) {
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink
+              to="/history"
+              className={({ isActive }) =>
+                `px-3.5 py-1.5 rounded-xl text-xs font-display font-semibold transition-all flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-white dark:bg-surface-900 text-brand-700 dark:text-brand-300 shadow-subtle'
+                    : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white'
+                }`
+              }
+            >
+              <Clock3 className="w-3.5 h-3.5" />
+              <span>History</span>
             </NavLink>
 
             <NavLink

@@ -6,6 +6,7 @@ import Login from './components/Auth/Login.jsx';
 import Signup from './components/Auth/Signup.jsx';
 import ProtectedRoute from './components/Auth/ProtectedRoute.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
+import AssessmentHistory from './components/Dashboard/AssessmentHistory.jsx';
 import AssessmentFlow from './components/Assessment/AssessmentFlow.jsx';
 import ResultsView from './components/Results/ResultsView.jsx';
 import GlossaryPage from './components/Glossary/GlossaryPage.jsx';
@@ -65,6 +66,7 @@ export default function App() {
             {/* Protected Routes */}
             <Route element={<ProtectedRoute user={user} loading={loading} />}>
               <Route path="/dashboard" element={<Dashboard user={user} />} />
+              <Route path="/history" element={<AssessmentHistory />} />
               <Route
                 path="/profile"
                 element={<UserProfile user={user} onUserUpdated={setUser} onLogout={() => setUser(null)} />}

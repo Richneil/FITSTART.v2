@@ -155,7 +155,7 @@ export const parqTemplate = {
     {
       id: 'obstacles_guidance',
       title: '6. Obstacles & Guidance Preferences',
-      subtitle: 'Tell us about potential challenges so we can customize your First Steps.',
+      subtitle: 'Tell us about potential challenges so the interpretation can reflect your situation.',
       questions: [
         {
           id: 'barriers',

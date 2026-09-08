@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, BookOpen, User } from 'lucide-react';
+import { Home, Clock3, Plus, BookOpen, User } from 'lucide-react';
 
 export default function BottomNav({ user }) {
   const location = useLocation();
@@ -14,12 +14,17 @@ export default function BottomNav({ user }) {
     {
       to: '/dashboard',
       label: 'Home',
-      icon: LayoutDashboard
+      icon: Home
+    },
+    {
+      to: '/history',
+      label: 'History',
+      icon: Clock3
     },
     {
       to: '/assessment',
       label: 'New Assessment',
-      icon: PlusCircle,
+      icon: Plus,
       highlight: true
     },
     {
@@ -36,7 +41,7 @@ export default function BottomNav({ user }) {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-surface-900/90 backdrop-blur-lg border-t border-surface-200/80 dark:border-surface-800/80 shadow-card dark:shadow-card-dark font-sans transition-colors duration-200">
-      <div className="max-w-md mx-auto flex items-center justify-around px-3 py-2 safe-bottom">
+      <div className="max-w-md mx-auto grid grid-cols-5 items-end px-2 py-2 safe-bottom">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.to || (item.to === '/dashboard' && location.pathname.startsWith('/results'));
@@ -52,7 +57,7 @@ export default function BottomNav({ user }) {
                   <Icon className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <span className="text-[10px] font-display font-bold text-brand-700 dark:text-brand-300 mt-1">
-                  {item.label}
+                  New Scan
                 </span>
               </NavLink>
             );
@@ -62,7 +67,7 @@ export default function BottomNav({ user }) {
             <NavLink
               key={item.to}
               to={item.to}
-              className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all min-w-[64px] group active:scale-95
+              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition-all group active:scale-95
                 ${isActive ? 'text-brand-600 dark:text-brand-400' : 'text-surface-400 dark:text-surface-500 hover:text-surface-700 dark:hover:text-surface-300'}`}
             >
               <Icon className={`w-5 h-5 transition-transform ${isActive ? 'stroke-[2.5] scale-105' : 'stroke-[1.75]'}`} />

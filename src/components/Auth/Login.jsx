@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Activity, 
   Lock, 
@@ -10,18 +10,13 @@ import {
   ShieldCheck, 
   KeyRound, 
   Target, 
-  BookOpen, 
-  Save 
+  BookOpen
 } from 'lucide-react';
 import GoogleOAuthButton from './GoogleOAuthButton.jsx';
 import { api, getPendingGuestAssessment } from '../../utils/api.js';
 
 export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const reason = searchParams.get('reason');
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -195,8 +190,8 @@ export default function Login({ onLoginSuccess }) {
     {
       icon: BookOpen,
       tag: 'Educational Guidance',
-      title: 'ACSM Health Benchmarks',
-      desc: 'Learn the healthy clinical ranges for every muscle, fat, and metabolic indicator.'
+      title: 'Understand Your Measurements',
+      desc: 'Learn what each muscle, fat, and metabolic measurement means in plain language.'
     }
   ];
 

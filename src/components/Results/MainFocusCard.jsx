@@ -21,6 +21,11 @@ const METRIC_ICONS = {
   bmi: Scale
 };
 
+const GLOSSARY_IDS = {
+  bodyFat: 'bodyFatPercentage',
+  muscleMass: 'skeletalMuscleMass'
+};
+
 export default function MainFocusCard({ mainFocus }) {
   const [showAskWhy, setShowAskWhy] = useState(false);
 
@@ -60,7 +65,7 @@ export default function MainFocusCard({ mainFocus }) {
             </div>
             <div>
               <Link 
-                to={`/glossary?term=${mainFocus.id}`} 
+                to={`/glossary?term=${GLOSSARY_IDS[mainFocus.id] || mainFocus.id}`}
                 className="text-base sm:text-lg font-display font-bold text-surface-900 dark:text-white hover:underline flex items-center gap-1"
               >
                 {mainFocus.title}

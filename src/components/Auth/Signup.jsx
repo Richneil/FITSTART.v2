@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Activity, Lock, Mail, User, ArrowRight, AlertCircle, Sparkles, Save } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Activity, Lock, Mail, User, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
 import GoogleOAuthButton from './GoogleOAuthButton.jsx';
 import { api, getPendingGuestAssessment } from '../../utils/api.js';
 
 export default function Signup({ onLoginSuccess }) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const reason = searchParams.get('reason');
-
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');

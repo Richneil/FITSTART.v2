@@ -6,19 +6,19 @@ import { parqTemplate } from '../../data/parqTemplate.js';
 const TOOLTIP_DEFINITIONS = {
   safety: {
     title: 'Pre-Exercise Readiness (PAR-Q)',
-    desc: 'The ACSM standardized safety screener ensures your exercise starting points protect cardiovascular and joint wellness.'
+    desc: 'These readiness questions help identify answers that may need professional guidance before starting more demanding exercise.'
   },
   goals: {
     title: 'Objective Prioritization',
     desc: 'Setting a primary and secondary focus allows FitStart to mathematically weigh which scanner metrics need action first.'
   },
   activity_profile: {
-    title: 'ACSM Activity Categorization',
-    desc: 'Cardiovascular vs resistance training place different metabolic demands on body water, visceral fat, and muscle mass.'
+    title: 'Activity Preference',
+    desc: 'Your preferred activity helps FitStart identify which FitMao measurements are most relevant to your starting goal.'
   },
   nutrition_hydration: {
-    title: 'Hydration & BMR Interaction',
-    desc: 'Cellular water and baseline calorie expenditure determine if extreme cutting or severe dehydration is masking muscle gains.'
+    title: 'Nutrition and Hydration Context',
+    desc: 'Your eating and hydration patterns provide context when FitStart explains Body Water and BMR.'
   }
 };
 
@@ -205,7 +205,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
         <div className="mb-4 p-3.5 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900 rounded-2xl text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2 animate-fade-in">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
           <div className="leading-snug">
-            <strong>Medical Notice:</strong> You indicated a potential medical or physical condition. FitStart will note this to prioritize joint-safe benchmarks and recommends consulting a doctor before rigorous training.
+            <strong>Safety notice:</strong> One of your answers may require professional guidance. Consider speaking with a qualified healthcare or fitness professional before starting more demanding exercise.
           </div>
         </div>
       )}

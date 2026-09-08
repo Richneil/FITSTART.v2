@@ -43,8 +43,6 @@ router.post('/:profileId', async (req, res) => {
       result: {
         ...saved,
         otherPriorities: calculation.otherPriorities,
-        quickWins: calculation.quickWins,
-        firstSteps: calculation.firstSteps,
         becauseYouToldUs: calculation.becauseYouToldUs
       },
       profile,
@@ -67,7 +65,7 @@ router.get('/:profileId', async (req, res) => {
 
     let storedResult = await db.getResultByProfileId(profile.id);
 
-    // Calculate dynamic helper fields (quickWins, firstSteps, becauseYouToldUs)
+    // Rebuild the plain-language explanation from the confirmed assessment and survey.
     const calculation = scoreMetrics(profile.fitMao_report_data, profile.parq_answers);
 
     if (!storedResult) {
@@ -84,8 +82,6 @@ router.get('/:profileId', async (req, res) => {
       result: {
         ...storedResult,
         otherPriorities: calculation.otherPriorities,
-        quickWins: calculation.quickWins,
-        firstSteps: calculation.firstSteps,
         becauseYouToldUs: calculation.becauseYouToldUs
       },
       profile,

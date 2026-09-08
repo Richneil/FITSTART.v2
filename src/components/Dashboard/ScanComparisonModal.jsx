@@ -4,8 +4,6 @@ import {
   TrendingDown, 
   TrendingUp, 
   Minus, 
-  Calendar, 
-  ArrowRight, 
   Sparkles, 
   Activity,
   Layers,
@@ -47,7 +45,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
           </h3>
 
           <p className="text-surface-600 dark:text-surface-400 text-xs leading-relaxed mb-5">
-            FitStart requires at least <strong>two body composition scans</strong> to evaluate your physiological changes, progress deltas, and recomposition trajectory.
+            FitStart needs at least <strong>two body-composition assessments</strong> to show how the recorded measurements changed over time.
           </p>
 
           <div className="p-3.5 bg-surface-50 dark:bg-surface-800/60 rounded-2xl border border-surface-200 dark:border-surface-700 mb-5 text-left text-xs text-surface-700 dark:text-surface-300">
@@ -117,38 +115,35 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
   const waterDelta = calcDelta('bodyWater', ' L');
   const bmrDelta = calcDelta('bmr', ' kcal');
 
-  // Qualitative Recomposition Verdict
+  // Plain-language comparison summary
   const fatDropped = fatDelta.diff < 0;
   const musclePreserved = muscleDelta.diff >= 0;
 
   let recompositionVerdict = {
-    title: 'Balanced Progress Tracked',
-    desc: 'Your body composition measurements are progressing between assessment dates.',
+    title: 'Assessment changes recorded',
+    desc: 'The measurements below show the difference between your selected FitMao assessments.',
     color: 'bg-teal-50 dark:bg-teal-950/40 border-teal-200 dark:border-teal-800 text-teal-900 dark:text-teal-200'
   };
 
   if (fatDropped && musclePreserved) {
     recompositionVerdict = {
-      title: 'Optimal Recomposition Achieved! 🎉',
-      desc: `Body Fat decreased by ${Math.abs(fatDelta.diff)}% while Skeletal Muscle Mass increased by ${muscleDelta.diff} kg. This represents the gold standard of healthy gym progress!`,
+      title: 'Body fat decreased while muscle was maintained',
+      desc: `Body Fat changed by -${Math.abs(fatDelta.diff)}% while Skeletal Muscle Mass changed by ${muscleDelta.diff >= 0 ? '+' : ''}${muscleDelta.diff} kg between these assessments.`,
       color: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200'
     };
   } else if (fatDropped && !musclePreserved) {
     recompositionVerdict = {
       title: 'Fat Loss with Muscle Preservation Opportunity',
-      desc: `Body Fat dropped by ${Math.abs(fatDelta.diff)}%, but muscle mass slightly reduced by ${Math.abs(muscleDelta.diff)} kg. Focus on adequate dietary protein to protect muscle tissue.`,
+      desc: `Body Fat changed by -${Math.abs(fatDelta.diff)}% and Skeletal Muscle Mass changed by -${Math.abs(muscleDelta.diff)} kg between these assessments.`,
       color: 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-200'
     };
   } else if (!fatDropped && musclePreserved) {
     recompositionVerdict = {
-      title: 'Hypertrophy & Strength Growth 💪',
-      desc: `Skeletal Muscle Mass increased by ${muscleDelta.diff} kg, elevating your resting daily metabolism.`,
+      title: 'Skeletal muscle increased',
+      desc: `Skeletal Muscle Mass changed by +${muscleDelta.diff} kg between these assessments.`,
       color: 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-950 dark:text-indigo-200'
     };
   }
-
-  const baseDate = new Date(baseline.assessed_date || baseline.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const nextDate = new Date(followUp.assessed_date || followUp.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center p-3 sm:p-6 animate-fade-in font-sans">
@@ -158,13 +153,13 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
         <div className="flex justify-between items-start mb-4 pb-3 border-b border-surface-200 dark:border-surface-800">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-display font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">
-              <Layers className="w-4 h-4" /> Longitudinal Progress Analysis
+              <Layers className="w-4 h-4" /> Assessment Comparison
             </div>
             <h2 className="text-2xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
               FitMao Scans Comparison
             </h2>
             <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
-              Evaluating physical recomposition deltas between recorded assessments.
+              Compare the same FitMao measurements across two assessment dates.
             </p>
           </div>
           <button 
@@ -175,16 +170,24 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
           </button>
         </div>
 
-        {/* Scan Selector Bar */}
+        {/* Assessment selectors */}
         <div className="grid grid-cols-2 gap-2.5 mb-4 p-2.5 bg-surface-100 dark:bg-surface-800/60 rounded-2xl">
-          <div className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 shadow-subtle">
-            <span className="text-[10px] font-display font-bold text-surface-400 dark:text-surface-500 uppercase block">Baseline Scan</span>
-            <span className="text-xs font-display font-bold text-surface-900 dark:text-white block truncate">{baseDate}</span>
-          </div>
-          <div className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-subtle">
-            <span className="text-[10px] font-display font-bold text-indigo-600 dark:text-indigo-400 uppercase block">Follow-Up Scan</span>
-            <span className="text-xs font-display font-bold text-indigo-950 dark:text-indigo-200 block truncate">{nextDate}</span>
-          </div>
+          <label className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 shadow-subtle">
+            <span className="text-[10px] font-display font-bold text-surface-400 dark:text-surface-500 uppercase block">Earlier assessment</span>
+            <select value={baselineIdx} onChange={(event) => setBaselineIdx(Number(event.target.value))} className="mt-1 w-full bg-transparent text-xs font-display font-bold text-surface-900 outline-none dark:text-white">
+              {sorted.map((assessment, index) => (
+                <option key={assessment.id} value={index}>{new Date(assessment.assessed_date || assessment.created_at).toLocaleDateString()}</option>
+              ))}
+            </select>
+          </label>
+          <label className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-subtle">
+            <span className="text-[10px] font-display font-bold text-indigo-600 dark:text-indigo-400 uppercase block">Later assessment</span>
+            <select value={followUpIdx} onChange={(event) => setFollowUpIdx(Number(event.target.value))} className="mt-1 w-full bg-transparent text-xs font-display font-bold text-indigo-950 outline-none dark:text-indigo-200">
+              {sorted.map((assessment, index) => (
+                <option key={assessment.id} value={index}>{new Date(assessment.assessed_date || assessment.created_at).toLocaleDateString()}</option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {/* Recomposition Verdict Banner */}
@@ -286,6 +289,10 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
               {bmrDelta.diffFormatted}
             </div>
           </div>
+        </div>
+
+        <div className="mb-3 rounded-2xl bg-surface-50 p-3 text-[10px] leading-relaxed text-surface-500 dark:bg-surface-800/60 dark:text-surface-400">
+          Body-composition estimates can vary with hydration, meals, exercise, and testing conditions. Compare assessments taken under similar conditions and discuss unexpected changes with a qualified professional.
         </div>
 
         {/* Footer */}

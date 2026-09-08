@@ -51,7 +51,7 @@ export default function BecauseYouToldUs({ text, mainFocus, parqAnswers = {} }) 
           </div>
         </div>
         <span className="inline-flex items-center gap-1 text-[10px] font-display font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-white dark:bg-surface-900 px-2.5 py-1 rounded-lg border border-brand-200 dark:border-brand-800 shadow-subtle">
-          <Sparkles className="w-3 h-3 text-brand-500" /> Grounded Context
+          <Sparkles className="w-3 h-3 text-brand-500" /> Your context
         </span>
       </div>
 

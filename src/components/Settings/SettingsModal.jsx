@@ -1,9 +1,9 @@
 import React from 'react';
-import { Sun, Moon, ShieldCheck, Laptop, Check, X, Sparkles, Sliders, Bell, Info } from 'lucide-react';
+import { Sun, Moon, ShieldCheck, Check, X, Sliders } from 'lucide-react';
 import { useTheme } from '../../utils/theme.js';
 
 export default function SettingsModal({ isOpen, onClose, user, onToggle2FA, twoFactorLoading }) {
-  const { theme, setTheme, toggleTheme, isDark } = useTheme();
+  const { setTheme, isDark } = useTheme();
 
   if (!isOpen) return null;
 
@@ -120,7 +120,7 @@ export default function SettingsModal({ isOpen, onClose, user, onToggle2FA, twoF
             </div>
             <div className="flex justify-between">
               <span>Scoring Rules:</span>
-              <span className="font-bold text-surface-800 dark:text-surface-200">Deterministic ACSM</span>
+              <span className="font-bold text-surface-800 dark:text-surface-200">Documented rule-based</span>
             </div>
             <div className="flex justify-between">
               <span>Location:</span>

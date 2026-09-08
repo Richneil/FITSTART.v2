@@ -23,6 +23,11 @@ const METRIC_ICONS = {
   bmi: Scale
 };
 
+const GLOSSARY_IDS = {
+  bodyFat: 'bodyFatPercentage',
+  muscleMass: 'skeletalMuscleMass'
+};
+
 export default function PriorityList({ topPriorities = [], otherPriorities = [] }) {
   const [activeMetricForWhy, setActiveMetricForWhy] = useState(null);
   const [activeMetricRank, setActiveMetricRank] = useState('');
@@ -60,7 +65,7 @@ export default function PriorityList({ topPriorities = [], otherPriorities = [] 
                     {rankNumber}
                   </span>
                   <PriorityIcon className="w-4 h-4 text-brand-600 dark:text-brand-400" />
-                  <Link to={`/glossary?term=${p.id}`} className="hover:underline">
+                  <Link to={`/glossary?term=${GLOSSARY_IDS[p.id] || p.id}`} className="hover:underline">
                     {p.title}
                   </Link>
                 </span>

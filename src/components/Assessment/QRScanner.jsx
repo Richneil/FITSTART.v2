@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Code2, Sparkles } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import { DEMO_PRESETS, DEMO_TEST_PAYLOADS } from '../../data/demoAssessments.js';
 
 export default function QRScanner({ onLoadPreset, onApplyRawPayload }) {

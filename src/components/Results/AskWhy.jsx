@@ -33,7 +33,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         <div className="flex items-start justify-between pb-3 border-b border-surface-100 dark:border-surface-800">
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-display font-bold text-[11px] uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" /> Explainable Decision Support
+              <Sparkles className="w-3.5 h-3.5" /> Why this matters for you
             </div>
             <h2 className="text-xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
               Why Prioritize {metric.title}?
@@ -62,7 +62,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         {/* Core Rationale Summary */}
         <div className="p-3.5 bg-brand-50/60 dark:bg-brand-950/40 rounded-2xl border border-brand-200/80 dark:border-brand-800/60 text-xs text-brand-900 dark:text-brand-200 space-y-1">
           <div className="flex items-center gap-1.5 font-display font-bold text-[11px] uppercase tracking-wider text-brand-700 dark:text-brand-300">
-            <Info className="w-3.5 h-3.5" /> Contextual Purpose & Insight
+            <Info className="w-3.5 h-3.5" /> What this measurement means
           </div>
           <p className="leading-relaxed font-medium">{metric.desc}</p>
         </div>
@@ -70,7 +70,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         {/* Contributing Factors Breakdown */}
         <div className="space-y-2">
           <span className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider block">
-            Contributing Factors (Scoring Trace)
+            What influenced this priority
           </span>
 
           <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
@@ -125,7 +125,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         {/* Final Calculation Summary */}
         <div className="p-3 bg-surface-100 dark:bg-surface-800 rounded-2xl flex items-center justify-between text-xs">
           <span className="text-surface-600 dark:text-surface-400 font-medium">
-            Total Deterministic Relevance Score:
+            Final relevance score:
           </span>
           <span className="font-mono font-black text-sm text-surface-900 dark:text-white">
             {totalScore} Points

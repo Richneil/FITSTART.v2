@@ -1,240 +1,237 @@
 import React from 'react';
-import { ShieldCheck, Activity, Target, Award, Printer, X, Scale } from 'lucide-react';
+import { Activity, ArrowRight, Printer, ShieldCheck, Sparkles, Target, X } from 'lucide-react';
 
-const METRIC_LABELS = {
-  bodyFat: 'Body Fat Percentage',
-  muscleMass: 'Skeletal Muscle Mass',
-  visceralFat: 'Visceral Fat Level',
-  bodyWater: 'Total Body Water',
-  bmr: 'Basal Metabolic Rate (BMR)',
-  bmi: 'Body Mass Index (BMI)'
+const LABELS = {
+  goals: {
+    fat_loss: 'Lose body fat',
+    muscle_gain: 'Build muscle and strength',
+    health_longevity: 'Improve general health',
+    health: 'Improve general health',
+    athletic_performance: 'Improve athletic performance',
+    performance: 'Improve athletic performance',
+    posture_mobility: 'Improve posture and mobility'
+  },
+  activities: {
+    strength: 'Strength and weight training',
+    aerobic: 'Cardio and endurance training',
+    cardio_conditioning: 'Cardio conditioning',
+    athletic_agility: 'Sports and agility training',
+    mobility_flexibility: 'Mobility and flexibility training'
+  },
+  availability: {
+    '1-2': '1–2 days per week',
+    '3-4': '3–4 days per week',
+    '5+': '5 or more days per week'
+  },
+  barriers: {
+    time: 'Limited time',
+    motivation: 'Staying consistent',
+    injury: 'Past injury or joint sensitivity',
+    confusion: 'Not knowing where to start',
+    none: 'No major barrier reported'
+  }
 };
 
-export default function PrintableSummary({ profile, fitMao = {}, parq = {}, weights, user, onClose }) {
-  const mainFocusKey = weights?.rankedMetrics?.[0]?.key || 'bodyFat';
-  const mainFocusLabel = METRIC_LABELS[mainFocusKey] || 'Body Composition Metric';
-  const mainFocusScore = weights?.rankedMetrics?.[0]?.score || 0;
-  const assessmentDate = fitMao?.testDate || (profile?.assessed_date 
+function readable(value, group) {
+  if (!value) return 'Not provided';
+  return LABELS[group]?.[value] || String(value).replace(/_/g, ' ');
+}
+
+function formatFitMaoChange(value, positiveLabel, negativeLabel) {
+  const amount = Number.parseFloat(String(value));
+  if (Number.isNaN(amount)) return value || 'Not available';
+  if (amount === 0) return 'No change';
+  return `${amount > 0 ? positiveLabel : negativeLabel} ${Math.abs(amount).toFixed(1)} kg`;
+}
+
+function DataItem({ label, value, accent = false }) {
+  return (
+    <div className="rounded-xl border border-surface-200 bg-white px-2.5 py-2">
+      <span className="block text-[8px] font-display font-bold uppercase tracking-wide text-surface-400">{label}</span>
+      <strong className={`mt-0.5 block text-[11px] ${accent ? 'text-brand-700' : 'text-surface-900'}`}>{value}</strong>
+    </div>
+  );
+}
+
+export default function PrintableSummary({
+  profile,
+  fitMao = {},
+  parq = {},
+  mainFocus,
+  topPriorities = [],
+  becauseYouToldUs,
+  user,
+  onClose
+}) {
+  const assessmentDate = fitMao.testDate || (profile?.assessed_date
     ? new Date(profile.assessed_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  const memberName = fitMao.memberName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Member');
+  const primaryGoal = parq.primaryGoal || parq.goal;
+  const activity = parq.activityCategory || parq.activityCategories?.[0];
+  const reasonText = String(becauseYouToldUs || 'FitStart combined your confirmed FitMao measurements with your questionnaire answers to identify this starting point.')
+    .split('\n')[0]
+    .replace(/\*/g, '');
 
-  const memberName = fitMao?.memberName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Alex Rivera');
+  const contextItems = [
+    ['Main goal', readable(primaryGoal, 'goals')],
+    ['Preferred activity', readable(activity, 'activities')],
+    ['Training availability', readable(parq.availability, 'availability')],
+    ['Main challenge', readable(parq.barriers, 'barriers')]
+  ];
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const fitMaoSnapshot = [
+    ['Weight', fitMao.weight || 'Not available'],
+    ['Body fat', fitMao.bodyFatPercentage || 'Not available'],
+    ['Skeletal muscle', fitMao.skeletalMuscleMass || 'Not available'],
+    ['Visceral fat', fitMao.visceralFat || 'Not available'],
+    ['Resting calories (BMR)', fitMao.bmr || 'Not available'],
+    ['Body mass index (BMI)', fitMao.bmi || 'Not available'],
+    ['Body water', fitMao.bodyWater || 'Not available']
+  ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-2 sm:p-4 overflow-y-auto font-sans">
-      {/* Modal Actions Header (Hidden in Print) */}
-      <div className="fixed top-4 right-4 z-50 flex gap-2 no-print">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-2 font-sans sm:p-4">
+      <div className="no-print fixed right-4 top-4 z-50 flex gap-2">
         <button
-          onClick={handlePrint}
-          className="px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-display font-bold rounded-2xl shadow-lg flex items-center gap-2 text-xs transition-transform active:scale-95 cursor-pointer"
+          type="button"
+          onClick={() => window.print()}
+          className="flex cursor-pointer items-center gap-2 rounded-2xl bg-brand-500 px-4 py-2.5 text-xs font-display font-bold text-white shadow-lg transition-transform hover:bg-brand-600 active:scale-95"
         >
-          <Printer className="w-4 h-4" />
-          <span>Print / Save as PDF</span>
+          <Printer className="h-4 w-4" />
+          Print / Save as PDF
         </button>
         <button
+          type="button"
           onClick={onClose}
-          className="p-2.5 bg-white dark:bg-surface-800 text-surface-700 dark:text-surface-200 hover:bg-surface-100 rounded-2xl shadow-lg transition-transform active:scale-95 cursor-pointer"
-          title="Close Preview"
+          className="cursor-pointer rounded-2xl bg-white p-2.5 text-surface-700 shadow-lg transition-transform hover:bg-surface-100 active:scale-95"
+          title="Close preview"
         >
-          <X className="w-5 h-5" />
+          <X className="h-5 w-5" />
         </button>
       </div>
 
-      {/* 1-PAGE CLINICAL SUMMARY SHEET */}
-      <div className="print-page bg-white text-surface-900 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-2xl w-full my-auto border border-surface-200 print:border-none print:shadow-none print:p-0 print:m-0 print:max-w-none">
-        
-        {/* Document Header */}
-        <div className="flex items-start justify-between border-b-2 border-brand-500 pb-4 mb-3">
+      <div className="print-page my-auto w-full max-w-2xl rounded-3xl border border-surface-200 bg-white p-6 text-surface-900 shadow-2xl print:m-0 print:max-w-none print:border-none print:p-0 print:shadow-none sm:p-7">
+        <div className="mb-3 flex items-start justify-between gap-4 border-b-2 border-brand-500 pb-3">
           <div>
-            <div className="flex items-center gap-1.5 text-brand-700 font-display font-bold text-xs uppercase tracking-wider mb-0.5">
-              <Activity className="w-4 h-4" /> KSYN Fitness Alabang • FitStart Decision Support
+            <div className="mb-0.5 flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-wider text-brand-700">
+              <Activity className="h-3.5 w-3.5" /> FitStart • KSYN Fitness Alabang
             </div>
-            <h1 className="text-xl sm:text-2xl font-display font-extrabold text-surface-900 tracking-tight">
-              1-Page FitMao Assessment Summary
+            <h1 className="text-xl font-display font-extrabold tracking-tight text-surface-900 sm:text-2xl">
+              Personalized FitMao Assessment Summary
             </h1>
-            <p className="text-[11px] text-surface-500 font-medium">
-              Deterministic Rule-Based Clinical Starting Point & Complete Scanner Metrics
-            </p>
+            <p className="text-[10px] font-medium text-surface-500">Your explainable, personalized fitness starting point</p>
           </div>
-
-          <div className="text-right text-[11px] font-mono shrink-0">
-            <div className="text-surface-900 font-bold">{assessmentDate}</div>
-            <div className="text-surface-500">{fitMao?.testTime || '10:30 AM'} • {fitMao?.scannerDevice || 'FitMao 3D Pro'}</div>
-            <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 mt-1">
-              <ShieldCheck className="w-3 h-3" /> ACSM Verified
-            </div>
+          <div className="shrink-0 text-right text-[9px]">
+            <strong className="block font-mono text-surface-900">{assessmentDate}</strong>
+            <span className="block text-surface-500">{fitMao.testTime || ''}</span>
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 font-bold text-emerald-700">
+              <ShieldCheck className="h-2.5 w-2.5" /> Educational summary
+            </span>
           </div>
         </div>
 
-        {/* Member Profile Banner with Full Demographics */}
-        <div className="bg-surface-50 rounded-2xl p-3 mb-3 border border-surface-200 grid grid-cols-4 gap-2 text-xs">
+        <section className="mb-3 grid grid-cols-3 gap-2 rounded-2xl border border-surface-200 bg-surface-50 p-3">
           <div>
-            <span className="text-[9px] uppercase font-bold text-surface-400 block font-display">Member Name</span>
-            <strong className="text-surface-900 font-display text-xs truncate block">{memberName}</strong>
+            <span className="block text-[8px] font-display font-bold uppercase text-surface-400">Member</span>
+            <strong className="block truncate text-[11px] font-display text-surface-900">{memberName}</strong>
           </div>
           <div>
-            <span className="text-[9px] uppercase font-bold text-surface-400 block font-display">Gender / Age / Height</span>
-            <strong className="text-surface-800 font-sans text-xs">
-              {fitMao?.gender || 'Male'} • {fitMao?.age || '28 yrs'} • {fitMao?.height || '175 cm'}
-            </strong>
+            <span className="block text-[8px] font-display font-bold uppercase text-surface-400">Primary goal</span>
+            <strong className="block text-[11px] font-display text-brand-700">{readable(primaryGoal, 'goals')}</strong>
           </div>
           <div>
-            <span className="text-[9px] uppercase font-bold text-surface-400 block font-display">Health Score / Body Age</span>
-            <strong className="text-emerald-700 font-mono text-xs">
-              {fitMao?.healthScore || '74/100'} ({fitMao?.bodyAge || '31 yrs'})
-            </strong>
+            <span className="block text-[8px] font-display font-bold uppercase text-surface-400">Assessment source</span>
+            <strong className="block text-[10px] font-display text-surface-700">{fitMao.dataSource || 'Confirmed FitMao assessment'}</strong>
           </div>
-          <div>
-            <span className="text-[9px] uppercase font-bold text-surface-400 block font-display">Primary Goal</span>
-            <strong className="text-brand-700 font-display capitalize text-xs">
-              {(parq?.primaryGoal || parq?.goal || 'Fat Loss').replace(/_/g, ' ')}
-            </strong>
-          </div>
-        </div>
+        </section>
 
-        {/* Highlight Card: #1 Main Focus */}
-        <div className="bg-brand-50/80 border border-brand-300 rounded-2xl p-3.5 mb-3 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 text-brand-800 font-display font-bold text-[11px] uppercase tracking-wider mb-0.5">
-              <Award className="w-4 h-4 text-accent-600" /> #1 Recommended Fitness Starting Point
-            </div>
-            <h2 className="text-base sm:text-lg font-display font-extrabold text-brand-950">
-              Focus on: {mainFocusLabel} ({fitMao?.[mainFocusKey] || mainFocusScore})
-            </h2>
-            <p className="text-[11px] text-brand-800 mt-0.5 leading-tight max-w-md">
-              Mathematically prioritized based on your FitMao scan delta steps and PAR-Q lifestyle habits.
-            </p>
+        <section className="mb-3 rounded-2xl border border-brand-300 bg-brand-50/80 p-3.5">
+          <div className="mb-2 flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-wider text-brand-800">
+            <Sparkles className="h-3.5 w-3.5 text-accent-600" /> Your Personalized Starting Point
           </div>
-          <div className="text-right bg-white p-2 rounded-xl border border-brand-200 shrink-0 font-mono shadow-sm">
-            <span className="text-[9px] uppercase font-bold text-surface-400 block font-sans">Priority Score</span>
-            <strong className="text-base font-bold text-brand-700">{mainFocusScore} pts</strong>
-          </div>
-        </div>
-
-        {/* 2-Column Grid: Comprehensive Scanner Metrics + Target Controls */}
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          
-          {/* Column A: Body Composition & Metabolic Vitals */}
-          <div className="border border-surface-200 rounded-2xl p-3 text-xs bg-white">
-            <h3 className="font-display font-bold text-surface-900 text-xs pb-1.5 border-b border-surface-100 mb-2 flex items-center gap-1">
-              <Scale className="w-3.5 h-3.5 text-brand-600" /> Complete FitMao Measurements
-            </h3>
-            <div className="space-y-1 font-mono text-[11px]">
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Total Weight:</span>
-                <strong>{fitMao?.weight || '78.0 kg'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Body Fat %:</span>
-                <strong className="text-accent-700">{fitMao?.bodyFatPercentage || '24.5%'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Skeletal Muscle Mass:</span>
-                <strong className="text-brand-700">{fitMao?.skeletalMuscleMass || '32.1 kg'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Fat Mass:</span>
-                <strong>{fitMao?.fatMass || '19.1 kg'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Muscle Mass:</span>
-                <strong>{fitMao?.muscleMass || '55.4 kg'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Fat-Free Mass:</span>
-                <strong>{fitMao?.fatFreeMass || '58.9 kg'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Visceral Fat Level:</span>
-                <strong>{fitMao?.visceralFat || 'Level 11'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">BMR:</span>
-                <strong>{fitMao?.bmr || '1,650 kcal'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">BMI:</span>
-                <strong>{fitMao?.bmi || '25.4'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5 border-b border-surface-50">
-                <span className="text-surface-500 font-sans">Total Body Water:</span>
-                <strong>{fitMao?.bodyWater || '42.3 L'}</strong>
-              </div>
-              <div className="flex justify-between py-0.5">
-                <span className="text-surface-500 font-sans">Protein / Minerals:</span>
-                <strong>{fitMao?.proteinMass || '12.8 kg'} / {fitMao?.boneMineralContent || '3.8 kg'}</strong>
-              </div>
-            </div>
-          </div>
-
-          {/* Column B: Target Controls & Score Calculation Rules */}
-          <div className="border border-surface-200 rounded-2xl p-3 text-xs bg-white flex flex-col justify-between">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-display font-bold text-surface-900 text-xs pb-1.5 border-b border-surface-100 mb-2 flex items-center gap-1">
-                <Target className="w-3.5 h-3.5 text-accent-600" /> Target & Control Recommendations
-              </h3>
-              <div className="space-y-1 font-mono text-[11px] mb-3">
-                <div className="flex justify-between py-0.5 border-b border-surface-50">
-                  <span className="text-surface-500 font-sans">Target Weight:</span>
-                  <strong>{fitMao?.targetWeight || '72.0 kg'}</strong>
-                </div>
-                <div className="flex justify-between py-0.5 border-b border-surface-50">
-                  <span className="text-surface-500 font-sans">Weight Control:</span>
-                  <strong className="text-amber-700">{fitMao?.weightControl || '-6.0 kg'}</strong>
-                </div>
-                <div className="flex justify-between py-0.5 border-b border-surface-50">
-                  <span className="text-surface-500 font-sans">Fat Control:</span>
-                  <strong className="text-accent-700">{fitMao?.fatControl || '-6.0 kg'}</strong>
-                </div>
-                <div className="flex justify-between py-0.5 border-b border-surface-50">
-                  <span className="text-surface-500 font-sans">Muscle Control:</span>
-                  <strong className="text-brand-700">{fitMao?.muscleControl || '0.0 kg'}</strong>
-                </div>
-                <div className="flex justify-between py-0.5">
-                  <span className="text-surface-500 font-sans">Waist-to-Hip Ratio:</span>
-                  <strong>{fitMao?.waistToHipRatio || '0.88'}</strong>
-                </div>
-              </div>
+              <h2 className="text-base font-display font-extrabold text-brand-950 sm:text-lg">{mainFocus?.title || 'Main focus'}</h2>
+              <strong className="mt-0.5 block font-mono text-xl text-brand-700">{mainFocus?.value || 'Not available'}</strong>
+              {mainFocus?.desc && <p className="mt-1 text-[10px] leading-relaxed text-brand-900">{mainFocus.desc}</p>}
             </div>
+            <span className="shrink-0 rounded-full border border-brand-200 bg-white px-2.5 py-1 text-[9px] font-display font-bold text-brand-700">Main focus</span>
+          </div>
+          <div className="mt-2 rounded-xl border border-brand-100 bg-white/80 p-2.5">
+            <strong className="block text-[9px] font-display text-surface-900">Why this was selected</strong>
+            <p className="mt-0.5 text-[10px] leading-relaxed text-surface-600">{reasonText}</p>
+          </div>
+        </section>
 
-            {/* Score Calculation Rules */}
-            <div className="border-t border-surface-100 pt-2">
-              <h4 className="font-display font-bold text-surface-900 text-[11px] mb-1">
-                Score Calculation Steps
-              </h4>
-              <div className="space-y-1 text-[10px]">
-                <div className="flex justify-between text-surface-600">
-                  <span>Baseline Scan Severity:</span>
-                  <span className="font-mono font-bold">+3 pts</span>
+        {topPriorities.length > 0 && (
+          <section className="mb-3">
+            <h3 className="mb-1.5 text-[11px] font-display font-bold text-surface-900">Your Other Priorities</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {topPriorities.slice(0, 2).map((priority, index) => (
+                <div key={priority.id || index} className="rounded-2xl border border-surface-200 bg-white p-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[10px] font-display font-bold text-surface-900">#{index + 2} {priority.title}</span>
+                    <strong className="shrink-0 font-mono text-[10px] text-brand-700">{priority.value}</strong>
+                  </div>
+                  {priority.desc && <p className="mt-1 text-[9px] leading-relaxed text-surface-500">{priority.desc}</p>}
                 </div>
-                <div className="flex justify-between text-surface-600">
-                  <span>Primary Goal Weight:</span>
-                  <span className="font-mono font-bold text-brand-700">+4 pts</span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="mb-3 grid grid-cols-2 gap-3">
+          <div className="rounded-2xl border border-surface-200 bg-white p-3">
+            <h3 className="mb-2 text-[11px] font-display font-bold text-surface-900">What FitStart Considered</h3>
+            <div className="space-y-1.5">
+              {contextItems.map(([label, value]) => (
+                <div key={label} className="flex items-start justify-between gap-2 border-b border-surface-100 pb-1.5 text-[9px] last:border-0 last:pb-0">
+                  <span className="text-surface-500">{label}</span>
+                  <strong className="max-w-[58%] text-right text-surface-800">{value}</strong>
                 </div>
-                <div className="flex justify-between font-bold text-surface-900 pt-0.5">
-                  <span>Final Decision Score:</span>
-                  <span className="font-mono text-brand-700">{mainFocusScore} pts</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Footer Guidance & Compliance */}
-        <div className="bg-surface-50 border border-surface-200 rounded-2xl p-2.5 text-[10px] text-surface-600 leading-relaxed">
-          <strong className="text-surface-900 block font-display mb-0.5">Clinical Note & Safe Starting Point:</strong>
-          This report provides non-clinical lifestyle decision support based on ACSM guidelines. Always start with compound resistance training, stay hydrated (40–45L cellular target), and maintain consistent meal pacing to preserve lean mass.
-        </div>
+          <div className="rounded-2xl border border-surface-200 bg-white p-3">
+            <h3 className="mb-2 text-[11px] font-display font-bold text-surface-900">FitMao Measurement Snapshot</h3>
+            <div className="grid grid-cols-2 gap-1.5">
+              {fitMaoSnapshot.map(([label, value], index) => (
+                <DataItem key={label} label={label} value={value} accent={index === 1 || index === 2} />
+              ))}
+            </div>
+          </div>
+        </section>
 
-        <div className="mt-2 text-center text-[9px] text-surface-400 font-mono">
-          FitStart v2.4 • KSYN Fitness Alabang Member Report • Complete FitMao Assessment Interpretation
+        <section className="mb-3 rounded-2xl border border-surface-200 bg-surface-50 p-3">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h3 className="flex items-center gap-1 text-[11px] font-display font-bold text-surface-900">
+              <Target className="h-3.5 w-3.5 text-accent-600" /> FitMao Estimates
+            </h3>
+            <span className="text-[8px] text-surface-500">Provided by FitMao, not generated by FitStart</span>
+          </div>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
+            <DataItem label="Current weight" value={fitMao.weight || 'Not available'} />
+            <ArrowRight className="h-4 w-4 text-brand-600" />
+            <DataItem label="FitMao target" value={fitMao.targetWeight || 'Not available'} accent />
+          </div>
+          <div className="mt-2 grid grid-cols-3 gap-1.5">
+            <DataItem label="Total change" value={formatFitMaoChange(fitMao.weightControl, 'Gain', 'Lose')} />
+            <DataItem label="Fat change" value={formatFitMaoChange(fitMao.fatControl, 'Gain', 'Lose')} />
+            <DataItem label="Muscle change" value={formatFitMaoChange(fitMao.muscleControl, 'Gain', 'Reduce')} accent />
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-surface-200 bg-surface-50 p-2.5 text-[9px] leading-relaxed text-surface-600">
+          <strong className="font-display text-surface-900">Educational note: </strong>
+          FitStart helps explain and prioritize your FitMao results. It does not provide a diagnosis, treatment, workout plan, or replacement for qualified professional guidance.
+        </section>
+
+        <div className="mt-2 text-center text-[8px] font-mono text-surface-400">
+          FitStart v2.4 • Personalized FitMao Assessment Summary
         </div>
       </div>
     </div>
   );
 }
-

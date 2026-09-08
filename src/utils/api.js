@@ -246,8 +246,6 @@ export const api = {
             main_focus: calculation.mainFocus,
             top_priorities: calculation.topPriorities,
             otherPriorities: calculation.otherPriorities,
-            quickWins: calculation.quickWins,
-            firstSteps: calculation.firstSteps,
             becauseYouToldUs: calculation.becauseYouToldUs,
             change_log: guestData.changeLog || []
           },
@@ -277,8 +275,6 @@ export const api = {
             main_focus: calculation.mainFocus,
             top_priorities: calculation.topPriorities,
             otherPriorities: calculation.otherPriorities,
-            quickWins: calculation.quickWins,
-            firstSteps: calculation.firstSteps,
             becauseYouToldUs: calculation.becauseYouToldUs,
             change_log: guestData.changeLog || []
           },
@@ -302,8 +298,6 @@ export const api = {
             main_focus: calculation.mainFocus,
             top_priorities: calculation.topPriorities,
             otherPriorities: calculation.otherPriorities,
-            quickWins: calculation.quickWins,
-            firstSteps: calculation.firstSteps,
             becauseYouToldUs: calculation.becauseYouToldUs,
             change_log: data.changeLog || []
           },
@@ -329,8 +323,6 @@ export const api = {
             main_focus: calculation.mainFocus,
             top_priorities: calculation.topPriorities,
             otherPriorities: calculation.otherPriorities,
-            quickWins: calculation.quickWins,
-            firstSteps: calculation.firstSteps,
             becauseYouToldUs: calculation.becauseYouToldUs,
             change_log: data.changeLog || []
           },

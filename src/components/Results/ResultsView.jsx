@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Activity, 
+  ArrowRight,
+  ChevronDown,
   ChevronLeft, 
+  ChevronUp,
   Sparkles, 
   AlertCircle,
   Award, 
@@ -19,6 +22,55 @@ import SaveResultsPrompt from './SaveResultsPrompt.jsx';
 import PrintableSummary from './PrintableSummary.jsx';
 import { api } from '../../utils/api.js';
 
+function SupportingMetric({ label, value, explanation, accent = false }) {
+  return (
+    <div className={`rounded-xl border p-3 ${accent
+      ? 'border-brand-200 bg-brand-50/60 dark:border-brand-800 dark:bg-brand-950/30'
+      : 'border-surface-100 bg-surface-50 dark:border-surface-800 dark:bg-surface-800/50'
+    }`}>
+      <div className="flex items-start justify-between gap-3">
+        <span className="text-xs font-display font-bold text-surface-800 dark:text-surface-200">{label}</span>
+        <strong className={`shrink-0 font-mono text-xs ${accent ? 'text-brand-700 dark:text-brand-300' : 'text-surface-900 dark:text-white'}`}>
+          {value}
+        </strong>
+      </div>
+      {explanation && <p className="mt-1 text-[11px] leading-relaxed text-surface-500 dark:text-surface-400">{explanation}</p>}
+    </div>
+  );
+}
+
+function ReportAccordion({ title, description, icon: Icon, isOpen, onToggle, children }) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-sm dark:border-surface-800 dark:bg-surface-900">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/60"
+      >
+        <span className="flex items-start gap-3">
+          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-300">
+            <Icon className="h-4 w-4" />
+          </span>
+          <span>
+            <strong className="block text-sm font-display text-surface-900 dark:text-white">{title}</strong>
+            <span className="mt-0.5 block text-[11px] leading-relaxed text-surface-500 dark:text-surface-400">{description}</span>
+          </span>
+        </span>
+        {isOpen ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />}
+      </button>
+      {isOpen && <div className="border-t border-surface-100 p-4 dark:border-surface-800">{children}</div>}
+    </section>
+  );
+}
+
+function formatFitMaoChange(value, positiveLabel, negativeLabel) {
+  const amount = Number.parseFloat(String(value));
+  if (Number.isNaN(amount)) return value || 'Not available';
+  if (amount === 0) return 'No change';
+  return `${amount > 0 ? positiveLabel : negativeLabel} ${Math.abs(amount).toFixed(1)} kg`;
+}
+
 export default function ResultsView({ user }) {
   const { profileId } = useParams();
 
@@ -28,6 +80,7 @@ export default function ResultsView({ user }) {
   const [resultsData, setResultsData] = useState(null);
 
   const [showRawReport, setShowRawReport] = useState(false);
+  const [openReportSection, setOpenReportSection] = useState('composition');
   const [showPrintModal, setShowPrintModal] = useState(false);
 
   useEffect(() => {
@@ -76,11 +129,11 @@ export default function ResultsView({ user }) {
     main_focus: mainFocus, 
     top_priorities: topPriorities = [], 
     otherPriorities = [],
-    becauseYouToldUs, 
-    weights 
+    becauseYouToldUs
   } = resultsData;
   const rawMetrics = profile?.fitMao_report_data || {};
   const parqAnswers = profile?.parq_answers || {};
+  const correctedCount = Array.isArray(rawMetrics.correctedFields) ? rawMetrics.correctedFields.length : 0;
 
   return (
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pb-28 max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 relative font-sans animate-slide-up transition-colors duration-200">
@@ -116,7 +169,7 @@ export default function ResultsView({ user }) {
       <div className="card p-5 sm:p-6 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-sans mb-5">
         <div className="space-y-1.5">
           <div className="flex items-center gap-1.5 text-brand-600 dark:text-brand-400 font-display font-bold text-xs uppercase tracking-wider">
-            <Activity className="w-4 h-4" /> FitMao Assessment Profile
+            <Activity className="w-4 h-4" /> Your FitMao Assessment
           </div>
           <h1 className="text-xl sm:text-2xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
             {rawMetrics?.memberName || (user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Alex Rivera')}
@@ -132,15 +185,25 @@ export default function ResultsView({ user }) {
 
         <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface-100 dark:border-surface-800">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-emerald-800 dark:text-emerald-300 font-display font-extrabold text-xs shadow-subtle">
-            <Award className="w-4 h-4 text-emerald-600" /> Score: {rawMetrics?.healthScore || '74 / 100'}
+            <Award className="w-4 h-4 text-emerald-600" /> FitMao Score: {rawMetrics?.healthScore || '74 / 100'}
           </span>
           <span className="block text-xs text-surface-400 dark:text-surface-500 font-mono">
-            {rawMetrics?.bodyType || 'Standard Overweight'}
+            FitMao body type: {rawMetrics?.bodyType || 'Standard Overweight'}
           </span>
         </div>
       </div>
 
       <div className="space-y-5">
+        <div className="flex flex-col gap-1.5 rounded-2xl border border-brand-100 bg-brand-50/70 px-4 py-3 text-xs text-surface-600 dark:border-brand-900 dark:bg-brand-950/30 dark:text-surface-300 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            <strong className="font-display text-surface-900 dark:text-white">Assessment source:</strong>{' '}
+            {rawMetrics.dataSource || 'Confirmed FitMao assessment'}
+          </span>
+          {correctedCount > 0 && (
+            <span className="font-display font-bold text-brand-700 dark:text-brand-300">{correctedCount} value{correctedCount === 1 ? '' : 's'} corrected during review</span>
+          )}
+        </div>
+
         {/* 2. Main Focus Hero Section (with Ask Why & Waterfall math) */}
         <MainFocusCard mainFocus={mainFocus} />
 
@@ -154,148 +217,158 @@ export default function ResultsView({ user }) {
           parqAnswers={parqAnswers} 
         />
 
-        {/* 5. Complete Raw FitMao Scanner Metrics (Collapsible) */}
+        {/* 5. Supporting FitMao measurements (collapsible) */}
         <div>
           <button
             onClick={() => setShowRawReport(!showRawReport)}
-            className="w-full py-3.5 px-4 bg-white dark:bg-surface-900 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-2xl border border-surface-200 dark:border-surface-800 text-xs font-display font-bold text-surface-700 dark:text-surface-300 flex items-center justify-between transition-colors shadow-sm cursor-pointer"
+            aria-expanded={showRawReport}
+            className="w-full p-4 bg-white dark:bg-surface-900 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-2xl border border-surface-200 dark:border-surface-800 text-left text-surface-700 dark:text-surface-300 flex items-center justify-between gap-4 transition-colors shadow-sm cursor-pointer"
           >
-            <span className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-brand-600" />
-              <span>{showRawReport ? 'Hide Complete Assessment Metrics' : `View Complete Assessment Metrics (${Object.keys(rawMetrics).length} Data Points)`}</span>
+            <span className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-300">
+                <Activity className="w-4 h-4" />
+              </span>
+              <span>
+                <strong className="block text-sm font-display text-surface-900 dark:text-white">Your Full FitMao Report</strong>
+                <span className="mt-0.5 block text-[11px] font-normal leading-relaxed text-surface-500 dark:text-surface-400">
+                  Additional measurements from your assessment
+                </span>
+              </span>
             </span>
-            <span>{showRawReport ? '▲' : '▼'}</span>
+            {showRawReport ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />}
           </button>
 
           {showRawReport && (
             <div className="mt-3 space-y-3 animate-slide-up">
-              {/* Section 1: Member Demographics & Test Details */}
-              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
-                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
-                  <Activity className="w-3.5 h-3.5 text-brand-600" /> Member Information & Test Session
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Member Name</span>
-                    <strong className="text-surface-900 dark:text-white font-sans">{rawMetrics.memberName || 'Alex Rivera'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Gender / Age</span>
-                    <strong className="text-surface-900 dark:text-white font-sans">{rawMetrics.gender || 'Male'} • {rawMetrics.age || '28 yrs'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Height</span>
-                    <strong className="text-surface-900 dark:text-white font-mono">{rawMetrics.height || '175 cm'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Body Age</span>
-                    <strong className="text-surface-900 dark:text-white font-mono">{rawMetrics.bodyAge || '31 yrs'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Scan Date & Time</span>
-                    <strong className="text-surface-900 dark:text-white font-mono text-[11px]">{rawMetrics.testDate || '2026-09-05'} {rawMetrics.testTime || '10:30 AM'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
-                    <span className="text-[10px] text-surface-400 uppercase block font-medium">Scanner Device</span>
-                    <strong className="text-surface-900 dark:text-white text-[11px] font-sans">{rawMetrics.scannerDevice || 'FitMao 3D Pro'}</strong>
-                  </div>
-                </div>
+              <div className="rounded-2xl border border-brand-100 bg-brand-50/70 p-4 text-xs leading-relaxed text-surface-600 dark:border-brand-900 dark:bg-brand-950/30 dark:text-surface-300">
+                These values come from your FitMao assessment. They support your results, but FitStart only uses the measurements relevant to your personalized priorities.
               </div>
 
-              {/* Section 2: Body Composition Analysis */}
-              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
-                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
-                  <Scale className="w-3.5 h-3.5 text-brand-600" /> Body Composition Analysis
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Total Weight</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.weight || '78.0 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-accent-50/60 dark:bg-accent-950/40 rounded-xl flex justify-between items-center border border-accent-200/60 dark:border-accent-800/50">
-                    <span className="text-accent-800 dark:text-accent-300 font-bold">Body Fat %</span>
-                    <strong className="font-mono text-accent-700 dark:text-accent-300">{rawMetrics.bodyFatPercentage || '24.5%'}</strong>
-                  </div>
-                  <div className="p-2 bg-brand-50/60 dark:bg-brand-950/40 rounded-xl flex justify-between items-center border border-brand-200/60 dark:border-brand-800/50">
-                    <span className="text-brand-800 dark:text-brand-300 font-bold">Skeletal Muscle</span>
-                    <strong className="font-mono text-brand-700 dark:text-brand-300">{rawMetrics.skeletalMuscleMass || '32.1 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Fat Mass</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.fatMass || '19.1 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Muscle Mass</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.muscleMass || '55.4 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Fat-Free Mass</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.fatFreeMass || '58.9 kg'}</strong>
-                  </div>
+              <div className="flex flex-col gap-2 rounded-2xl border border-surface-200 bg-white p-4 text-xs dark:border-surface-800 dark:bg-surface-900 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <strong className="block font-display text-surface-900 dark:text-white">About this assessment</strong>
+                  <span className="mt-0.5 block text-[11px] text-surface-500 dark:text-surface-400">Recorded {rawMetrics.testDate || '2026-09-05'} {rawMetrics.testTime || ''}</span>
                 </div>
+                <span className="text-[11px] text-surface-500 dark:text-surface-400">Scanner: {rawMetrics.scannerDevice || 'FitMao 3D Pro'}</span>
               </div>
 
-              {/* Section 3: Target Control Recommendations */}
-              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
-                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
-                  <Target className="w-3.5 h-3.5 text-accent-600" /> Target & Control Recommendations
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Target Weight</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.targetWeight || '72.0 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Weight Control</span>
-                    <strong className="font-mono text-amber-700 dark:text-amber-400">{rawMetrics.weightControl || '-6.0 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Fat Control</span>
-                    <strong className="font-mono text-accent-600 dark:text-accent-400">{rawMetrics.fatControl || '-6.0 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Muscle Control</span>
-                    <strong className="font-mono text-brand-600 dark:text-brand-400">{rawMetrics.muscleControl || '0.0 kg'}</strong>
-                  </div>
+              <ReportAccordion
+                title="Your Body Composition"
+                description="See how your total weight is divided"
+                icon={Scale}
+                isOpen={openReportSection === 'composition'}
+                onToggle={() => setOpenReportSection(openReportSection === 'composition' ? null : 'composition')}
+              >
+                <div className="rounded-2xl bg-surface-900 p-4 text-center text-white dark:bg-surface-950">
+                  <span className="block text-[11px] font-display uppercase tracking-wider text-surface-300">Your total weight</span>
+                  <strong className="mt-1 block text-2xl font-display">{rawMetrics.weight || '78.0 kg'}</strong>
+                  <span className="mt-1 block text-[11px] text-surface-400">at the time of this assessment</span>
                 </div>
-              </div>
 
-              {/* Section 4: Metabolic & Health Evaluation */}
-              <div className="card p-3.5 bg-white dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800 rounded-2xl">
-                <h4 className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 pb-1 border-b border-surface-100 dark:border-surface-800">
-                  <HeartPulse className="w-3.5 h-3.5 text-red-500" /> Metabolic & Health Indices
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Visceral Fat</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.visceralFat || 'Level 11'}</strong>
+                <div className="my-3 flex items-center gap-2 text-[11px] font-display font-bold text-surface-500 dark:text-surface-400">
+                  <span className="h-px flex-1 bg-surface-200 dark:bg-surface-700" />
+                  MADE UP OF
+                  <span className="h-px flex-1 bg-surface-200 dark:bg-surface-700" />
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <div className="rounded-xl border border-accent-200 bg-accent-50/60 p-3 dark:border-accent-800 dark:bg-accent-950/30">
+                    <span className="block text-xs font-display font-bold text-surface-800 dark:text-surface-200">Body fat</span>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      <strong className="font-mono text-lg text-accent-700 dark:text-accent-300">{rawMetrics.fatMass || '19.1 kg'}</strong>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-accent-700 dark:bg-surface-900 dark:text-accent-300">{rawMetrics.bodyFatPercentage || '24.5%'}</span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-surface-500 dark:text-surface-400">The estimated fat portion of your total weight.</p>
                   </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">BMR</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bmr || '1,650 kcal'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">BMI</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bmi || '25.4'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Body Water</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.bodyWater || '42.3 L'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Protein Content</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.proteinMass || '12.8 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center">
-                    <span className="text-surface-600 dark:text-surface-400">Bone Minerals</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.boneMineralContent || '3.8 kg'}</strong>
-                  </div>
-                  <div className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-xl flex justify-between items-center col-span-2">
-                    <span className="text-surface-600 dark:text-surface-400">Waist-to-Hip Ratio (WHR)</span>
-                    <strong className="font-mono text-surface-900 dark:text-white">{rawMetrics.waistToHipRatio || '0.88'}</strong>
+                  <SupportingMetric label="Fat-free mass" value={rawMetrics.fatFreeMass || '58.9 kg'} explanation="Everything in your body except estimated body fat." />
+                </div>
+
+                <div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50/50 p-3 dark:border-brand-900 dark:bg-brand-950/20">
+                  <strong className="block text-xs font-display text-surface-900 dark:text-white">Muscle details in your report</strong>
+                  <p className="mt-0.5 text-[11px] text-surface-500 dark:text-surface-400">FitMao shows both a broad muscle estimate and the muscles used for movement.</p>
+                  <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <SupportingMetric label="Muscle mass" value={rawMetrics.muscleMass || '55.4 kg'} />
+                    <SupportingMetric label="Skeletal muscle" value={rawMetrics.skeletalMuscleMass || '32.1 kg'} accent />
                   </div>
                 </div>
-              </div>
+              </ReportAccordion>
+
+              <ReportAccordion
+                title="FitMao Estimates"
+                description="View the scanner’s reference weight and suggested changes"
+                icon={Target}
+                isOpen={openReportSection === 'estimates'}
+                onToggle={() => setOpenReportSection(openReportSection === 'estimates' ? null : 'estimates')}
+              >
+                <p className="mb-3 text-[11px] leading-relaxed text-surface-500 dark:text-surface-400">
+                  These values are copied from your FitMao report. They are not created by FitStart.
+                </p>
+                <div className="flex items-center justify-center gap-3 rounded-2xl bg-surface-50 p-4 text-center dark:bg-surface-800/50">
+                  <div className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-display uppercase text-surface-500">Current weight</span>
+                    <strong className="mt-1 block font-mono text-lg text-surface-900 dark:text-white">{rawMetrics.weight || '78.0 kg'}</strong>
+                  </div>
+                  <ArrowRight className="h-5 w-5 shrink-0 text-brand-600 dark:text-brand-300" />
+                  <div className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-display uppercase text-surface-500">FitMao target</span>
+                    <strong className="mt-1 block font-mono text-lg text-brand-700 dark:text-brand-300">{rawMetrics.targetWeight || '72.0 kg'}</strong>
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  <SupportingMetric label="Total change" value={formatFitMaoChange(rawMetrics.weightControl || '-6.0 kg', 'Gain', 'Lose')} />
+                  <SupportingMetric label="Fat change" value={formatFitMaoChange(rawMetrics.fatControl || '-6.0 kg', 'Gain', 'Lose')} />
+                  <SupportingMetric label="Muscle change" value={formatFitMaoChange(rawMetrics.muscleControl || '0.0 kg', 'Gain', 'Reduce')} accent />
+                </div>
+                <p className="mt-3 rounded-xl bg-amber-50 p-3 text-[11px] leading-relaxed text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+                  These are FitMao estimates, not a personal workout or medical plan.
+                </p>
+              </ReportAccordion>
+
+              <ReportAccordion
+                title="Other Measurements"
+                description="Additional details from your FitMao report"
+                icon={HeartPulse}
+                isOpen={openReportSection === 'other'}
+                onToggle={() => setOpenReportSection(openReportSection === 'other' ? null : 'other')}
+              >
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-surface-100 p-3 dark:border-surface-800">
+                    <strong className="block text-xs font-display text-surface-900 dark:text-white">Energy and body size</strong>
+                    <p className="mt-0.5 text-[11px] text-surface-500 dark:text-surface-400">Estimates related to resting energy use and height compared with weight.</p>
+                    <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <SupportingMetric label="Resting calories (BMR)" value={rawMetrics.bmr || '1,650 kcal'} />
+                      <SupportingMetric label="Body mass index (BMI)" value={rawMetrics.bmi || '25.4'} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-surface-100 p-3 dark:border-surface-800">
+                    <strong className="block text-xs font-display text-surface-900 dark:text-white">Fat distribution</strong>
+                    <p className="mt-0.5 text-[11px] text-surface-500 dark:text-surface-400">Measurements describing where body fat may be carried.</p>
+                    <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <SupportingMetric label="Visceral fat level" value={rawMetrics.visceralFat || 'Level 11'} />
+                      <SupportingMetric label="Waist-to-hip ratio" value={rawMetrics.waistToHipRatio || '0.88'} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-surface-100 p-3 dark:border-surface-800">
+                    <strong className="block text-xs font-display text-surface-900 dark:text-white">Additional composition details</strong>
+                    <p className="mt-0.5 text-[11px] text-surface-500 dark:text-surface-400">Supporting estimates of water, protein, and bone minerals.</p>
+                    <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      <SupportingMetric label="Body water" value={rawMetrics.bodyWater || '42.3 L'} />
+                      <SupportingMetric label="Protein mass" value={rawMetrics.proteinMass || '12.8 kg'} />
+                      <SupportingMetric label="Bone minerals" value={rawMetrics.boneMineralContent || '3.8 kg'} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-surface-100 p-3 dark:border-surface-800">
+                    <strong className="block text-xs font-display text-surface-900 dark:text-white">FitMao comparison</strong>
+                    <p className="mt-0.5 text-[11px] text-surface-500 dark:text-surface-400">Body age is a FitMao comparison estimate—not your actual or medical age.</p>
+                    <div className="mt-2">
+                      <SupportingMetric label="FitMao body age" value={rawMetrics.bodyAge || '31 yrs'} />
+                    </div>
+                  </div>
+                </div>
+              </ReportAccordion>
             </div>
           )}
         </div>
@@ -330,7 +403,9 @@ export default function ResultsView({ user }) {
           profile={profile}
           fitMao={rawMetrics}
           parq={profile?.parq_answers}
-          weights={weights}
+          mainFocus={mainFocus}
+          topPriorities={topPriorities}
+          becauseYouToldUs={becauseYouToldUs}
           user={profile?.user}
           onClose={() => setShowPrintModal(false)}
         />
