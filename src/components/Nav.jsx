@@ -26,13 +26,25 @@ export default function Nav({ user, onLogout }) {
     navigate('/login');
   };
 
+  const themeToggleButton = (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="w-9 h-9 shrink-0 flex items-center justify-center text-surface-600 hover:text-surface-900 dark:text-surface-300 dark:hover:text-white bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 rounded-xl transition-all border border-surface-200/80 dark:border-surface-700/80 cursor-pointer shadow-subtle"
+      title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+      aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+    >
+      {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+    </button>
+  );
+
   return (
     <header className="bg-white/80 dark:bg-surface-900/80 backdrop-blur-md border-b border-surface-200/80 dark:border-surface-800/80 sticky top-0 z-30 px-4 sm:px-8 py-3 transition-colors duration-200 shadow-subtle">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
         
         {/* Brand Logo & Gym Location */}
         <Link 
-          to={user ? "/dashboard" : "/assessment"}
+          to={user ? "/dashboard" : "/"}
           className="flex items-center gap-3 hover:opacity-90 transition-opacity text-left group"
         >
           <div className="w-9 h-9 bg-gradient-to-tr from-brand-600 to-emerald-400 text-white rounded-xl flex items-center justify-center font-display font-black text-sm shadow-sm group-hover:scale-105 transition-transform">
@@ -47,7 +59,7 @@ export default function Nav({ user, onLogout }) {
                 v2.4
               </span>
             </div>
-            <span className="text-[11px] font-medium text-surface-500 dark:text-surface-400 block mt-0.5">
+            <span className="text-[11px] font-medium text-surface-500 dark:text-surface-400 hidden sm:block mt-0.5">
               KSYN Fitness Alabang
             </span>
           </div>
@@ -114,19 +126,10 @@ export default function Nav({ user, onLogout }) {
           </nav>
         )}
 
-        {/* Right Section: Theme Toggle + Settings + Profile / Auth */}
-        <div className="flex items-center gap-2">
-          {/* Theme Toggle Button */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center text-surface-600 hover:text-surface-900 dark:text-surface-300 dark:hover:text-white bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 rounded-xl transition-all border border-surface-200/80 dark:border-surface-700/80 cursor-pointer shadow-subtle"
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
-          </button>
-
-          {user ? (
+        {/* Public navigation / member controls */}
+        {user ? (
+          <div className="flex items-center gap-2">
+            {themeToggleButton}
             <div className="flex items-center gap-2 pl-1 sm:pl-2 border-l border-surface-200 dark:border-surface-800">
               {/* Settings Modal Button for Members */}
               <button
@@ -164,15 +167,40 @@ export default function Nav({ user, onLogout }) {
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
-          ) : (
+          </div>
+        ) : (
+          <nav className="flex min-w-0 items-center gap-1 sm:gap-2" aria-label="Public navigation">
+            {themeToggleButton}
+            <Link
+              to="/"
+              className={`hidden md:inline-flex px-2.5 py-2 text-xs font-display font-semibold transition-colors ${
+                location.pathname === '/'
+                  ? 'text-brand-700 dark:text-brand-300'
+                  : 'text-surface-600 hover:text-surface-950 dark:text-surface-300 dark:hover:text-white'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/#contact"
+              className="hidden lg:inline-flex px-2.5 py-2 text-xs font-display font-semibold text-surface-600 hover:text-surface-950 dark:text-surface-300 dark:hover:text-white transition-colors"
+            >
+              Contact Us
+            </Link>
             <Link
               to="/login"
-              className="text-xs font-display font-semibold px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition-all shadow-sm active:scale-95"
+              className="hidden sm:inline-flex px-2 py-2 text-xs font-display font-semibold text-surface-700 hover:text-surface-950 dark:text-surface-200 dark:hover:text-white transition-colors"
             >
-              Sign In
+              Login
             </Link>
-          )}
-        </div>
+            <Link
+              to="/signup"
+              className="shrink-0 rounded-xl bg-brand-600 px-3 py-2 text-xs font-display font-bold text-white shadow-sm transition-all hover:bg-brand-500 active:scale-95 sm:px-4"
+            >
+              Register
+            </Link>
+          </nav>
+        )}
       </div>
 
       {/* Settings Modal */}

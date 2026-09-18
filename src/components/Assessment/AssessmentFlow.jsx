@@ -4,13 +4,14 @@ import { ArrowLeft, BarChart3, CheckCircle2, Clock3, ShieldCheck, Target } from 
 import ParQForm from './ParQForm.jsx';
 import GoalCheckIn from './GoalCheckIn.jsx';
 import ProcessingScreen from './ProcessingScreen.jsx';
+import UploadStep from './UploadStep.jsx';
 import { api, setPendingGuestAssessment } from '../../utils/api.js';
 import { REFERENCE_ASSESSMENTS } from '../../data/memberExperience.js';
 
 export default function AssessmentFlow({ user }) {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState('intro'); // 'intro', 'parq', 'checkin', 'processing'
+  const [step, setStep] = useState('capture'); // 'capture', 'intro', 'parq', 'checkin', 'processing'
   const [fitMaoData] = useState(() => ({
     ...REFERENCE_ASSESSMENTS[0].fitMao_report_data,
     dataSource: 'Prototype FitMao assessment data',
@@ -86,6 +87,14 @@ export default function AssessmentFlow({ user }) {
 
   return (
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950 font-sans transition-colors duration-200">
+      {step === 'capture' && (
+        <UploadStep
+          prototypeMode
+          onDataExtracted={() => setStep('parq')}
+          onCancel={() => user ? navigate('/dashboard') : navigate('/')}
+        />
+      )}
+
       {step === 'intro' && (
         <main className="min-h-screen max-w-2xl mx-auto px-4 sm:px-6 py-6 pb-28 animate-slide-up">
           <button
@@ -158,7 +167,7 @@ export default function AssessmentFlow({ user }) {
         <ParQForm
           initialAnswers={parqAnswers}
           onComplete={handleParQDone}
-          onBack={() => setStep('intro')}
+          onBack={() => setStep('capture')}
           onRecordChange={handleRecordChange}
         />
       )}

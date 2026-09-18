@@ -9,8 +9,10 @@ import Dashboard from './components/Dashboard/Dashboard.jsx';
 import AssessmentHistory from './components/Dashboard/AssessmentHistory.jsx';
 import AssessmentFlow from './components/Assessment/AssessmentFlow.jsx';
 import ResultsView from './components/Results/ResultsView.jsx';
+import FullFitMaoReport from './components/Results/FullFitMaoReport.jsx';
 import GlossaryPage from './components/Glossary/GlossaryPage.jsx';
 import UserProfile from './components/Profile/UserProfile.jsx';
+import LandingPage from './components/Landing/LandingPage.jsx';
 import { api } from './utils/api.js';
 import { ThemeProvider } from './utils/theme.js';
 
@@ -62,6 +64,7 @@ export default function App() {
             <Route path="/glossary" element={<GlossaryPage />} />
             <Route path="/assessment" element={<AssessmentFlow user={user} />} />
             <Route path="/results/:profileId" element={<ResultsView user={user} onAuthSuccess={setUser} />} />
+            <Route path="/results/:profileId/fitmao-report" element={<FullFitMaoReport />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute user={user} loading={loading} />}>
@@ -73,9 +76,9 @@ export default function App() {
               />
             </Route>
 
-            {/* Root Redirect */}
-            <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Navigate to="/assessment" replace />} />
-            <Route path="*" element={<Navigate to={user ? "/dashboard" : "/assessment"} replace />} />
+            {/* Guest welcome page / member home */}
+            <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+            <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
           </Routes>
 
           {/* Modern Mobile Bottom Navigation Dock */}

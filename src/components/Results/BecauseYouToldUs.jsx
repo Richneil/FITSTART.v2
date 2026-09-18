@@ -25,7 +25,7 @@ const AVAILABILITY_LABELS = {
 
 export default function BecauseYouToldUs({ text, mainFocus, parqAnswers = {} }) {
   const goalKey = parqAnswers.primaryGoal || parqAnswers.goal || (Array.isArray(parqAnswers.goals) ? parqAnswers.goals[0] : null);
-  const actKey = parqAnswers.activityCategory || (Array.isArray(parqAnswers.activityCategories) ? parqAnswers.activityCategories[0] : null);
+  const actKey = parqAnswers.activityCategory || (Array.isArray(parqAnswers.activityCategories) ? parqAnswers.activityCategories[0] : null) || 'strength';
   const availKey = parqAnswers.availability;
 
   const goalLabel = GOAL_NAMES[goalKey] || (goalKey ? String(goalKey).replace(/_/g, ' ') : 'Fat Reduction & Recomposition');
@@ -43,10 +43,10 @@ export default function BecauseYouToldUs({ text, mainFocus, parqAnswers = {} }) 
           </div>
           <div>
             <h3 className="font-display font-extrabold text-brand-950 dark:text-brand-100 text-xs sm:text-sm uppercase tracking-wider">
-              Because You Told Us...
+              Why FitStart Chose These Results
             </h3>
             <span className="text-[11px] text-brand-700 dark:text-brand-300 font-medium">
-              How your context shaped this assessment interpretation
+              How your confirmed measurement and answers shaped the priority order
             </span>
           </div>
         </div>
@@ -88,6 +88,9 @@ export default function BecauseYouToldUs({ text, mainFocus, parqAnswers = {} }) 
       {/* Dynamic Explanation */}
       <div className="p-3.5 bg-white/90 dark:bg-surface-900/90 rounded-2xl border border-brand-200/60 dark:border-brand-800/40 text-xs sm:text-sm text-surface-800 dark:text-surface-200 leading-relaxed font-medium">
         <p className="whitespace-pre-wrap">{content}</p>
+        <p className="mt-3 border-t border-brand-100 pt-3 text-[11px] text-surface-500 dark:border-brand-900 dark:text-surface-400">
+          These priorities describe relevance to your selected goals. They are not a diagnosis or a judgment that something is wrong.
+        </p>
       </div>
     </div>
   );

@@ -1,18 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Activity, 
-  Flame, 
-  Target, 
-  Droplet, 
-  HeartPulse, 
-  Scale, 
-  HelpCircle,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react';
-import WeightBreakdown from './WeightBreakdown.jsx';
-import AskWhy from './AskWhy.jsx';
+import { Activity, Droplet, Flame, HeartPulse, Info, Lightbulb, Scale, Target, Users } from 'lucide-react';
+import { getMetricExplanation } from '../../utils/resultExplanations.js';
 
 const METRIC_ICONS = {
   bodyFat: Flame,
@@ -28,134 +17,59 @@ const GLOSSARY_IDS = {
   muscleMass: 'skeletalMuscleMass'
 };
 
-export default function PriorityList({ topPriorities = [], otherPriorities = [] }) {
-  const [activeMetricForWhy, setActiveMetricForWhy] = useState(null);
-  const [activeMetricRank, setActiveMetricRank] = useState('');
-  const [showOtherPriorities, setShowOtherPriorities] = useState(false);
+function PriorityExplanation({ icon: Icon, title, text }) {
+  return (
+    <div className="md:px-4 first:md:pl-0 last:md:pr-0">
+      <div className="flex items-center gap-2 text-xs font-display font-extrabold text-surface-900 dark:text-white">
+        <Icon className="h-4 w-4 text-brand-600 dark:text-brand-300" />
+        {title}
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-surface-600 dark:text-surface-300">{text}</p>
+    </div>
+  );
+}
 
-  const handleOpenWhy = (metric, rank) => {
-    setActiveMetricForWhy(metric);
-    setActiveMetricRank(rank);
-  };
+export default function PriorityList({ topPriorities = [], mainFocus = null }) {
+  if (topPriorities.length === 0) return null;
 
   return (
-    <div className="space-y-3 font-sans">
-      <div className="flex justify-between items-baseline mb-2">
-        <h3 className="font-display font-extrabold text-surface-900 dark:text-white text-lg tracking-tight">
-          Top Priorities
-        </h3>
-        <span className="text-xs text-surface-500 dark:text-surface-400 font-semibold">
-          Ranked by relevance score
-        </span>
+    <section className="space-y-3 font-sans">
+      <div className="mb-3">
+        <h3 className="text-lg font-display font-extrabold tracking-tight text-surface-900 dark:text-white">Your Supporting Priorities</h3>
+        <p className="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">These measurements add context to your Main Focus. A supporting priority does not automatically mean something is wrong.</p>
       </div>
 
       <div className="space-y-3">
-        {topPriorities.map((p, i) => {
-          const bgClass = i === 0 
-            ? 'bg-brand-50/70 dark:bg-brand-950/40 border-brand-200 dark:border-brand-800 shadow-subtle' 
-            : 'bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 shadow-card';
-          const PriorityIcon = METRIC_ICONS[p.id] || Activity;
-          const rankNumber = i + 2;
+        {topPriorities.map((priority, index) => {
+          const PriorityIcon = METRIC_ICONS[priority.id] || Activity;
+          const explanation = getMetricExplanation(priority, 'supporting', mainFocus);
+          const tone = index === 0
+            ? 'border-brand-300 bg-brand-50/70 shadow-subtle dark:border-brand-800 dark:bg-brand-950/30'
+            : 'border-surface-200 bg-white shadow-card dark:border-surface-800 dark:bg-surface-900';
 
           return (
-            <div key={p.id || i} className={`card p-5 flex flex-col gap-1.5 border rounded-3xl ${bgClass}`}>
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-display font-bold text-surface-900 dark:text-white text-sm sm:text-base flex items-center gap-2">
-                  <span className="text-xs font-mono font-black bg-brand-100 dark:bg-brand-900 text-brand-800 dark:text-brand-200 w-5 h-5 rounded-full flex items-center justify-center">
-                    {rankNumber}
-                  </span>
-                  <PriorityIcon className="w-4 h-4 text-brand-600 dark:text-brand-400" />
-                  <Link to={`/glossary?term=${GLOSSARY_IDS[p.id] || p.id}`} className="hover:underline">
-                    {p.title}
-                  </Link>
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-brand-700 dark:text-brand-300 text-sm sm:text-base">
-                    {p.value}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenWhy(p, `Rank #${rankNumber} Priority`)}
-                    className="p-1 text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-pointer"
-                    title={`Ask why ${p.title} was prioritized`}
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
+            <article key={priority.id || index} className={`card rounded-3xl border p-5 sm:p-6 ${tone}`}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2 font-display font-bold text-surface-900 dark:text-white">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-xs font-mono font-black text-brand-800 dark:bg-brand-900 dark:text-brand-200">{index + 1}</span>
+                  <PriorityIcon className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+                  <Link to={`/glossary?term=${GLOSSARY_IDS[priority.id] || priority.id}`} className="hover:underline">{priority.title}</Link>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 pl-8 sm:pl-0">
+                  <span className="text-sm font-mono font-bold text-brand-700 dark:text-brand-300 sm:text-base">{priority.value}</span>
+                  <span className="rounded-lg border border-surface-200 bg-white/70 px-2.5 py-1 text-[10px] font-display font-bold text-surface-600 dark:border-surface-700 dark:bg-surface-900/70 dark:text-surface-300">{explanation.focusLabel}</span>
                 </div>
               </div>
 
-              <p className="text-xs text-surface-600 dark:text-surface-400 leading-relaxed font-medium pl-7">
-                {p.desc}
-              </p>
-              
-              {/* Step math for top priority */}
-              <WeightBreakdown metric={p} />
-            </div>
+              <div className="mt-4 grid gap-4 border-t border-surface-200/80 pt-4 dark:border-surface-800 md:grid-cols-3 md:divide-x md:divide-surface-200 dark:md:divide-surface-800">
+                <PriorityExplanation icon={Info} title="What does this mean?" text={explanation.definition} />
+                <PriorityExplanation icon={Lightbulb} title="Why is this a Supporting Priority?" text={explanation.why} />
+                <PriorityExplanation icon={Users} title="Discuss this with your coach" text={explanation.coachPrompt} />
+              </div>
+            </article>
           );
         })}
       </div>
-
-      {/* Expandable Other Priorities Section */}
-      {otherPriorities && otherPriorities.length > 0 && (
-        <div className="pt-1">
-          <button
-            type="button"
-            onClick={() => setShowOtherPriorities(!showOtherPriorities)}
-            className="w-full py-2.5 px-3 bg-surface-100 dark:bg-surface-850 hover:bg-surface-200 dark:hover:bg-surface-800 rounded-xl text-xs font-display font-bold text-surface-600 dark:text-surface-400 flex items-center justify-between transition-colors cursor-pointer"
-          >
-            <span>{showOtherPriorities ? 'Hide Baseline Monitored Metrics' : `View ${otherPriorities.length} Baseline Monitored Metrics`}</span>
-            {showOtherPriorities ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-
-          {showOtherPriorities && (
-            <div className="mt-2 space-y-2 animate-fade-in">
-              {otherPriorities.map((op, idx) => {
-                const OtherIcon = METRIC_ICONS[op.id] || Activity;
-                const rankNum = topPriorities.length + idx + 2;
-                return (
-                  <div 
-                    key={op.id || idx}
-                    className="p-3 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl flex items-center justify-between text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold text-surface-400">
-                        #{rankNum}
-                      </span>
-                      <OtherIcon className="w-3.5 h-3.5 text-surface-500" />
-                      <span className="font-display font-bold text-surface-800 dark:text-surface-200">
-                        {op.title}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-surface-600 dark:text-surface-400 font-semibold">
-                        {op.value}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenWhy(op, `Rank #${rankNum} Monitored Metric`)}
-                        className="p-1 text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors cursor-pointer"
-                        title="Ask Why"
-                      >
-                        <HelpCircle className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeMetricForWhy && (
-        <AskWhy
-          metric={activeMetricForWhy}
-          rankLabel={activeMetricRank}
-          onClose={() => setActiveMetricForWhy(null)}
-        />
-      )}
-    </div>
+    </section>
   );
 }

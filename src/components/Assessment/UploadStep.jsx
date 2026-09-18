@@ -35,8 +35,9 @@ const REFERENCE_RAW = {
   waistToHipRatio: 0.82
 };
 
-export default function UploadStep({ onDataExtracted, onCancel }) {
+export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = false }) {
   const fileInputRef = useRef(null);
+  const prototypeTimerRef = useRef(null);
   const [stage, setStage] = useState('upload');
   const [extractedData, setExtractedData] = useState({ ...DEFAULT_EXTRACTED });
   const [errorMsg, setErrorMsg] = useState('');
@@ -81,7 +82,25 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
     setTimeout(() => setStage('review'), 500);
   };
 
+  const handlePrototypeCapture = (inputSource) => {
+    setErrorMsg('');
+    setExtractedData({ ...REFERENCE_RAW, _inputSource: inputSource });
+    setStage('scanning');
+    clearTimeout(prototypeTimerRef.current);
+    prototypeTimerRef.current = setTimeout(() => {
+      onDataExtracted({
+        ...REFERENCE_RAW,
+        dataSource: 'Prototype FitMao assessment data',
+        correctedFields: []
+      });
+    }, 1600);
+  };
+
   const handleInputChoice = (choice) => {
+    if (prototypeMode) {
+      handlePrototypeCapture(choice);
+      return;
+    }
     if (choice === 'upload') {
       fileInputRef.current?.click();
       return;
@@ -120,6 +139,8 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
   }, [stage, cameraActive]);
+
+  useEffect(() => () => clearTimeout(prototypeTimerRef.current), []);
 
   const handleConfirmAndContinue = (reviewedData = extractedData) => {
     const weightVal = parseFloat(reviewedData.weight) || 78.0;
@@ -188,12 +209,14 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
           <span className="block h-full w-1/3 rounded-full bg-brand-600" />
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
-          {stage === 'review' ? 'Verify Scanned Assessment' : 'Add your FitMao data'}
+          {stage === 'review' ? 'Verify Scanned Assessment' : 'Add your FitMao assessment'}
         </h1>
         <p className="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mt-1.5 leading-relaxed max-w-2xl">
           {stage === 'review'
             ? 'Review the verified metrics extracted from your FitMao assessment.'
-            : 'FitStart needs your body composition report to personalize your results. Choose how you’d like to share it.'}
+            : prototypeMode
+              ? 'Choose how you would like to provide your report. For this prototype, either option reads the prepared FitMao assessment.'
+              : 'FitStart needs your body composition report to personalize your results. Choose how you’d like to share it.'}
         </p>
       </div>
 
@@ -215,11 +238,14 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
             />
           ) : (
             <>
-              {[
+              {(prototypeMode ? [
+                [QrCode, 'Scan FitMao QR Code', 'Use the QR code shown on your FitMao report', 'Fastest', 'scan'],
+                [Image, 'Upload FitMao Image', 'Use a clear photo or screenshot of your FitMao report', null, 'upload']
+              ] : [
                 [QrCode, 'Scan QR Code', 'Scan the QR code on your FitMao printout', 'Fastest', 'scan'],
                 [Image, 'Upload a Screenshot', 'Choose an image that clearly includes the FitMao QR code', null, 'upload'],
                 [Camera, 'Take a Photo', 'Photograph the QR code on your printed FitMao report', null, 'photo']
-              ].map(([Icon, title, description, badge, choice]) => (
+              ]).map(([Icon, title, description, badge, choice]) => (
                 <button
                   key={title}
                   type="button"
@@ -242,7 +268,7 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
             </>
           )}
 
-          {!cameraActive && (
+          {!cameraActive && !prototypeMode && (
             <button
               type="button"
               onClick={handleDemoData}
@@ -267,10 +293,12 @@ export default function UploadStep({ onDataExtracted, onCancel }) {
             <div className="absolute inset-x-0 h-1 bg-brand-500 shadow-[0_0_8px_rgba(47,115,101,0.8)] animate-scan-line" />
           </div>
           <h3 className="font-display font-bold text-surface-900 dark:text-white text-base mb-1">
-            Analyzing Assessment Data...
+            {prototypeMode ? 'Reading Your FitMao Report...' : 'Analyzing Assessment Data...'}
           </h3>
           <p className="text-xs text-surface-500 dark:text-surface-400">
-            Reading the QR code and organizing the available FitMao measurements.
+            {prototypeMode
+              ? 'Scanning the QR information and preparing your assessment measurements.'
+              : 'Reading the QR code and organizing the available FitMao measurements.'}
           </p>
         </div>
       )}
