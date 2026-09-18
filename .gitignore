@@ -25,3 +25,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local document-review and extraction workspace
+tmp/
+tmp_*.txt
