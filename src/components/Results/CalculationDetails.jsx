@@ -19,7 +19,7 @@ export default function CalculationDetails({ mainFocus, topPriorities = [], othe
           </span>
           <span>
             <strong className="block text-sm font-display text-surface-900 dark:text-white">View Calculation Details</strong>
-            <span className="mt-0.5 block text-[11px] leading-relaxed text-surface-500 dark:text-surface-400">Scoring rules, questionnaire points, ranking process and tie-breaking</span>
+            <span className="mt-0.5 block text-[11px] leading-relaxed text-surface-500 dark:text-surface-400">Deterministic ranking process and final relevance scores</span>
           </span>
         </span>
         {open ? <ChevronUp className="h-4 w-4 shrink-0" /> : <ChevronDown className="h-4 w-4 shrink-0" />}
@@ -28,7 +28,7 @@ export default function CalculationDetails({ mainFocus, topPriorities = [], othe
       {open && (
         <div className="space-y-3 border-t border-surface-100 p-4 dark:border-surface-800">
           <p className="text-xs leading-relaxed text-surface-500 dark:text-surface-400">
-            FitStart starts with every available supported measurement, adds relevance points from the questionnaire and confirmed FitMao values, then orders the measurements by final score. This calculation explains the ranking; it is not a health diagnosis.
+            FitStart applies the existing deterministic scoring model to supported FitMao measurements and stored assessment context, then orders the measurements by final score. This view shows the resulting ranking without repeating screening responses. It is not a health diagnosis.
           </p>
           <div className="space-y-2">
             {metrics.map((metric, index) => (
@@ -39,13 +39,6 @@ export default function CalculationDetails({ mainFocus, topPriorities = [], othe
                     <strong className="ml-2 text-xs font-display text-surface-900 dark:text-white">{metric.title}</strong>
                   </div>
                   <span className="rounded-lg bg-white px-2 py-1 text-[11px] font-mono font-bold text-brand-700 shadow-sm dark:bg-surface-900 dark:text-brand-300">{metric.finalScore ?? metric.currentScore ?? 0} pts</span>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {(metric.contributingFactors || []).map((factor, factorIndex) => (
-                    <span key={`${factor.category}-${factorIndex}`} className="rounded-full border border-surface-200 bg-white px-2 py-1 text-[10px] text-surface-600 dark:border-surface-700 dark:bg-surface-900 dark:text-surface-300">
-                      {factor.category}: {factor.weight > 0 ? '+' : ''}{factor.weight}
-                    </span>
-                  ))}
                 </div>
               </div>
             ))}

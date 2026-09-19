@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext({
-  theme: 'light',
+  theme: 'dark',
   toggleTheme: () => {},
   setTheme: () => {},
-  isDark: false
+  isDark: true
 });
 
 export function getInitialTheme() {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   try {
     const saved = localStorage.getItem('fitstart_theme');
     if (saved === 'dark' || saved === 'light') return saved;
@@ -16,7 +16,7 @@ export function getInitialTheme() {
       return 'dark';
     }
   } catch (_) {}
-  return 'light';
+  return 'dark';
 }
 
 export function applyTheme(theme) {
@@ -67,10 +67,10 @@ export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
     return {
-      theme: 'light',
+      theme: 'dark',
       toggleTheme: () => {},
       setTheme: () => {},
-      isDark: false
+      isDark: true
     };
   }
   return context;

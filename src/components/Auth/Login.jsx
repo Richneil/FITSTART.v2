@@ -98,10 +98,10 @@ export default function Login({ onLoginSuccess }) {
     return (
       <div className="min-h-[calc(100vh-80px)] flex flex-col justify-center p-4 sm:p-6 max-w-md mx-auto w-full font-sans animate-fade-in pb-20">
         <div className="text-center mb-6">
-          <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-sm">
+          <div className="w-14 h-14 bg-brand-100 dark:bg-brand-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-brand-200 dark:border-brand-700 text-brand-500 dark:text-brand-400 shadow-sm">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <span className="text-xs font-display font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1 block">
+          <span className="text-xs font-display font-bold text-surface-800 dark:text-brand-400 uppercase tracking-wider mb-1 block">
             Account Security
           </span>
           <h1 className="text-2xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
@@ -142,9 +142,9 @@ export default function Login({ onLoginSuccess }) {
             <button
               type="button"
               onClick={() => setTwoFactorCode('123456')}
-              className="w-full py-2 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-xl text-[11px] font-display font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-2 bg-brand-100 dark:bg-brand-950/60 hover:bg-brand-100 dark:hover:bg-brand-800/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-700 rounded-xl text-[11px] font-display font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <Sparkles className="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" />
               Demo: Quick-Fill Code (123456)
             </button>
           </div>
@@ -201,7 +201,7 @@ export default function Login({ onLoginSuccess }) {
     <div className="min-h-[calc(100vh-80px)] flex flex-col justify-center p-4 sm:p-6 max-w-md mx-auto w-full font-sans pb-24">
       
       {/* 3-Slide Landing Carousel */}
-      <div className="card p-5 sm:p-6 mb-6 bg-gradient-to-br from-brand-50/60 via-white to-surface-50 dark:from-surface-900 dark:via-surface-900 dark:to-surface-850 border border-brand-200/60 dark:border-surface-800 shadow-card text-center relative overflow-hidden transition-all duration-300">
+      <div className="card p-5 sm:p-6 mb-6 bg-surface-900 border border-brand-200/60 dark:border-surface-800 shadow-card text-center relative overflow-hidden transition-all duration-300">
         <div className="w-12 h-12 bg-brand-500/10 dark:bg-brand-400/10 rounded-2xl flex items-center justify-center mx-auto mb-3 text-brand-600 dark:text-brand-400 border border-brand-500/20">
           <SlideIcon className="w-6 h-6" />
         </div>
@@ -234,7 +234,7 @@ export default function Login({ onLoginSuccess }) {
           Sign In to FitStart
         </h1>
         <p className="text-xs text-surface-500 dark:text-surface-400 mt-1">
-          Access your saved assessments and member history at KSYN Fitness Alabang.
+          Access your saved FitStart assessments and member history.
         </p>
       </div>
 

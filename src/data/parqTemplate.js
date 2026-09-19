@@ -70,7 +70,7 @@ export const parqTemplate = {
     {
       id: 'activity_profile',
       title: '3. Main Activity Style',
-      subtitle: 'Which single exercise style best matches your routine at KSYN Fitness? (Choose 1)',
+      subtitle: 'Which single exercise style best matches your current routine? (Choose 1)',
       field: 'activityCategory',
       type: 'singleselect',
       options: [

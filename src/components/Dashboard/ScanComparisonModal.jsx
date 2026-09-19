@@ -122,7 +122,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
   let recompositionVerdict = {
     title: 'Assessment changes recorded',
     desc: 'The measurements below show the difference between your selected FitMao assessments.',
-    color: 'bg-teal-50 dark:bg-teal-950/40 border-teal-200 dark:border-teal-800 text-teal-900 dark:text-teal-200'
+    color: 'bg-brand-50 dark:bg-brand-300/10 border-brand-200 dark:border-brand-300/30 text-brand-900 dark:text-brand-100'
   };
 
   if (fatDropped && musclePreserved) {
@@ -141,7 +141,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
     recompositionVerdict = {
       title: 'Skeletal muscle increased',
       desc: `Skeletal Muscle Mass changed by +${muscleDelta.diff} kg between these assessments.`,
-      color: 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-950 dark:text-indigo-200'
+      color: 'bg-brand-50 dark:bg-brand-300/10 border-brand-300 dark:border-brand-300/30 text-brand-950 dark:text-brand-100'
     };
   }
 
@@ -152,7 +152,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
         {/* Header */}
         <div className="flex justify-between items-start mb-4 pb-3 border-b border-surface-200 dark:border-surface-800">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-display font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-display font-bold text-brand-600 dark:text-brand-300 uppercase tracking-wider mb-1">
               <Layers className="w-4 h-4" /> Assessment Comparison
             </div>
             <h2 className="text-2xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
@@ -180,9 +180,9 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
               ))}
             </select>
           </label>
-          <label className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-subtle">
-            <span className="text-[10px] font-display font-bold text-indigo-600 dark:text-indigo-400 uppercase block">Later assessment</span>
-            <select value={followUpIdx} onChange={(event) => setFollowUpIdx(Number(event.target.value))} className="mt-1 w-full bg-transparent text-xs font-display font-bold text-indigo-950 outline-none dark:text-indigo-200">
+          <label className="p-2.5 bg-white dark:bg-surface-900 rounded-xl border border-brand-200 dark:border-brand-300/30 shadow-subtle">
+            <span className="text-[10px] font-display font-bold text-brand-600 dark:text-brand-300 uppercase block">Later assessment</span>
+            <select value={followUpIdx} onChange={(event) => setFollowUpIdx(Number(event.target.value))} className="mt-1 w-full bg-transparent text-xs font-display font-bold text-surface-950 outline-none dark:text-brand-100">
               {sorted.map((assessment, index) => (
                 <option key={assessment.id} value={index}>{new Date(assessment.assessed_date || assessment.created_at).toLocaleDateString()}</option>
               ))}
@@ -193,7 +193,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
         {/* Recomposition Verdict Banner */}
         <div className={`p-4 rounded-2xl border mb-4 animate-fade-in ${recompositionVerdict.color}`}>
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-300" />
             <h4 className="font-display font-extrabold text-sm tracking-tight">{recompositionVerdict.title}</h4>
           </div>
           <p className="text-xs font-medium leading-relaxed">
@@ -266,12 +266,12 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
           <div className="p-3.5 bg-surface-50 dark:bg-surface-800/60 rounded-2xl border border-surface-200 dark:border-surface-700 flex items-center justify-between">
             <div>
               <span className="text-xs font-display font-semibold text-surface-800 dark:text-surface-200 flex items-center gap-1.5">
-                <Droplet className="w-3.5 h-3.5 text-blue-500" /> Body Water
+                <Droplet className="w-3.5 h-3.5 text-brand-400" /> Body Water
               </span>
               <span className="text-[11px] text-surface-400 dark:text-surface-500 font-mono">{waterDelta.a} → {waterDelta.b}</span>
             </div>
             <div className={`text-xs font-mono font-bold px-2.5 py-1 rounded-xl flex items-center gap-1
-              ${waterDelta.diff > 0 ? 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300' : 'bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300'}`}>
+              ${waterDelta.diff > 0 ? 'bg-brand-100 dark:bg-brand-300/10 text-brand-800 dark:text-brand-200' : 'bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300'}`}>
               {waterDelta.diffFormatted}
             </div>
           </div>
@@ -280,7 +280,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
           <div className="p-3.5 bg-surface-50 dark:bg-surface-800/60 rounded-2xl border border-surface-200 dark:border-surface-700 flex items-center justify-between">
             <div>
               <span className="text-xs font-display font-semibold text-surface-800 dark:text-surface-200 flex items-center gap-1.5">
-                <HeartPulse className="w-3.5 h-3.5 text-rose-500" /> Basal Metabolic Rate (BMR)
+                <HeartPulse className="w-3.5 h-3.5 text-brand-400" /> Basal Metabolic Rate (BMR)
               </span>
               <span className="text-[11px] text-surface-400 dark:text-surface-500 font-mono">{bmrDelta.a} → {bmrDelta.b}</span>
             </div>

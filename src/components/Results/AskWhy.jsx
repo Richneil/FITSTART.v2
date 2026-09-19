@@ -7,22 +7,13 @@ import {
 
 const CATEGORY_COLORS = {
   'Baseline': 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border-surface-200 dark:border-surface-700',
-  'Primary Goal': 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800',
-  'Secondary Goal': 'bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-200 border-teal-200 dark:border-teal-800',
-  'Activity Style': 'bg-brand-50 dark:bg-brand-950/60 text-brand-800 dark:text-brand-200 border-brand-200 dark:border-brand-800',
-  'Availability': 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-200 border-indigo-200 dark:border-indigo-800',
-  'Daily Lifestyle': 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 border-amber-200 dark:border-amber-800',
-  'Nutrition Pattern': 'bg-orange-50 dark:bg-orange-950/60 text-orange-800 dark:text-orange-200 border-orange-200 dark:border-orange-800',
-  'Hydration': 'bg-cyan-50 dark:cyan-950/60 text-cyan-800 dark:text-cyan-200 border-cyan-200 dark:border-cyan-800',
-  'Safety & History': 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-200 border-rose-200 dark:border-rose-800',
-  'BIA Scan Result': 'bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-200 border-purple-200 dark:border-purple-800'
+  'BIA Scan Result': 'bg-brand-100 dark:bg-brand-400/10 text-surface-900 dark:text-brand-200 border-brand-200 dark:border-brand-500/30'
 };
 
 export default function AskWhy({ metric, rankLabel, onClose }) {
   if (!metric) return null;
 
-  const factors = metric.contributingFactors || [];
-  const steps = metric.steps || [];
+  const factors = (metric.contributingFactors || []).filter((factor) => ['Baseline', 'BIA Scan Result'].includes(factor.category));
   const totalScore = metric.finalScore || metric.currentScore || metric.baseScore || 0;
 
   return (
@@ -100,24 +91,9 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
                 );
               })
             ) : (
-              steps.map((step, idx) => (
-                <div 
-                  key={idx}
-                  className="p-2.5 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-700/60 flex items-start justify-between gap-3 text-xs"
-                >
-                  <div>
-                    <span className="text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border bg-surface-100 text-surface-600">
-                      Rule {idx + 1}
-                    </span>
-                    <p className="text-surface-800 dark:text-surface-200 text-xs leading-snug font-medium mt-1">
-                      {step.reason}
-                    </p>
-                  </div>
-                  <span className="font-mono font-bold text-brand-600 dark:text-brand-400 shrink-0 text-xs">
-                    {step.delta}
-                  </span>
-                </div>
-              ))
+              <div className="rounded-xl border border-surface-200 bg-surface-50 p-3 text-xs leading-relaxed text-surface-500 dark:border-surface-700 dark:bg-surface-800/50 dark:text-surface-400">
+                Measurement-based details are shown here. Personal screening responses remain in their dedicated assessment step.
+              </div>
             )}
           </div>
         </div>

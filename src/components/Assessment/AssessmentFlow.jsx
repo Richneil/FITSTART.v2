@@ -111,7 +111,7 @@ export default function AssessmentFlow({ user }) {
               Let’s find your <span className="text-brand-600 dark:text-brand-400">starting point</span>
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-surface-500 dark:text-surface-400 max-w-xl">
-              For this prototype, FitStart uses a prepared FitMao assessment and your questionnaire answers to identify which measurements are most relevant to your starting goal.
+              For this prototype, FitStart uses a prepared FitMao assessment and the existing assessment flow to identify which measurements are most relevant to your starting point.
             </p>
           </section>
 
@@ -128,7 +128,7 @@ export default function AssessmentFlow({ user }) {
               <div>
                 <strong className="block text-sm font-display text-surface-900 dark:text-white">Prototype FitMao assessment is ready</strong>
                 <p className="mt-1 text-xs leading-relaxed text-surface-600 dark:text-surface-300">
-                  Raymund Santos’s sample FitMao measurements will be used during testing. You only need to answer the questionnaire.
+                  Raymund Santos’s sample FitMao measurements will be used during testing. Continue through the guided assessment steps.
                 </p>
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function AssessmentFlow({ user }) {
           <h2 className="mb-3 text-[11px] font-display font-bold uppercase tracking-wider text-surface-500 dark:text-surface-400">What we’ll cover</h2>
           <div className="space-y-3">
             {[
-              [ShieldCheck, 'Quick safety check', '7 simple yes/no questions — takes under a minute'],
+              [ShieldCheck, 'Guided assessment', 'Complete each section at your own pace'],
               [Target, 'Tell us about yourself', 'Choose your goals, activity style, schedule, and common challenges']
             ].map(([Icon, title, description]) => (
               <div key={title} className="card p-4 bg-white dark:bg-surface-900 rounded-3xl border border-surface-200 dark:border-surface-800 flex items-center gap-4">
@@ -158,7 +158,7 @@ export default function AssessmentFlow({ user }) {
           </div>
 
           <button type="button" onClick={() => setStep('parq')} className="btn-primary mt-7 min-h-[52px]">
-            Start Questionnaire
+            Continue Assessment
           </button>
         </main>
       )}

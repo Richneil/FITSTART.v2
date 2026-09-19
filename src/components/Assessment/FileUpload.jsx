@@ -114,9 +114,9 @@ export default function FileUpload({ onFileProcessed, onOpenCamera, onError }) {
       <button
         type="button"
         onClick={onOpenCamera}
-        className="w-full py-3 px-4 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 rounded-2xl text-xs font-display font-extrabold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+        className="w-full py-3 px-4 bg-brand-100 dark:bg-brand-950/50 hover:bg-brand-100 dark:hover:bg-brand-800/60 text-brand-700 dark:text-brand-200 border border-brand-200 dark:border-brand-700 rounded-2xl text-xs font-display font-extrabold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
       >
-        <Camera className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+        <Camera className="w-4 h-4 text-brand-500 dark:text-brand-400" />
         <span>Open Live Camera Viewfinder (Scan QR Directly)</span>
       </button>
     </div>

@@ -4,6 +4,7 @@ import { parseQrPayload, decodeQrFromImage } from '../../utils/qrParser.js';
 import { DEFAULT_EXTRACTED } from '../../data/demoAssessments.js';
 import CameraCapture from './CameraCapture.jsx';
 import AssessmentPreview from './AssessmentPreview.jsx';
+import PrivacyUploadModal from './PrivacyUploadModal.jsx';
 
 const REFERENCE_RAW = {
   ...DEFAULT_EXTRACTED,
@@ -42,6 +43,10 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
   const [extractedData, setExtractedData] = useState({ ...DEFAULT_EXTRACTED });
   const [errorMsg, setErrorMsg] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
+  const [pendingInputChoice, setPendingInputChoice] = useState(null);
+  const [pendingPastedFile, setPendingPastedFile] = useState(null);
 
   const handleFileProcessed = (_dataUrl, rawQr, inputSource = 'uploaded_qr') => {
     setErrorMsg('');
@@ -57,8 +62,7 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
     setTimeout(() => setStage('review'), 800);
   };
 
-  const handleFileSelection = (event) => {
-    const file = event.target.files?.[0];
+  const processImageFile = (file, inputSource = 'uploaded_qr') => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       setErrorMsg('Please choose a photo or screenshot in an image format.');
@@ -67,11 +71,53 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
     const reader = new FileReader();
     reader.onload = () => {
       const image = new window.Image();
-      image.onload = async () => handleFileProcessed(reader.result, await decodeQrFromImage(image));
+      image.onload = async () => handleFileProcessed(reader.result, await decodeQrFromImage(image), inputSource);
       image.onerror = () => setErrorMsg('That image could not be read. Please choose another file.');
       image.src = reader.result;
     };
     reader.readAsDataURL(file);
+  };
+
+  const requestPrivacyAcknowledgment = (choice, pastedFile = null) => {
+    setPendingInputChoice(choice);
+    setPendingPastedFile(pastedFile);
+    setPrivacyAcknowledged(false);
+    setPrivacyOpen(true);
+  };
+
+  const cancelPrivacy = () => {
+    setPrivacyOpen(false);
+    setPrivacyAcknowledged(false);
+    setPendingInputChoice(null);
+    setPendingPastedFile(null);
+  };
+
+  const continueAfterPrivacy = () => {
+    if (!privacyAcknowledged) return;
+    const choice = pendingInputChoice;
+    const pastedFile = pendingPastedFile;
+    setPrivacyOpen(false);
+    setPendingInputChoice(null);
+    setPendingPastedFile(null);
+
+    if (pastedFile) {
+      processImageFile(pastedFile, 'uploaded_qr');
+      return;
+    }
+    if (prototypeMode) {
+      handlePrototypeCapture(choice);
+      return;
+    }
+    if (choice === 'upload') {
+      requestAnimationFrame(() => fileInputRef.current?.click());
+      return;
+    }
+    setCameraActive(true);
+  };
+
+  const handleFileSelection = (event) => {
+    const file = event.target.files?.[0];
+    processImageFile(file, 'uploaded_qr');
     event.target.value = '';
   };
 
@@ -97,15 +143,7 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
   };
 
   const handleInputChoice = (choice) => {
-    if (prototypeMode) {
-      handlePrototypeCapture(choice);
-      return;
-    }
-    if (choice === 'upload') {
-      fileInputRef.current?.click();
-      return;
-    }
-    setCameraActive(true);
+    requestPrivacyAcknowledgment(choice);
   };
 
   const handleCameraCapture = (dataUrl, rawQr) => {
@@ -123,17 +161,7 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
       if (!file) return;
 
       event.preventDefault();
-      const reader = new FileReader();
-      reader.onload = () => {
-        const image = new window.Image();
-        image.onload = async () => {
-          const rawQr = await decodeQrFromImage(image);
-          handleFileProcessed(reader.result, rawQr);
-        };
-        image.onerror = () => setErrorMsg('That pasted image could not be read. Try another image.');
-        image.src = reader.result;
-      };
-      reader.readAsDataURL(file);
+      requestPrivacyAcknowledgment('upload', file);
     };
 
     window.addEventListener('paste', handlePaste);
@@ -201,12 +229,12 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <span className="block text-[10px] text-surface-500 dark:text-surface-400">Step 1 of 3</span>
-            <strong className="block text-xs font-display text-surface-900 dark:text-white">Your FitMao Results</strong>
+            <span className="block text-[10px] text-surface-500 dark:text-surface-400">FitMao report</span>
+            <strong className="block text-xs font-display text-surface-900 dark:text-white">Secure assessment input</strong>
           </div>
         </div>
-        <div className="h-1 rounded-full bg-surface-200 dark:bg-surface-800 overflow-hidden mb-6">
-          <span className="block h-full w-1/3 rounded-full bg-brand-600" />
+        <div className="h-1 rounded-full bg-white/10 overflow-hidden mb-6">
+          <span className="block h-full w-1/3 rounded-full bg-brand-300" />
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
           {stage === 'review' ? 'Verify Scanned Assessment' : 'Add your FitMao assessment'}
@@ -250,15 +278,15 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
                   key={title}
                   type="button"
                   onClick={() => handleInputChoice(choice)}
-                  className="card w-full p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl flex items-center gap-4 text-left hover:border-brand-300 dark:hover:border-brand-700 transition-colors"
+                  className="card w-full p-4 bg-surface-900 border border-white/10 rounded-3xl flex items-center gap-4 text-left hover:border-brand-300/50 transition-colors"
                 >
-                  <span className="w-11 h-11 rounded-2xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+                  <span className="w-11 h-11 rounded-2xl bg-brand-300/10 text-brand-300 flex items-center justify-center shrink-0">
                     <Icon className="w-5 h-5" />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-2">
                       <strong className="text-sm font-display text-surface-900 dark:text-white">{title}</strong>
-                      {badge && <span className="rounded-full bg-brand-600 text-white px-2 py-0.5 text-[9px] font-display font-bold">{badge}</span>}
+                      {badge && <span className="rounded-full bg-brand-300 text-surface-950 px-2 py-0.5 text-[9px] font-display font-bold">{badge}</span>}
                     </span>
                     <span className="mt-0.5 block text-xs text-surface-500 dark:text-surface-400">{description}</span>
                   </span>
@@ -287,10 +315,10 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
       )}
 
       {stage === 'scanning' && (
-        <div className="card p-8 bg-white dark:bg-surface-900 text-center my-auto shadow-xl border border-surface-200 dark:border-surface-800 animate-fade-in">
+        <div className="card p-8 bg-surface-900 text-center my-auto shadow-xl border border-white/10 animate-fade-in">
           <div className="w-20 h-20 bg-brand-50 dark:bg-brand-950/60 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-brand-200 dark:border-brand-800 relative overflow-hidden">
             <QrCode className="w-10 h-10 text-brand-600 dark:text-brand-400" />
-            <div className="absolute inset-x-0 h-1 bg-brand-500 shadow-[0_0_8px_rgba(47,115,101,0.8)] animate-scan-line" />
+            <div className="absolute inset-x-0 h-1 bg-brand-500 shadow-[0_0_10px_rgba(250,204,21,0.55)] animate-scan-line" />
           </div>
           <h3 className="font-display font-bold text-surface-900 dark:text-white text-base mb-1">
             {prototypeMode ? 'Reading Your FitMao Report...' : 'Analyzing Assessment Data...'}
@@ -310,6 +338,14 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
           onConfirm={handleConfirmAndContinue}
         />
       )}
+
+      <PrivacyUploadModal
+        open={privacyOpen}
+        acknowledged={privacyAcknowledged}
+        onAcknowledgedChange={setPrivacyAcknowledged}
+        onCancel={cancelPrivacy}
+        onContinue={continueAfterPrivacy}
+      />
     </div>
   );
 }

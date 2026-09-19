@@ -14,6 +14,8 @@ import {
   Target,
   UserRound
 } from 'lucide-react';
+import FitStartLogo from '../FitStartLogo.jsx';
+
 
 const benefits = [
   {
@@ -41,8 +43,8 @@ const steps = [
   },
   {
     icon: MessageCircleQuestion,
-    title: 'Answer the Questionnaires',
-    description: 'Complete the safety check and tell us about your goals and fitness context.'
+    title: 'Complete Your Assessment',
+    description: 'Complete the guided assessment and add your goals and fitness context.'
   },
   {
     icon: Target,
@@ -69,31 +71,32 @@ export default function LandingPage() {
   }, [location.hash]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-surface-50 dark:bg-surface-950 transition-colors duration-200">
+    <main className="relative min-h-screen overflow-hidden bg-[#08090b] text-white transition-colors duration-200">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[720px] overflow-hidden">
         <div className="absolute left-[14%] top-16 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl dark:bg-brand-500/10" />
-        <div className="absolute right-[12%] top-20 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl dark:bg-emerald-400/10" />
+        <div className="absolute right-[12%] top-20 h-80 w-80 rounded-full bg-brand-300/10 blur-3xl dark:bg-brand-300/10" />
       </div>
 
       <section className="relative mx-auto grid max-w-5xl gap-10 px-4 pb-10 pt-12 sm:px-8 sm:pt-16 lg:grid-cols-[0.98fr_1.02fr] lg:items-center lg:gap-14 lg:pb-14 lg:pt-20">
         <div className="animate-slide-up">
+          <FitStartLogo className="mb-8" />
           <p className="mb-4 text-[11px] font-display font-bold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-300">
             Personalized fitness guidance
           </p>
           <h1 className="max-w-2xl text-4xl font-display font-extrabold leading-[1.04] tracking-tight text-surface-950 dark:text-white sm:text-5xl">
             Understand your body.
-            <span className="mt-2 block bg-gradient-to-r from-brand-600 to-emerald-400 bg-clip-text text-transparent">
+            <span className="mt-2 block text-brand-300">
               Know where to start.
             </span>
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-7 text-surface-600 dark:text-surface-300 sm:text-base">
-            FitStart combines your FitMao measurements with your health readiness, goals, and lifestyle to identify the fitness priorities that matter most.
+            FitStart turns your FitMao assessment into a clear starting point so you can understand which measurements deserve attention first.
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/assessment"
-              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-brand-600 px-6 text-sm font-display font-bold text-white shadow-lg shadow-brand-900/10 transition-all hover:bg-brand-500 hover:shadow-xl active:scale-[0.98]"
+              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-brand-300 px-6 text-sm font-display font-bold text-surface-950 shadow-lg shadow-brand-900/10 transition-all hover:bg-brand-200 hover:shadow-xl active:scale-[0.98]"
             >
               Start Your Assessment <ArrowRight className="h-4 w-4" />
             </Link>
@@ -162,7 +165,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-200 dark:bg-surface-700">
-                    <span className="block h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400" style={{ width }} />
+                    <span className="block h-full rounded-full bg-brand-300" style={{ width }} />
                   </div>
                 </div>
               ))}
@@ -212,7 +215,7 @@ export default function LandingPage() {
 
         <div className="mt-6 flex items-start gap-2 rounded-2xl border border-brand-100 bg-brand-50/70 px-4 py-3 text-xs leading-relaxed text-surface-600 dark:border-brand-900 dark:bg-brand-950/30 dark:text-surface-300">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-600 dark:text-brand-400" />
-          <p>The scan and upload actions are prototype placeholders. Either option reads the prepared assessment before opening the questionnaire.</p>
+          <p>The scan and upload actions are prototype placeholders. Either option reads the prepared assessment before continuing through the assessment flow.</p>
         </div>
       </section>
 
@@ -222,10 +225,10 @@ export default function LandingPage() {
             <p className="text-[10px] font-display font-bold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-300">Contact us</p>
             <h2 className="mt-2 text-xl font-display font-extrabold text-surface-950 dark:text-white">Need help before you begin?</h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-surface-500 dark:text-surface-400">
-              Ask the KSYN Fitness Alabang team for assistance with your FitMao assessment or report.
+              Ask your fitness professional for assistance with your FitMao assessment or report.
             </p>
           </div>
-          <Link to="/assessment" className="inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 text-sm font-display font-bold text-white transition-colors hover:bg-brand-500">
+          <Link to="/assessment" className="inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-2xl bg-brand-300 px-5 text-sm font-display font-bold text-surface-950 transition-colors hover:bg-brand-200">
             Start Assessment <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

@@ -55,7 +55,7 @@ export default function MainFocusCard({ mainFocus }) {
 
       <h2 className="relative z-10 mb-4 text-2xl font-display font-extrabold tracking-tight text-surface-900 dark:text-white sm:text-3xl">Your Main Focus</h2>
 
-      <div className="relative z-10 rounded-3xl border border-accent-200 bg-gradient-to-br from-accent-50/90 to-orange-50/50 p-5 shadow-subtle dark:border-accent-800/60 dark:from-accent-950/50 dark:to-surface-800/80 sm:p-6">
+      <div className="relative z-10 rounded-3xl border border-accent-200 bg-surface-900 p-5 shadow-subtle dark:border-accent-800/60  sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-accent-300 bg-accent-100 shadow-sm dark:border-accent-700 dark:bg-accent-900/60 sm:h-16 sm:w-16">

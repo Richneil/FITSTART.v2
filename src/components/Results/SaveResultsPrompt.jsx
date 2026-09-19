@@ -25,7 +25,7 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
   };
 
   return (
-    <div className="card p-6 sm:p-8 bg-gradient-to-br from-brand-50/80 via-white to-surface-50 dark:from-surface-900 dark:via-surface-900 dark:to-surface-850 border border-brand-200 dark:border-brand-900/60 rounded-3xl shadow-card font-sans space-y-5">
+    <div className="card p-6 sm:p-8 bg-surface-900  border border-brand-200 dark:border-brand-900/60 rounded-3xl shadow-card font-sans space-y-5">
       
       {/* Header */}
       <div className="text-center max-w-md mx-auto space-y-2">
@@ -46,28 +46,28 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
       {/* Value Checklist */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg mx-auto text-xs text-surface-700 dark:text-surface-300">
         <div className="p-3 bg-white/90 dark:bg-surface-800/70 rounded-2xl border border-surface-200/80 dark:border-surface-700/60 flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+          <div className="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950/80 text-surface-800 dark:text-brand-300 flex items-center justify-center shrink-0">
             <Check className="w-3.5 h-3.5 stroke-[3]" />
           </div>
           <span className="font-medium text-surface-900 dark:text-white">Save this assessment</span>
         </div>
 
         <div className="p-3 bg-white/90 dark:bg-surface-800/70 rounded-2xl border border-surface-200/80 dark:border-surface-700/60 flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+          <div className="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950/80 text-surface-800 dark:text-brand-300 flex items-center justify-center shrink-0">
             <Check className="w-3.5 h-3.5 stroke-[3]" />
           </div>
           <span className="font-medium text-surface-900 dark:text-white">Revisit your results later</span>
         </div>
 
         <div className="p-3 bg-white/90 dark:bg-surface-800/70 rounded-2xl border border-surface-200/80 dark:border-surface-700/60 flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+          <div className="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950/80 text-surface-800 dark:text-brand-300 flex items-center justify-center shrink-0">
             <Check className="w-3.5 h-3.5 stroke-[3]" />
           </div>
           <span className="font-medium text-surface-900 dark:text-white">Compare future assessments</span>
         </div>
 
         <div className="p-3 bg-white/90 dark:bg-surface-800/70 rounded-2xl border border-surface-200/80 dark:border-surface-700/60 flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+          <div className="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950/80 text-surface-800 dark:text-brand-300 flex items-center justify-center shrink-0">
             <Check className="w-3.5 h-3.5 stroke-[3]" />
           </div>
           <span className="font-medium text-surface-900 dark:text-white">Keep your FitStart history</span>

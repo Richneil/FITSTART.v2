@@ -19,7 +19,7 @@
       "last_name": "Member",
       "google_id": "google_oauth_123456789",
       "created_at": "2026-09-02T13:54:31.063Z",
-      "updated_at": "2026-09-02T13:54:31.063Z"
+      "updated_at": "2026-09-19T05:46:53.500Z"
     },
     {
       "id": 3,
@@ -1787,6 +1787,274 @@
       "assessed_date": "2026-09-05T01:00:00.000Z",
       "created_at": "2026-09-18T17:06:58.813Z",
       "updated_at": "2026-09-18T17:13:45.325Z"
+    },
+    {
+      "id": 39,
+      "user_id": 1,
+      "fitMao_report_data": {
+        "memberName": "Raymund Santos",
+        "gender": "Male",
+        "age": "23 yrs",
+        "height": "170 cm",
+        "testDate": "2026-09-05",
+        "testTime": "09:00 AM",
+        "scannerDevice": "FitMao 3D Scanner Pro",
+        "gymLocation": "FitZone Batangas",
+        "healthScore": "84 / 100",
+        "bodyType": "Athletic Standard",
+        "bodyAge": "22 yrs",
+        "weight": "63.7 kg",
+        "targetWeight": "63.5 kg",
+        "weightControl": "-0.2 kg",
+        "bodyFatPercentage": "24.8%",
+        "fatMass": "15.8 kg",
+        "fatFreeMass": "47.9 kg",
+        "skeletalMuscleMass": "32.4 kg",
+        "muscleMass": "45.8 kg",
+        "fatControl": "-0.8 kg",
+        "muscleControl": "+0.6 kg",
+        "bmi": "22.0",
+        "visceralFat": "Level 7",
+        "bmr": "1,620 kcal",
+        "bodyWater": "34.9 L",
+        "bodyWaterRatio": "54.8%",
+        "proteinMass": "10.4 kg",
+        "boneMineralContent": "3.1 kg",
+        "waistToHipRatio": "0.82",
+        "dataSource": "Prototype FitMao assessment data",
+        "correctedFields": []
+      },
+      "parq_answers": {
+        "hasHeartCondition": "no",
+        "hasChestPainActivity": "no",
+        "hasChestPainRest": "no",
+        "hasDizziness": "no",
+        "hasBoneJointProblem": "no",
+        "hasMedications": "no",
+        "hasOtherMedicalReason": "no",
+        "primaryGoal": "fat_loss",
+        "secondaryGoal": "athletic_performance",
+        "goals": [
+          "fat_loss",
+          "athletic_performance"
+        ],
+        "goal": "fat_loss",
+        "activityCategory": "strength",
+        "activityCategories": [
+          "strength"
+        ],
+        "availability": "3-4",
+        "sessionDuration": "45_60",
+        "dailyStyle": "desk",
+        "nutritionPattern": "balanced",
+        "waterIntake": "moderate",
+        "barriers": "time",
+        "guidanceStyle": "trainer"
+      },
+      "assessed_date": "2026-09-05T01:00:00.000Z",
+      "created_at": "2026-09-19T05:14:46.189Z",
+      "updated_at": "2026-09-19T05:19:17.084Z"
+    },
+    {
+      "id": 40,
+      "user_id": 2,
+      "fitMao_report_data": {
+        "memberName": "Raymund Santos",
+        "gender": "Male",
+        "age": "23 yrs",
+        "height": "170 cm",
+        "testDate": "2026-09-05",
+        "testTime": "09:00 AM",
+        "scannerDevice": "FitMao 3D Scanner Pro",
+        "gymLocation": "FitZone Batangas",
+        "healthScore": "84 / 100",
+        "bodyType": "Athletic Standard",
+        "bodyAge": "22 yrs",
+        "weight": "63.7 kg",
+        "targetWeight": "63.5 kg",
+        "weightControl": "-0.2 kg",
+        "bodyFatPercentage": "24.8%",
+        "fatMass": "15.8 kg",
+        "fatFreeMass": "47.9 kg",
+        "skeletalMuscleMass": "32.4 kg",
+        "muscleMass": "45.8 kg",
+        "fatControl": "-0.8 kg",
+        "muscleControl": "+0.6 kg",
+        "bmi": "22.0",
+        "visceralFat": "Level 7",
+        "bmr": "1,620 kcal",
+        "bodyWater": "34.9 L",
+        "bodyWaterRatio": "54.8%",
+        "proteinMass": "10.4 kg",
+        "boneMineralContent": "3.1 kg",
+        "waistToHipRatio": "0.82",
+        "dataSource": "Prototype FitMao assessment data",
+        "correctedFields": []
+      },
+      "parq_answers": {
+        "hasHeartCondition": "no",
+        "hasChestPainActivity": "no",
+        "hasChestPainRest": "no",
+        "hasDizziness": "no",
+        "hasBoneJointProblem": "no",
+        "hasMedications": "no",
+        "hasOtherMedicalReason": "no",
+        "primaryGoal": "fat_loss",
+        "secondaryGoal": "muscle_gain",
+        "goals": [
+          "fat_loss",
+          "muscle_gain"
+        ],
+        "goal": "fat_loss",
+        "activityCategory": "strength",
+        "activityCategories": [
+          "strength"
+        ],
+        "availability": "3-4",
+        "sessionDuration": "45_60",
+        "dailyStyle": "desk",
+        "nutritionPattern": "balanced",
+        "waterIntake": "moderate",
+        "barriers": "time",
+        "guidanceStyle": "trainer"
+      },
+      "assessed_date": "2026-09-05T01:00:00.000Z",
+      "created_at": "2026-09-19T05:52:20.014Z",
+      "updated_at": "2026-09-19T05:53:22.150Z"
+    },
+    {
+      "id": 41,
+      "user_id": 2,
+      "fitMao_report_data": {
+        "memberName": "Raymund Santos",
+        "gender": "Male",
+        "age": "23 yrs",
+        "height": "170 cm",
+        "testDate": "2026-09-05",
+        "testTime": "09:00 AM",
+        "scannerDevice": "FitMao 3D Scanner Pro",
+        "gymLocation": "FitZone Batangas",
+        "healthScore": "84 / 100",
+        "bodyType": "Athletic Standard",
+        "bodyAge": "22 yrs",
+        "weight": "63.7 kg",
+        "targetWeight": "63.5 kg",
+        "weightControl": "-0.2 kg",
+        "bodyFatPercentage": "24.8%",
+        "fatMass": "15.8 kg",
+        "fatFreeMass": "47.9 kg",
+        "skeletalMuscleMass": "32.4 kg",
+        "muscleMass": "45.8 kg",
+        "fatControl": "-0.8 kg",
+        "muscleControl": "+0.6 kg",
+        "bmi": "22.0",
+        "visceralFat": "Level 7",
+        "bmr": "1,620 kcal",
+        "bodyWater": "34.9 L",
+        "bodyWaterRatio": "54.8%",
+        "proteinMass": "10.4 kg",
+        "boneMineralContent": "3.1 kg",
+        "waistToHipRatio": "0.82",
+        "dataSource": "Prototype FitMao assessment data",
+        "correctedFields": []
+      },
+      "parq_answers": {
+        "hasHeartCondition": "no",
+        "hasChestPainActivity": "no",
+        "hasChestPainRest": "no",
+        "hasDizziness": "no",
+        "hasBoneJointProblem": "no",
+        "hasMedications": "no",
+        "hasOtherMedicalReason": "no",
+        "primaryGoal": "fat_loss",
+        "secondaryGoal": "muscle_gain",
+        "goals": [
+          "fat_loss",
+          "muscle_gain"
+        ],
+        "goal": "fat_loss",
+        "activityCategory": "strength",
+        "activityCategories": [
+          "strength"
+        ],
+        "availability": "3-4",
+        "sessionDuration": "45_60",
+        "dailyStyle": "desk",
+        "nutritionPattern": "balanced",
+        "waterIntake": "moderate",
+        "barriers": "time",
+        "guidanceStyle": "trainer"
+      },
+      "assessed_date": "2026-09-05T01:00:00.000Z",
+      "created_at": "2026-09-19T17:53:10.484Z",
+      "updated_at": "2026-09-19T17:53:32.205Z"
+    },
+    {
+      "id": 42,
+      "user_id": null,
+      "fitMao_report_data": {
+        "memberName": "Raymund Santos",
+        "gender": "Male",
+        "age": "23 yrs",
+        "height": "170 cm",
+        "testDate": "2026-09-05",
+        "testTime": "09:00 AM",
+        "scannerDevice": "FitMao 3D Scanner Pro",
+        "gymLocation": "FitZone Batangas",
+        "healthScore": "84 / 100",
+        "bodyType": "Athletic Standard",
+        "bodyAge": "22 yrs",
+        "weight": "63.7 kg",
+        "targetWeight": "63.5 kg",
+        "weightControl": "-0.2 kg",
+        "bodyFatPercentage": "24.8%",
+        "fatMass": "15.8 kg",
+        "fatFreeMass": "47.9 kg",
+        "skeletalMuscleMass": "32.4 kg",
+        "muscleMass": "45.8 kg",
+        "fatControl": "-0.8 kg",
+        "muscleControl": "+0.6 kg",
+        "bmi": "22.0",
+        "visceralFat": "Level 7",
+        "bmr": "1,620 kcal",
+        "bodyWater": "34.9 L",
+        "bodyWaterRatio": "54.8%",
+        "proteinMass": "10.4 kg",
+        "boneMineralContent": "3.1 kg",
+        "waistToHipRatio": "0.82",
+        "dataSource": "Prototype FitMao assessment data",
+        "correctedFields": []
+      },
+      "parq_answers": {
+        "hasHeartCondition": "no",
+        "hasChestPainActivity": "no",
+        "hasChestPainRest": "no",
+        "hasDizziness": "no",
+        "hasBoneJointProblem": "no",
+        "hasMedications": "no",
+        "hasOtherMedicalReason": "no",
+        "primaryGoal": "fat_loss",
+        "secondaryGoal": "muscle_gain",
+        "goals": [
+          "fat_loss",
+          "muscle_gain"
+        ],
+        "goal": "fat_loss",
+        "activityCategory": "strength",
+        "activityCategories": [
+          "strength"
+        ],
+        "availability": "3-4",
+        "sessionDuration": "45_60",
+        "dailyStyle": "desk",
+        "nutritionPattern": "balanced",
+        "waterIntake": "moderate",
+        "barriers": "time",
+        "guidanceStyle": "trainer"
+      },
+      "assessed_date": "2026-09-05T01:00:00.000Z",
+      "created_at": "2026-09-19T17:56:16.992Z",
+      "updated_at": "2026-09-19T17:56:16.992Z"
     }
   ],
   "assessment_results": [
@@ -13520,6 +13788,1743 @@
       ],
       "change_log": [],
       "created_at": "2026-09-18T17:06:58.825Z"
+    },
+    {
+      "id": 37,
+      "profile_id": 39,
+      "scored_metrics": [
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "muscleMass",
+          "key": "skeletalMuscleMass",
+          "title": "Skeletal Muscle Mass",
+          "value": "32.4 kg",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Helps you follow changes in the muscles used for movement and strength.",
+          "currentScore": 6,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Activity Style",
+              "reason": "Your chosen workout style is resistance and strength training",
+              "subtotal": 6
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 3,
+              "reason": "Your chosen workout style is resistance and strength training"
+            }
+          ],
+          "reasons": [
+            "Your chosen workout style is resistance and strength training"
+          ],
+          "finalScore": 6
+        },
+        {
+          "id": "bmr",
+          "key": "bmr",
+          "title": "Basal Metabolic Rate",
+          "value": "1,620 kcal",
+          "available": true,
+          "baseScore": 2,
+          "desc": "An estimate of the energy your body uses each day while at rest.",
+          "currentScore": 5,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Primary Goal",
+              "reason": "BMR provides background information about your estimated resting energy use",
+              "subtotal": 4
+            },
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Activity Style",
+              "reason": "BMR adds energy-use context to a strength-training goal",
+              "subtotal": 5
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 2,
+              "reason": "BMR provides background information about your estimated resting energy use"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 1,
+              "reason": "BMR adds energy-use context to a strength-training goal"
+            }
+          ],
+          "reasons": [
+            "BMR provides background information about your estimated resting energy use",
+            "BMR adds energy-use context to a strength-training goal"
+          ],
+          "finalScore": 5
+        },
+        {
+          "id": "bodyWater",
+          "key": "bodyWater",
+          "title": "Body Water",
+          "value": "34.9 L",
+          "available": true,
+          "baseScore": 2,
+          "desc": "Shows FitMao’s estimate of the total amount of water in your body.",
+          "currentScore": 4,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Secondary Goal",
+              "reason": "Secondary objective: Athletic hydration & stamina",
+              "subtotal": 4
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Secondary Goal",
+              "weight": 2,
+              "reason": "Secondary objective: Athletic hydration & stamina"
+            }
+          ],
+          "reasons": [
+            "Secondary objective: Athletic hydration & stamina"
+          ],
+          "finalScore": 4
+        },
+        {
+          "id": "bmi",
+          "key": "bmi",
+          "title": "BMI",
+          "value": "22.0",
+          "available": true,
+          "baseScore": 1,
+          "desc": "A general weight-to-height screening value that is best read with other measurements.",
+          "currentScore": 1,
+          "steps": [
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 1
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 1,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 1
+        }
+      ],
+      "main_focus": {
+        "id": "bodyFat",
+        "key": "bodyFatPercentage",
+        "title": "Body Fat %",
+        "value": "24.8%",
+        "available": true,
+        "baseScore": 3,
+        "desc": "Shows how much of your total body weight is estimated to come from fat.",
+        "currentScore": 7,
+        "steps": [
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Baseline",
+            "reason": "Starting relevance for body-composition interpretation",
+            "subtotal": 3
+          },
+          {
+            "delta": "+4",
+            "deltaVal": 4,
+            "category": "Primary Goal",
+            "reason": "Your declared primary goal is fat reduction & body recomposition",
+            "subtotal": 7
+          }
+        ],
+        "contributingFactors": [
+          {
+            "category": "Baseline",
+            "weight": 3,
+            "reason": "Starting weight used consistently for every available measurement"
+          },
+          {
+            "category": "Primary Goal",
+            "weight": 4,
+            "reason": "Your declared primary goal is fat reduction & body recomposition"
+          }
+        ],
+        "reasons": [
+          "Your declared primary goal is fat reduction & body recomposition"
+        ],
+        "finalScore": 7
+      },
+      "top_priorities": [
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "muscleMass",
+          "key": "skeletalMuscleMass",
+          "title": "Skeletal Muscle Mass",
+          "value": "32.4 kg",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Helps you follow changes in the muscles used for movement and strength.",
+          "currentScore": 6,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Activity Style",
+              "reason": "Your chosen workout style is resistance and strength training",
+              "subtotal": 6
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 3,
+              "reason": "Your chosen workout style is resistance and strength training"
+            }
+          ],
+          "reasons": [
+            "Your chosen workout style is resistance and strength training"
+          ],
+          "finalScore": 6
+        }
+      ],
+      "change_log": [
+        {
+          "field": "primaryGoal",
+          "from": "fat_loss",
+          "to": "muscle_gain",
+          "timestamp": 1789794867456
+        },
+        {
+          "field": "primaryGoal",
+          "from": "muscle_gain",
+          "to": "health_longevity",
+          "timestamp": 1789794868087
+        },
+        {
+          "field": "primaryGoal",
+          "from": "health_longevity",
+          "to": "athletic_performance",
+          "timestamp": 1789794868645
+        },
+        {
+          "field": "primaryGoal",
+          "from": "athletic_performance",
+          "to": "posture_mobility",
+          "timestamp": 1789794869113
+        },
+        {
+          "field": "primaryGoal",
+          "from": "posture_mobility",
+          "to": "athletic_performance",
+          "timestamp": 1789794869754
+        },
+        {
+          "field": "primaryGoal",
+          "from": "athletic_performance",
+          "to": "health_longevity",
+          "timestamp": 1789794870154
+        },
+        {
+          "field": "primaryGoal",
+          "from": "health_longevity",
+          "to": "muscle_gain",
+          "timestamp": 1789794870594
+        },
+        {
+          "field": "primaryGoal",
+          "from": "muscle_gain",
+          "to": "fat_loss",
+          "timestamp": 1789794871029
+        }
+      ],
+      "created_at": "2026-09-19T05:14:46.242Z"
+    },
+    {
+      "id": 38,
+      "profile_id": 40,
+      "scored_metrics": [
+        {
+          "id": "muscleMass",
+          "key": "skeletalMuscleMass",
+          "title": "Skeletal Muscle Mass",
+          "value": "32.4 kg",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Helps you follow changes in the muscles used for movement and strength.",
+          "currentScore": 8,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Secondary Goal",
+              "reason": "Secondary objective: Muscle hypertrophy & strength",
+              "subtotal": 5
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Activity Style",
+              "reason": "Your chosen workout style is resistance and strength training",
+              "subtotal": 8
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Secondary Goal",
+              "weight": 2,
+              "reason": "Secondary objective: Muscle hypertrophy & strength"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 3,
+              "reason": "Your chosen workout style is resistance and strength training"
+            }
+          ],
+          "reasons": [
+            "Secondary objective: Muscle hypertrophy & strength",
+            "Your chosen workout style is resistance and strength training"
+          ],
+          "finalScore": 8
+        },
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "bmr",
+          "key": "bmr",
+          "title": "Basal Metabolic Rate",
+          "value": "1,620 kcal",
+          "available": true,
+          "baseScore": 2,
+          "desc": "An estimate of the energy your body uses each day while at rest.",
+          "currentScore": 5,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Primary Goal",
+              "reason": "BMR provides background information about your estimated resting energy use",
+              "subtotal": 4
+            },
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Activity Style",
+              "reason": "BMR adds energy-use context to a strength-training goal",
+              "subtotal": 5
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 2,
+              "reason": "BMR provides background information about your estimated resting energy use"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 1,
+              "reason": "BMR adds energy-use context to a strength-training goal"
+            }
+          ],
+          "reasons": [
+            "BMR provides background information about your estimated resting energy use",
+            "BMR adds energy-use context to a strength-training goal"
+          ],
+          "finalScore": 5
+        },
+        {
+          "id": "bodyWater",
+          "key": "bodyWater",
+          "title": "Body Water",
+          "value": "34.9 L",
+          "available": true,
+          "baseScore": 2,
+          "desc": "Shows FitMao’s estimate of the total amount of water in your body.",
+          "currentScore": 2,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 2
+        },
+        {
+          "id": "bmi",
+          "key": "bmi",
+          "title": "BMI",
+          "value": "22.0",
+          "available": true,
+          "baseScore": 1,
+          "desc": "A general weight-to-height screening value that is best read with other measurements.",
+          "currentScore": 1,
+          "steps": [
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 1
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 1,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 1
+        }
+      ],
+      "main_focus": {
+        "id": "muscleMass",
+        "key": "skeletalMuscleMass",
+        "title": "Skeletal Muscle Mass",
+        "value": "32.4 kg",
+        "available": true,
+        "baseScore": 3,
+        "desc": "Helps you follow changes in the muscles used for movement and strength.",
+        "currentScore": 8,
+        "steps": [
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Baseline",
+            "reason": "Starting relevance for body-composition interpretation",
+            "subtotal": 3
+          },
+          {
+            "delta": "+2",
+            "deltaVal": 2,
+            "category": "Secondary Goal",
+            "reason": "Secondary objective: Muscle hypertrophy & strength",
+            "subtotal": 5
+          },
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Activity Style",
+            "reason": "Your chosen workout style is resistance and strength training",
+            "subtotal": 8
+          }
+        ],
+        "contributingFactors": [
+          {
+            "category": "Baseline",
+            "weight": 3,
+            "reason": "Starting weight used consistently for every available measurement"
+          },
+          {
+            "category": "Secondary Goal",
+            "weight": 2,
+            "reason": "Secondary objective: Muscle hypertrophy & strength"
+          },
+          {
+            "category": "Activity Style",
+            "weight": 3,
+            "reason": "Your chosen workout style is resistance and strength training"
+          }
+        ],
+        "reasons": [
+          "Secondary objective: Muscle hypertrophy & strength",
+          "Your chosen workout style is resistance and strength training"
+        ],
+        "finalScore": 8
+      },
+      "top_priorities": [
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        }
+      ],
+      "change_log": [],
+      "created_at": "2026-09-19T05:52:20.048Z"
+    },
+    {
+      "id": 39,
+      "profile_id": 41,
+      "scored_metrics": [
+        {
+          "id": "muscleMass",
+          "key": "skeletalMuscleMass",
+          "title": "Skeletal Muscle Mass",
+          "value": "32.4 kg",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Helps you follow changes in the muscles used for movement and strength.",
+          "currentScore": 8,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Secondary Goal",
+              "reason": "Secondary objective: Muscle hypertrophy & strength",
+              "subtotal": 5
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Activity Style",
+              "reason": "Your chosen workout style is resistance and strength training",
+              "subtotal": 8
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Secondary Goal",
+              "weight": 2,
+              "reason": "Secondary objective: Muscle hypertrophy & strength"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 3,
+              "reason": "Your chosen workout style is resistance and strength training"
+            }
+          ],
+          "reasons": [
+            "Secondary objective: Muscle hypertrophy & strength",
+            "Your chosen workout style is resistance and strength training"
+          ],
+          "finalScore": 8
+        },
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "bmr",
+          "key": "bmr",
+          "title": "Basal Metabolic Rate",
+          "value": "1,620 kcal",
+          "available": true,
+          "baseScore": 2,
+          "desc": "An estimate of the energy your body uses each day while at rest.",
+          "currentScore": 5,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Primary Goal",
+              "reason": "BMR provides background information about your estimated resting energy use",
+              "subtotal": 4
+            },
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Activity Style",
+              "reason": "BMR adds energy-use context to a strength-training goal",
+              "subtotal": 5
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 2,
+              "reason": "BMR provides background information about your estimated resting energy use"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 1,
+              "reason": "BMR adds energy-use context to a strength-training goal"
+            }
+          ],
+          "reasons": [
+            "BMR provides background information about your estimated resting energy use",
+            "BMR adds energy-use context to a strength-training goal"
+          ],
+          "finalScore": 5
+        },
+        {
+          "id": "bodyWater",
+          "key": "bodyWater",
+          "title": "Body Water",
+          "value": "34.9 L",
+          "available": true,
+          "baseScore": 2,
+          "desc": "Shows FitMao’s estimate of the total amount of water in your body.",
+          "currentScore": 2,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 2
+        },
+        {
+          "id": "bmi",
+          "key": "bmi",
+          "title": "BMI",
+          "value": "22.0",
+          "available": true,
+          "baseScore": 1,
+          "desc": "A general weight-to-height screening value that is best read with other measurements.",
+          "currentScore": 1,
+          "steps": [
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 1
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 1,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 1
+        }
+      ],
+      "main_focus": {
+        "id": "muscleMass",
+        "key": "skeletalMuscleMass",
+        "title": "Skeletal Muscle Mass",
+        "value": "32.4 kg",
+        "available": true,
+        "baseScore": 3,
+        "desc": "Helps you follow changes in the muscles used for movement and strength.",
+        "currentScore": 8,
+        "steps": [
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Baseline",
+            "reason": "Starting relevance for body-composition interpretation",
+            "subtotal": 3
+          },
+          {
+            "delta": "+2",
+            "deltaVal": 2,
+            "category": "Secondary Goal",
+            "reason": "Secondary objective: Muscle hypertrophy & strength",
+            "subtotal": 5
+          },
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Activity Style",
+            "reason": "Your chosen workout style is resistance and strength training",
+            "subtotal": 8
+          }
+        ],
+        "contributingFactors": [
+          {
+            "category": "Baseline",
+            "weight": 3,
+            "reason": "Starting weight used consistently for every available measurement"
+          },
+          {
+            "category": "Secondary Goal",
+            "weight": 2,
+            "reason": "Secondary objective: Muscle hypertrophy & strength"
+          },
+          {
+            "category": "Activity Style",
+            "weight": 3,
+            "reason": "Your chosen workout style is resistance and strength training"
+          }
+        ],
+        "reasons": [
+          "Secondary objective: Muscle hypertrophy & strength",
+          "Your chosen workout style is resistance and strength training"
+        ],
+        "finalScore": 8
+      },
+      "top_priorities": [
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        }
+      ],
+      "change_log": [],
+      "created_at": "2026-09-19T17:53:10.498Z"
+    },
+    {
+      "id": 40,
+      "profile_id": 42,
+      "scored_metrics": [
+        {
+          "id": "muscleMass",
+          "key": "skeletalMuscleMass",
+          "title": "Skeletal Muscle Mass",
+          "value": "32.4 kg",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Helps you follow changes in the muscles used for movement and strength.",
+          "currentScore": 8,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Secondary Goal",
+              "reason": "Secondary objective: Muscle hypertrophy & strength",
+              "subtotal": 5
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Activity Style",
+              "reason": "Your chosen workout style is resistance and strength training",
+              "subtotal": 8
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Secondary Goal",
+              "weight": 2,
+              "reason": "Secondary objective: Muscle hypertrophy & strength"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 3,
+              "reason": "Your chosen workout style is resistance and strength training"
+            }
+          ],
+          "reasons": [
+            "Secondary objective: Muscle hypertrophy & strength",
+            "Your chosen workout style is resistance and strength training"
+          ],
+          "finalScore": 8
+        },
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "bmr",
+          "key": "bmr",
+          "title": "Basal Metabolic Rate",
+          "value": "1,620 kcal",
+          "available": true,
+          "baseScore": 2,
+          "desc": "An estimate of the energy your body uses each day while at rest.",
+          "currentScore": 5,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Primary Goal",
+              "reason": "BMR provides background information about your estimated resting energy use",
+              "subtotal": 4
+            },
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Activity Style",
+              "reason": "BMR adds energy-use context to a strength-training goal",
+              "subtotal": 5
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 2,
+              "reason": "BMR provides background information about your estimated resting energy use"
+            },
+            {
+              "category": "Activity Style",
+              "weight": 1,
+              "reason": "BMR adds energy-use context to a strength-training goal"
+            }
+          ],
+          "reasons": [
+            "BMR provides background information about your estimated resting energy use",
+            "BMR adds energy-use context to a strength-training goal"
+          ],
+          "finalScore": 5
+        },
+        {
+          "id": "bodyWater",
+          "key": "bodyWater",
+          "title": "Body Water",
+          "value": "34.9 L",
+          "available": true,
+          "baseScore": 2,
+          "desc": "Shows FitMao’s estimate of the total amount of water in your body.",
+          "currentScore": 2,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 2
+        },
+        {
+          "id": "bmi",
+          "key": "bmi",
+          "title": "BMI",
+          "value": "22.0",
+          "available": true,
+          "baseScore": 1,
+          "desc": "A general weight-to-height screening value that is best read with other measurements.",
+          "currentScore": 1,
+          "steps": [
+            {
+              "delta": "+1",
+              "deltaVal": 1,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 1
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 1,
+              "reason": "Starting weight used consistently for every available measurement"
+            }
+          ],
+          "reasons": [],
+          "finalScore": 1
+        }
+      ],
+      "main_focus": {
+        "id": "muscleMass",
+        "key": "skeletalMuscleMass",
+        "title": "Skeletal Muscle Mass",
+        "value": "32.4 kg",
+        "available": true,
+        "baseScore": 3,
+        "desc": "Helps you follow changes in the muscles used for movement and strength.",
+        "currentScore": 8,
+        "steps": [
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Baseline",
+            "reason": "Starting relevance for body-composition interpretation",
+            "subtotal": 3
+          },
+          {
+            "delta": "+2",
+            "deltaVal": 2,
+            "category": "Secondary Goal",
+            "reason": "Secondary objective: Muscle hypertrophy & strength",
+            "subtotal": 5
+          },
+          {
+            "delta": "+3",
+            "deltaVal": 3,
+            "category": "Activity Style",
+            "reason": "Your chosen workout style is resistance and strength training",
+            "subtotal": 8
+          }
+        ],
+        "contributingFactors": [
+          {
+            "category": "Baseline",
+            "weight": 3,
+            "reason": "Starting weight used consistently for every available measurement"
+          },
+          {
+            "category": "Secondary Goal",
+            "weight": 2,
+            "reason": "Secondary objective: Muscle hypertrophy & strength"
+          },
+          {
+            "category": "Activity Style",
+            "weight": 3,
+            "reason": "Your chosen workout style is resistance and strength training"
+          }
+        ],
+        "reasons": [
+          "Secondary objective: Muscle hypertrophy & strength",
+          "Your chosen workout style is resistance and strength training"
+        ],
+        "finalScore": 8
+      },
+      "top_priorities": [
+        {
+          "id": "bodyFat",
+          "key": "bodyFatPercentage",
+          "title": "Body Fat %",
+          "value": "24.8%",
+          "available": true,
+          "baseScore": 3,
+          "desc": "Shows how much of your total body weight is estimated to come from fat.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 3
+            },
+            {
+              "delta": "+4",
+              "deltaVal": 4,
+              "category": "Primary Goal",
+              "reason": "Your declared primary goal is fat reduction & body recomposition",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 3,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 4,
+              "reason": "Your declared primary goal is fat reduction & body recomposition"
+            }
+          ],
+          "reasons": [
+            "Your declared primary goal is fat reduction & body recomposition"
+          ],
+          "finalScore": 7
+        },
+        {
+          "id": "visceralFat",
+          "key": "visceralFat",
+          "title": "Visceral Fat",
+          "value": "Level 7",
+          "available": true,
+          "baseScore": 2,
+          "desc": "A device-estimated level representing fat stored around the abdominal organs.",
+          "currentScore": 7,
+          "steps": [
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Baseline",
+              "reason": "Starting relevance for body-composition interpretation",
+              "subtotal": 2
+            },
+            {
+              "delta": "+3",
+              "deltaVal": 3,
+              "category": "Primary Goal",
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal",
+              "subtotal": 5
+            },
+            {
+              "delta": "+2",
+              "deltaVal": 2,
+              "category": "Daily Lifestyle",
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor",
+              "subtotal": 7
+            }
+          ],
+          "contributingFactors": [
+            {
+              "category": "Baseline",
+              "weight": 2,
+              "reason": "Starting weight used consistently for every available measurement"
+            },
+            {
+              "category": "Primary Goal",
+              "weight": 3,
+              "reason": "Visceral Fat provides additional context for a fat-reduction goal"
+            },
+            {
+              "category": "Daily Lifestyle",
+              "weight": 2,
+              "reason": "You reported spending much of the day seated, making this a useful measurement to monitor"
+            }
+          ],
+          "reasons": [
+            "Visceral Fat provides additional context for a fat-reduction goal",
+            "You reported spending much of the day seated, making this a useful measurement to monitor"
+          ],
+          "finalScore": 7
+        }
+      ],
+      "change_log": [],
+      "created_at": "2026-09-19T17:56:17.004Z"
     }
   ],
   "glossary_entries": [

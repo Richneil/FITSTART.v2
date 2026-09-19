@@ -123,7 +123,7 @@ export default function AssessmentHistory() {
                         <span className="block text-[9px] text-surface-500 dark:text-surface-400">{label}</span>
                         <strong className="mt-1 block text-sm font-mono">{value}</strong>
                         {metricDelta !== null && (
-                          <span className={`mt-1 block text-[10px] font-mono font-bold ${label === 'Body Fat %' ? 'text-rose-600 dark:text-rose-400' : 'text-brand-700 dark:text-brand-300'}`}>
+                          <span className={`mt-1 block text-[10px] font-mono font-bold ${label === 'Body Fat %' ? 'text-brand-700 dark:text-brand-300' : 'text-brand-700 dark:text-brand-300'}`}>
                             {metricDelta > 0 ? '+' : ''}{metricDelta} {unit}
                           </span>
                         )}

@@ -77,7 +77,7 @@ export default function BecauseYouToldUs({ text, mainFocus, parqAnswers = {} }) 
 
         <div className="p-3 bg-white/80 dark:bg-surface-900/80 rounded-2xl border border-brand-200/60 dark:border-brand-800/40">
           <span className="text-[10px] font-display font-bold text-brand-700 dark:text-brand-300 uppercase tracking-wider block mb-0.5 flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-teal-500" /> Availability
+            <Calendar className="w-3 h-3 text-brand-400" /> Availability
           </span>
           <strong className="text-surface-900 dark:text-white font-sans text-xs sm:text-[13px] block">
             {availLabel}

@@ -46,7 +46,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <div className="bg-surface-50 dark:bg-surface-950 min-h-screen font-sans text-surface-900 dark:text-surface-100 antialiased selection:bg-brand-500 selection:text-white transition-colors duration-200">
+        <div className="min-h-screen bg-[#08090b] font-sans text-white antialiased selection:bg-brand-300 selection:text-surface-950 transition-colors duration-200">
           {/* Persistent Nav */}
           <Nav user={user} onLogout={() => setUser(null)} />
 

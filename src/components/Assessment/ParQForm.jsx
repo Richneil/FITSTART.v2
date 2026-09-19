@@ -128,7 +128,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
     .some(key => answers[key] === 'yes');
 
   return (
-    <div className="min-h-screen flex flex-col p-4 sm:p-6 sm:py-8 animate-slide-up max-w-2xl mx-auto w-full pb-28 font-sans">
+    <div className="min-h-screen flex flex-col p-4 sm:p-6 sm:py-8 animate-slide-up max-w-2xl mx-auto w-full pb-32 font-sans text-white">
       
       {/* Top Header & Progress */}
       <div className="flex items-center justify-between gap-3 mb-6">
@@ -145,15 +145,15 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
             style={{ width: `${progress}%` }} 
           />
         </div>
-        <span className="text-xs font-mono font-bold text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 px-2.5 py-1 rounded-lg border border-surface-200 dark:border-surface-700">
-          {currentSectionIdx + 1}/{totalSections}
+        <span className="text-[11px] font-display font-bold text-surface-400 bg-surface-900 px-3 py-1.5 rounded-xl border border-white/10">
+          Section {currentSectionIdx + 1} of {totalSections}
         </span>
       </div>
 
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/70 border border-brand-200 dark:border-brand-800 text-[11px] font-display font-bold text-brand-700 dark:text-brand-300 uppercase tracking-wider mb-2.5">
-            PAR-Q Section {currentSectionIdx + 1} of {totalSections}
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-300/10 border border-brand-300/30 text-[11px] font-display font-bold text-brand-300 uppercase tracking-wider mb-2.5">
+            {currentSectionIdx === 0 ? 'PAR-Q' : `Section ${currentSectionIdx + 1} of ${totalSections}`}
           </span>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-surface-900 dark:text-white tracking-tight">
             {section.title}
@@ -222,7 +222,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
                 type="button"
                 onClick={() => handleSingleSelect(q.field, 'no')}
                 className={`py-2 px-3 rounded-xl text-xs font-display font-bold border transition-all
-                  ${answers[q.field] === 'no' ? 'bg-brand-500 text-white border-brand-500 shadow-sm' : 'bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700'}`}
+                  ${answers[q.field] === 'no' ? 'bg-brand-300 text-surface-950 border-brand-300 shadow-sm' : 'bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700'}`}
               >
                 No
               </button>
@@ -230,7 +230,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
                 type="button"
                 onClick={() => handleSingleSelect(q.field, 'yes')}
                 className={`py-2 px-3 rounded-xl text-xs font-display font-bold border transition-all
-                  ${answers[q.field] === 'yes' ? 'bg-amber-500 text-white border-amber-500 shadow-sm' : 'bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700'}`}
+                  ${answers[q.field] === 'yes' ? 'bg-brand-300 text-surface-950 border-brand-300 shadow-sm' : 'bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700'}`}
               >
                 Yes
               </button>
@@ -244,7 +244,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
             {/* Primary Goal (Single Select) */}
             <div className="card p-4 sm:p-5 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 shadow-sm space-y-3">
               <div className="flex items-center gap-1.5 pb-2 border-b border-surface-100 dark:border-surface-800">
-                <Target className="w-4 h-4 text-accent-500" />
+                <Target className="w-4 h-4 text-brand-400" />
                 <span className="font-display font-bold text-xs uppercase tracking-wider text-surface-800 dark:text-surface-200">
                   1. Primary Objective (Pick 1 Main Focus)
                 </span>
@@ -258,19 +258,19 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
                       type="button"
                       onClick={() => handlePrimaryGoalSelect(opt.id)}
                       className={`w-full text-left p-3.5 rounded-2xl border transition-all
-                        ${isSelected ? 'bg-accent-50/70 dark:bg-accent-950/40 border-accent-500 shadow-sm' : 'bg-surface-50 dark:bg-surface-800/80 border-surface-200 dark:border-surface-700 hover:border-surface-300'}`}
+                        ${isSelected ? 'bg-brand-300/10 border-brand-300/60 shadow-sm' : 'bg-surface-50 dark:bg-surface-800/80 border-surface-200 dark:border-surface-700 hover:border-surface-300'}`}
                     >
                       <div className="flex justify-between items-center mb-0.5">
-                        <span className={`font-display font-bold text-xs ${isSelected ? 'text-accent-950 dark:text-accent-200' : 'text-surface-900 dark:text-white'}`}>
+                        <span className={`font-display font-bold text-xs ${isSelected ? 'text-brand-200' : 'text-surface-900 dark:text-white'}`}>
                           {opt.label}
                         </span>
                         {isSelected && (
-                          <div className="w-5 h-5 bg-accent-500 rounded-full flex items-center justify-center text-white shrink-0">
+                          <div className="w-5 h-5 bg-brand-300 rounded-full flex items-center justify-center text-surface-950 shrink-0">
                             <Check className="w-3.5 h-3.5 stroke-[3]" />
                           </div>
                         )}
                       </div>
-                      <p className={`text-[11px] ${isSelected ? 'text-accent-700 dark:text-accent-300' : 'text-surface-500 dark:text-surface-400'}`}>
+                      <p className={`text-[11px] ${isSelected ? 'text-brand-300' : 'text-surface-500 dark:text-surface-400'}`}>
                         {opt.desc}
                       </p>
                     </button>

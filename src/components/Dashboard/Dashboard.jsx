@@ -86,11 +86,11 @@ export default function Dashboard({ user }) {
 
       <Link
         to="/assessment"
-        className="mb-5 rounded-3xl bg-gradient-to-br from-brand-700 to-brand-600 p-5 text-white shadow-card flex items-center justify-between group"
+        className="mb-5 rounded-3xl bg-surface-900 border border-brand-300/25 p-5 text-white shadow-card flex items-center justify-between group"
       >
         <div>
           <strong className="block font-display text-base font-extrabold text-white">New Assessment</strong>
-          <span className="mt-0.5 block text-xs text-emerald-100">Upload a new FitMao result</span>
+          <span className="mt-0.5 block text-xs text-brand-100">Upload a new FitMao result</span>
         </div>
         <span className="w-11 h-11 rounded-2xl bg-white/15 flex items-center justify-center group-hover:bg-white/20 group-active:scale-95 transition-all">
           <ArrowRight className="w-5 h-5" />

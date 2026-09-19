@@ -19,24 +19,24 @@ function ReportPreview({ metrics }) {
 
   return (
     <div role="img" aria-label="Preview of the scanned FitMao body composition report" className="mx-auto w-full max-w-2xl rounded-2xl bg-white p-4 text-slate-900 shadow-2xl sm:p-6">
-      <div className="flex items-start justify-between gap-4 border-b-4 border-blue-700 pb-3">
+      <div className="flex items-start justify-between gap-4 border-b-4 border-surface-950 pb-3">
         <div>
-          <strong className="block text-lg font-display font-extrabold text-blue-800 sm:text-2xl">Body Composition Analysis Report</strong>
+          <strong className="block text-lg font-display font-extrabold text-surface-900 sm:text-2xl">Body Composition Analysis Report</strong>
           <span className="text-[10px] text-slate-500">{metrics.memberName || 'FitStart member'} · {metrics.testDate || 'Assessment date'}</span>
         </div>
-        <strong className="shrink-0 text-xl font-display text-blue-700 sm:text-2xl">FitMao</strong>
+        <strong className="shrink-0 text-xl font-display text-surface-950 sm:text-2xl">FitMao</strong>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px]">
-        <div className="overflow-hidden rounded-xl border border-blue-100">
-          <div className="bg-blue-700 px-3 py-2 text-xs font-display font-bold text-white">Body Composition Analysis</div>
+        <div className="overflow-hidden rounded-xl border border-brand-200">
+          <div className="bg-surface-950 px-3 py-2 text-xs font-display font-bold text-white">Body Composition Analysis</div>
           <div className="grid grid-cols-2">
             {rows.map(([label, value]) => (
-              <div key={label} className="border-b border-r border-blue-100 p-2.5 last:border-b-0">
-                <span className="block text-[9px] font-bold uppercase tracking-wide text-blue-700">{label}</span>
+              <div key={label} className="border-b border-r border-brand-200 p-2.5 last:border-b-0">
+                <span className="block text-[9px] font-bold uppercase tracking-wide text-surface-950">{label}</span>
                 <strong className="mt-1 block font-mono text-xs">{value}</strong>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-blue-50">
-                  <div className="h-full w-2/3 rounded-full bg-blue-500" />
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-brand-100">
+                  <div className="h-full w-2/3 rounded-full bg-brand-1000" />
                 </div>
               </div>
             ))}
@@ -44,16 +44,16 @@ function ReportPreview({ metrics }) {
         </div>
 
         <div className="space-y-3">
-          <div className="rounded-xl bg-blue-50 p-3 text-center">
-            <span className="block text-[9px] font-bold uppercase tracking-wide text-blue-700">FitMao Score</span>
-            <strong className="mt-1 block text-3xl font-display text-blue-900">{metrics.healthScore || '75'}</strong>
+          <div className="rounded-xl bg-brand-100 p-3 text-center">
+            <span className="block text-[9px] font-bold uppercase tracking-wide text-surface-950">FitMao Score</span>
+            <strong className="mt-1 block text-3xl font-display text-surface-950">{metrics.healthScore || '75'}</strong>
           </div>
-          <div className="rounded-xl border border-blue-100 p-3">
-            <span className="block text-[9px] font-bold uppercase tracking-wide text-blue-700">Body Type</span>
+          <div className="rounded-xl border border-brand-200 p-3">
+            <span className="block text-[9px] font-bold uppercase tracking-wide text-surface-950">Body Type</span>
             <strong className="mt-1 block text-xs">{metrics.bodyType || 'FitMao classification'}</strong>
           </div>
-          <div className="rounded-xl border border-blue-100 p-3">
-            <span className="block text-[9px] font-bold uppercase tracking-wide text-blue-700">Target Weight</span>
+          <div className="rounded-xl border border-brand-200 p-3">
+            <span className="block text-[9px] font-bold uppercase tracking-wide text-surface-950">Target Weight</span>
             <strong className="mt-1 block font-mono text-xs">{formatMetricValue(metrics.targetWeight, 'kg')}</strong>
           </div>
         </div>
@@ -202,9 +202,9 @@ export default function FullFitMaoReport() {
         </ExplanationCard>
       </div>
 
-      <section className="mt-4 rounded-3xl border border-blue-200 bg-blue-50/70 p-5 dark:border-blue-900 dark:bg-blue-950/20">
+      <section className="mt-4 rounded-3xl border border-brand-300 bg-brand-100/70 p-5 dark:border-surface-950 dark:bg-brand-300/[0.06]">
         <div className="flex items-start gap-3">
-          <Settings2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-300" />
+          <Settings2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-600 dark:text-brand-300" />
           <div className="w-full">
             <h2 className="font-display font-extrabold text-surface-900 dark:text-white">FitMao-Generated Estimates</h2>
             <p className="mt-1 text-xs leading-relaxed text-surface-600 dark:text-surface-300">These values are generated by the FitMao device. FitStart explains what they display but does not calculate them or treat them as recommendations from a coach.</p>

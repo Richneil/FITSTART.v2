@@ -70,7 +70,7 @@ export default function SettingsModal({ isOpen, onClose, user, onToggle2FA, twoF
                   ${isDark ? 'bg-brand-950/40 border-brand-500 shadow-sm ring-2 ring-brand-500/20' : 'bg-surface-50 dark:bg-surface-800/80 border-surface-200 dark:border-surface-700 hover:border-surface-300'}`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-7 h-7 rounded-xl bg-indigo-950 text-indigo-400 flex items-center justify-center shadow-inner border border-indigo-800">
+                  <div className="w-7 h-7 rounded-xl bg-surface-950 text-brand-400 flex items-center justify-center shadow-inner border border-brand-800">
                     <Moon className="w-4 h-4" />
                   </div>
                   {isDark && (
@@ -121,10 +121,6 @@ export default function SettingsModal({ isOpen, onClose, user, onToggle2FA, twoF
             <div className="flex justify-between">
               <span>Scoring Rules:</span>
               <span className="font-bold text-surface-800 dark:text-surface-200">Documented rule-based</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Location:</span>
-              <span className="font-bold text-surface-800 dark:text-surface-200">KSYN Fitness Alabang</span>
             </div>
           </div>
         </div>

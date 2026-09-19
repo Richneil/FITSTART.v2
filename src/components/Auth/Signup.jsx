@@ -47,7 +47,7 @@ export default function Signup({ onLoginSuccess }) {
           Create an Account
         </h1>
         <p className="text-xs text-surface-500 dark:text-surface-400 mt-1">
-          Save your FitMao results and access your history at KSYN Fitness Alabang.
+          Save your FitMao results and access your assessment history in FitStart.
         </p>
       </div>
 
@@ -111,7 +111,7 @@ export default function Signup({ onLoginSuccess }) {
             <input
               type="email"
               required
-              placeholder="alex@ksynfitness.com"
+              placeholder="alex@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-4 py-3 text-xs rounded-2xl border border-surface-300 dark:border-surface-700 bg-white dark:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-surface-900 dark:text-white shadow-subtle"
