@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-white antialiased font-sans selection:bg-brand-300 selection:text-surface-950 transition-colors duration-200;
+    background: #08090b;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-surface-900 dark:text-white;
+  }
+}
+
+@layer components {
+  /* Modern Clean Button Variants */
+  .btn-primary {
+    @apply w-full py-3.5 px-5 bg-brand-300 hover:bg-brand-200 active:bg-brand-400 text-surface-950 font-display font-semibold rounded-2xl shadow-sm hover:shadow transition-all duration-150 flex items-center justify-center active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm;
+  }
+  .btn-secondary {
+    @apply w-full py-3.5 px-5 bg-white hover:bg-surface-100 dark:bg-surface-900 dark:hover:bg-surface-800 text-surface-800 dark:text-surface-200 border border-surface-200 dark:border-surface-800 font-display font-semibold rounded-2xl shadow-subtle hover:shadow transition-all duration-150 flex items-center justify-center active:scale-[0.98] disabled:opacity-50 cursor-pointer text-sm;
+  }
+  .btn-accent {
+    @apply w-full py-3.5 px-5 bg-surface-950 hover:bg-black active:bg-surface-800 text-white font-display font-semibold rounded-2xl shadow-sm hover:shadow transition-all duration-150 flex items-center justify-center active:scale-[0.98] disabled:opacity-50 cursor-pointer text-sm;
+  }
+  .btn-outline {
+    @apply w-full py-3 px-4 bg-transparent hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 font-display font-semibold rounded-2xl transition-all duration-150 flex items-center justify-center active:scale-[0.98] cursor-pointer text-xs;
+  }
+  
+  /* Modern Card Layer */
+  .card {
+    @apply bg-surface-900 dark:bg-surface-900 rounded-3xl border border-white/10 dark:border-white/10 overflow-hidden shadow-card dark:shadow-card-dark transition-all duration-200;
+  }
+
+  /* Glassmorphic Panel */
+  .glass-card {
+    @apply bg-black/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl border border-white/10 dark:border-white/10 shadow-card dark:shadow-card-dark;
+  }
+
+  /* Clean Input Field */
+  .input-field {
+    @apply w-full px-4 py-3 text-sm rounded-2xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 text-surface-900 dark:text-white placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-300/35 focus:border-brand-400 transition-all shadow-subtle;
+  }
+}
+
+/* Custom animations */
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  0% { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scanLine {
+  0% { transform: translateY(0%); }
+  50% { transform: translateY(160px); }
+  100% { transform: translateY(0%); }
+}
+
+.animate-slide-up {
+  animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scan-line {
+  animation: scanLine 2s ease-in-out infinite;
+}
+
+/* Hide scrollbar for clean horizontal scrolls */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* The printable report is always a light document, even when the app is in dark mode. */
+.print-page {
+  color-scheme: light;
+  color: #18181b;
+}
+.print-page h1,
+.print-page h2,
+.print-page h3,
+.print-page h4,
+.print-page h5,
+.print-page h6 {
+  color: #18181b !important;
+}
+
+/* Print rules for the two-page FitStart PDF export. */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #root, .no-print {
+    display: none !important;
+  }
+  .print-overlay {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  .print-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    color: #18181b !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 4mm !important;
+    max-width: 100% !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: page !important;
+    page-break-after: always !important;
+  }
+  .print-sheet:first-child > .mb-3 {
+    margin-bottom: 0.5rem !important;
+  }
+  .print-sheet:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+  .print-page h1,
+  .print-page h2,
+  .print-page h3,
+  .print-page h4,
+  .print-page h5,
+  .print-page h6 {
+    color: #18181b !important;
+  }
+}
