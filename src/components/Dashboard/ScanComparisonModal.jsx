@@ -12,6 +12,7 @@ import {
   Droplet,
   HeartPulse
 } from 'lucide-react';
+import { formatVisceralFatValue } from '../../utils/resultExplanations.js';
 
 export default function ScanComparisonModal({ assessments = [], onClose, onAddFollowUpScan }) {
   const count = assessments.length;
@@ -111,7 +112,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
   const weightDelta = calcDelta('weight', ' kg');
   const fatDelta = calcDelta('bodyFatPercentage', '%');
   const muscleDelta = calcDelta('skeletalMuscleMass', ' kg');
-  const visceralDelta = calcDelta('visceralFat', ' Levels');
+  const visceralDelta = calcDelta('visceralFat');
   const waterDelta = calcDelta('bodyWater', ' L');
   const bmrDelta = calcDelta('bmr', ' kcal');
 
@@ -253,7 +254,7 @@ export default function ScanComparisonModal({ assessments = [], onClose, onAddFo
               <span className="text-xs font-display font-semibold text-surface-800 dark:text-surface-200 flex items-center gap-1.5">
                 <Activity className="w-3.5 h-3.5 text-red-500" /> Visceral Fat Level
               </span>
-              <span className="text-[11px] text-surface-400 dark:text-surface-500 font-mono">{visceralDelta.a} → {visceralDelta.b}</span>
+              <span className="text-[11px] text-surface-400 dark:text-surface-500 font-mono">{formatVisceralFatValue(visceralDelta.a)} → {formatVisceralFatValue(visceralDelta.b)}</span>
             </div>
             <div className={`text-xs font-mono font-bold px-2.5 py-1 rounded-xl flex items-center gap-1
               ${visceralDelta.diff < 0 ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : visceralDelta.diff > 0 ? 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300' : 'bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300'}`}>

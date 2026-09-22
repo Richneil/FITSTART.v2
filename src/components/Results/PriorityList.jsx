@@ -36,7 +36,7 @@ export default function PriorityList({ topPriorities = [], mainFocus = null }) {
     <section className="space-y-3 font-sans">
       <div className="mb-3">
         <h3 className="text-lg font-display font-extrabold tracking-tight text-surface-900 dark:text-white">Your Supporting Priorities</h3>
-        <p className="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">These measurements add context to your Main Focus. A supporting priority does not automatically mean something is wrong.</p>
+        <p className="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">These measurements help provide a clearer picture of your Main Focus. They were selected because they are relevant to your goals and may be useful to discuss with your coach; being listed here does not necessarily indicate a problem.</p>
       </div>
 
       <div className="space-y-3">

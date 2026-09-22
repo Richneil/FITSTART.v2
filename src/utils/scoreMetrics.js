@@ -4,19 +4,18 @@
 
 export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
   // Read only measurements that exist in the confirmed FitMao record.
-  const rawBodyFat = fitMaoData.bodyFatPercentage !== undefined && fitMaoData.bodyFatPercentage !== null
-    ? parseFloat(String(fitMaoData.bodyFatPercentage).replace(/[^0-9.]/g, ''))
-    : null;
+  const parseMeasurement = (value) => {
+    if (value === undefined || value === null) return null;
+    const parsed = Number.parseFloat(String(value).replace(/[^0-9.]/g, ''));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+  const rawBodyFat = parseMeasurement(fitMaoData.bodyFatPercentage);
+  const rawVisceral = parseMeasurement(fitMaoData.visceralFat);
+  const rawMuscle = parseMeasurement(fitMaoData.skeletalMuscleMass);
 
-  const rawVisceral = fitMaoData.visceralFat !== undefined && fitMaoData.visceralFat !== null
-    ? parseInt(String(fitMaoData.visceralFat).replace(/\D/g, ''), 10)
-    : null;
-
-  const rawMuscle = fitMaoData.skeletalMuscleMass !== undefined && fitMaoData.skeletalMuscleMass !== null
-    ? parseFloat(String(fitMaoData.skeletalMuscleMass).replace(/[^0-9.]/g, ''))
-    : null;
-
-  const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== '';
+  const hasValue = (value) => value !== undefined && value !== null
+    && !/^(?:not shown|not available|n\/a|—|-)$/i.test(String(value).trim())
+    && String(value).trim() !== '';
   const withUnit = (value, unit) => {
     if (!hasValue(value)) return 'Not available';
     return String(value).toLowerCase().includes(unit.toLowerCase()) ? String(value) : `${value} ${unit}`;
@@ -44,8 +43,8 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
     visceralFat: { 
       id: 'visceralFat',
       key: 'visceralFat',
-      title: 'Visceral Fat', 
-      value: rawVisceral !== null ? `Level ${rawVisceral}` : 'Not available',
+      title: 'Visceral Fat Level',
+      value: rawVisceral !== null ? `${Number.isInteger(rawVisceral) ? rawVisceral : rawVisceral.toFixed(1)}` : 'Not available',
       available: rawVisceral !== null,
       baseScore: 2,
       desc: 'A device-estimated level representing fat stored around the abdominal organs.'
@@ -224,7 +223,7 @@ export function scoreMetrics(fitMaoData = {}, parqAnswers = {}) {
 
   // 6. Grounded Assessment Measurements
   if (rawVisceral !== null && rawVisceral >= 10) {
-    applyRule('visceralFat', 3, 'BIA Scan Result', `Your measured Visceral Fat (Level ${rawVisceral}) is elevated and deserves focused attention`);
+    applyRule('visceralFat', 3, 'BIA Scan Result', `Your measured Visceral Fat Level (${rawVisceral}) is elevated and deserves focused attention`);
   }
   if (rawBodyFat !== null && rawBodyFat >= 25.0) {
     applyRule('bodyFat', 2, 'BIA Scan Result', `Your measured Body Fat (${rawBodyFat.toFixed(1)}%) represents your largest recomposition opportunity`);

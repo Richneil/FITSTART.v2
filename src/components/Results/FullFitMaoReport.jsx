@@ -5,7 +5,7 @@ import {
   Info, ScanLine, Settings2
 } from 'lucide-react';
 import { api } from '../../utils/api.js';
-import { formatMetricValue } from '../../utils/resultExplanations.js';
+import { formatMetricValue, formatVisceralFatValue } from '../../utils/resultExplanations.js';
 
 function ReportPreview({ metrics }) {
   const rows = [
@@ -14,7 +14,7 @@ function ReportPreview({ metrics }) {
     ['Body Fat Mass', formatMetricValue(metrics.fatMass, 'kg')],
     ['BMI', formatMetricValue(metrics.bmi)],
     ['Percent Body Fat', formatMetricValue(metrics.bodyFatPercentage, '%')],
-    ['Visceral Fat', formatMetricValue(metrics.visceralFat, 'level')]
+    ['Visceral Fat Level', formatVisceralFatValue(metrics.visceralFat)]
   ];
 
   return (
@@ -189,7 +189,7 @@ export default function FullFitMaoReport() {
         <ExplanationCard title="Comprehensive Evaluation" icon={ScanLine}>
           <MetricRow term="Basal Metabolic Rate" value={formatMetricValue(m.bmr, 'kcal')} explanation="FitMao’s estimate of energy used at rest. It is not a calorie prescription." />
           <MetricRow term="Waist–Hip Ratio" value={formatMetricValue(m.waistToHipRatio)} explanation="A comparison of waist and hip measurements." />
-          <MetricRow term="Visceral Fat Level" value={formatMetricValue(m.visceralFat, 'level')} explanation="FitMao’s estimate of fat stored around the abdominal organs." />
+          <MetricRow term="Visceral Fat Level" value={formatVisceralFatValue(m.visceralFat)} explanation="FitMao’s estimate of fat stored around the abdominal organs." />
         </ExplanationCard>
 
         <ExplanationCard title="Segmental Assessment" icon={ScanLine}>

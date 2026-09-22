@@ -12,7 +12,7 @@ import {
 const PERSONALIZED_FIELDS = [
   { key: 'bodyFatPercentage', label: 'Body Fat', unit: '%', help: 'Estimated percentage of body weight from fat.' },
   { key: 'skeletalMuscleMass', label: 'Skeletal Muscle', unit: 'kg', help: 'Estimated muscle used for movement and strength.' },
-  { key: 'visceralFat', label: 'Visceral Fat', unit: 'level', help: 'Device-estimated fat stored around the abdominal organs.' },
+  { key: 'visceralFat', label: 'Visceral Fat Level', unit: 'level', help: 'Device-estimated fat stored around the abdominal organs.' },
   { key: 'bodyWater', label: 'Body Water', unit: 'L', help: 'Estimated total body water.' },
   { key: 'bmr', label: 'BMR', unit: 'kcal', help: 'Estimated energy used by the body at rest.' },
   { key: 'bmi', label: 'BMI', unit: '', help: 'Weight-to-height screening value.' }
@@ -92,8 +92,8 @@ export default function AssessmentPreview({ extractedData, onRescan, onConfirm }
           className="min-w-0 flex-1 bg-transparent font-mono text-base font-bold text-surface-900 outline-none dark:text-white"
           aria-label={field.label}
         />
-        {field.unit && (
-          <span className="text-[11px] font-medium text-surface-400">{field.unit === 'level' ? 'Level' : field.unit}</span>
+        {field.unit && field.unit !== 'level' && (
+          <span className="text-[11px] font-medium text-surface-400">{field.unit}</span>
         )}
       </span>
       {field.help && <span className="mt-1 block text-[10px] leading-snug text-surface-400">{field.help}</span>}

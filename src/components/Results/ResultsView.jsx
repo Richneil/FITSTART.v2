@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import MainFocusCard from './MainFocusCard.jsx';
 import PriorityList from './PriorityList.jsx';
+import OverallInterpretation from './OverallInterpretation.jsx';
 import CalculationDetails from './CalculationDetails.jsx';
 import SaveResultsPrompt from './SaveResultsPrompt.jsx';
 import PrintableSummary from './PrintableSummary.jsx';
@@ -86,12 +87,27 @@ function SourceGuide() {
   );
 }
 
+function findPreviousAssessment(assessments, currentProfile, currentProfileId) {
+  if (!Array.isArray(assessments) || assessments.length === 0 || !currentProfile) return null;
+  const currentDate = new Date(currentProfile.assessed_date || currentProfile.created_at || 0).getTime();
+  const currentId = String(currentProfile.id ?? currentProfileId ?? '');
+
+  return assessments
+    .filter((assessment) => String(assessment.id ?? '') !== currentId)
+    .filter((assessment) => {
+      const assessmentDate = new Date(assessment.assessed_date || assessment.created_at || 0).getTime();
+      return Number.isFinite(assessmentDate) && (!Number.isFinite(currentDate) || assessmentDate < currentDate);
+    })
+    .sort((a, b) => new Date(b.assessed_date || b.created_at || 0) - new Date(a.assessed_date || a.created_at || 0))[0] || null;
+}
+
 export default function ResultsView({ user }) {
   const { profileId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [profile, setProfile] = useState(null);
   const [resultsData, setResultsData] = useState(null);
+  const [assessmentHistory, setAssessmentHistory] = useState([]);
   const [showPrintModal, setShowPrintModal] = useState(false);
 
   useEffect(() => {
@@ -102,6 +118,16 @@ export default function ResultsView({ user }) {
         const data = await api.getResults(profileId);
         setProfile(data.profile);
         setResultsData(data.result);
+        if (user) {
+          try {
+            const historyData = await api.getAssessments();
+            setAssessmentHistory(historyData.assessments || []);
+          } catch {
+            setAssessmentHistory([]);
+          }
+        } else {
+          setAssessmentHistory([]);
+        }
       } catch (err) {
         setError(err.message || 'Failed to load assessment results.');
       } finally {
@@ -133,6 +159,7 @@ export default function ResultsView({ user }) {
   const mainFocus = currentCalculation.mainFocus || resultsData.main_focus;
   const topPriorities = currentCalculation.topPriorities || resultsData.top_priorities || [];
   const otherPriorities = currentCalculation.otherPriorities || resultsData.otherPriorities || [];
+  const previousAssessment = findPreviousAssessment(assessmentHistory, profile, profileId);
 
   return (
     <main className="relative mx-auto min-h-screen max-w-6xl bg-surface-50 px-3 pb-28 font-sans dark:bg-surface-950 sm:px-6 lg:px-8">
@@ -153,6 +180,7 @@ export default function ResultsView({ user }) {
       <div className="space-y-5">
         <MainFocusCard mainFocus={mainFocus} />
         <PriorityList topPriorities={topPriorities} mainFocus={mainFocus} />
+        <OverallInterpretation mainFocus={mainFocus} topPriorities={topPriorities} parqAnswers={parqAnswers} />
         <RecommendedNextStep mainFocus={mainFocus} topPriorities={topPriorities} isGuest={isGuest} onDownload={() => setShowPrintModal(true)} />
         <FullReportLink profileId={profileId} />
         <SourceGuide />
@@ -169,7 +197,7 @@ export default function ResultsView({ user }) {
         <CalculationDetails mainFocus={mainFocus} topPriorities={topPriorities} otherPriorities={otherPriorities} />
       </div>
 
-      {showPrintModal && <PrintableSummary profile={profile} fitMao={rawMetrics} mainFocus={mainFocus} topPriorities={topPriorities} user={profile?.user} onClose={() => setShowPrintModal(false)} />}
+      {showPrintModal && <PrintableSummary profile={profile} fitMao={rawMetrics} mainFocus={mainFocus} topPriorities={topPriorities} parqAnswers={parqAnswers} previousAssessment={previousAssessment} user={user} onClose={() => setShowPrintModal(false)} />}
     </main>
   );
 }

@@ -91,7 +91,21 @@
   scrollbar-width: none;
 }
 
-/* Print Rules for 1-Page PDF Export */
+/* The printable report is always a light document, even when the app is in dark mode. */
+.print-page {
+  color-scheme: light;
+  color: #18181b;
+}
+.print-page h1,
+.print-page h2,
+.print-page h3,
+.print-page h4,
+.print-page h5,
+.print-page h6 {
+  color: #18181b !important;
+}
+
+/* Print rules for the two-page FitStart PDF export. */
 @media print {
   @page {
     size: A4 portrait;
@@ -103,19 +117,47 @@
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  nav, .no-print, header, footer, button, .bottom-dock {
+  #root, .no-print {
     display: none !important;
   }
-  .print-only {
+  .print-overlay {
+    position: static !important;
+    inset: auto !important;
     display: block !important;
-    width: 100% !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #ffffff !important;
   }
   .print-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    color: #18181b !important;
+  }
+  .print-sheet {
     box-shadow: none !important;
     border: none !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 4mm !important;
     max-width: 100% !important;
+    break-inside: avoid !important;
     page-break-inside: avoid !important;
+    break-after: page !important;
+    page-break-after: always !important;
+  }
+  .print-sheet:first-child > .mb-3 {
+    margin-bottom: 0.5rem !important;
+  }
+  .print-sheet:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+  .print-page h1,
+  .print-page h2,
+  .print-page h3,
+  .print-page h4,
+  .print-page h5,
+  .print-page h6 {
+    color: #18181b !important;
   }
 }

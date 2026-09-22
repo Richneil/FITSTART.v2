@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function FitStartLogo({ compact = false, className = '' }) {
+export default function FitStartLogo({ compact = false, onLight = false, className = '' }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`} aria-label="FitStart">
       <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-surface-900 text-white shadow-subtle">
@@ -14,8 +14,8 @@ export default function FitStartLogo({ compact = false, className = '' }) {
       </span>
       {!compact && (
         <span className="min-w-0">
-          <span className="block font-display text-base font-black leading-none tracking-tight text-white">FitStart</span>
-          <span className="mt-1 block text-[9px] font-bold uppercase tracking-[0.18em] text-surface-400">Assess · Understand · Start</span>
+          <span className={`block font-display text-base font-black leading-none tracking-tight ${onLight ? 'text-surface-950' : 'text-white'}`}>FitStart</span>
+          <span className={`mt-1 block text-[9px] font-bold uppercase tracking-[0.18em] ${onLight ? 'text-surface-500' : 'text-surface-400'}`}>Assess · Understand · Start</span>
         </span>
       )}
     </div>
