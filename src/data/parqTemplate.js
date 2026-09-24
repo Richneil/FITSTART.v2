@@ -124,7 +124,7 @@ export const parqTemplate = {
     {
       id: 'nutrition_hydration',
       title: '5. Nutrition & Hydration Context',
-      subtitle: 'Helps FitStart evaluate whether your BMR and Body Water need priority.',
+      subtitle: 'Provides background for your discussion with a coach; these answers do not change measurement priority scores.',
       questions: [
         {
           id: 'nutritionPattern',
@@ -145,9 +145,9 @@ export const parqTemplate = {
           question: 'What is your typical daily fluid/water intake?',
           type: 'single',
           options: [
-            { id: 'low', label: 'Under 1.5 Liters per day (Mild dehydration indicator)' },
-            { id: 'moderate', label: '1.5 to 2.5 Liters per day (Standard hydration)' },
-            { id: 'optimal', label: '2.5 Liters or more per day (Well hydrated)' }
+            { id: 'low', label: 'Under 1.5 liters per day' },
+            { id: 'moderate', label: '1.5 to 2.5 liters per day' },
+            { id: 'optimal', label: '2.5 liters or more per day' }
           ]
         }
       ]

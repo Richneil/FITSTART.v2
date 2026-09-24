@@ -13,9 +13,7 @@ const CATEGORY_COLORS = {
 export default function AskWhy({ metric, rankLabel, onClose }) {
   if (!metric) return null;
 
-  const factors = [...(metric.contributingFactors || [])]
-    .sort((a, b) => (b.contribution || 0) - (a.contribution || 0))
-    .slice(0, 5);
+  const factors = metric.steps || [];
   const totalScore = metric.finalScore ?? metric.currentScore ?? 0;
 
   return (
@@ -37,7 +35,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
               <span className="font-mono font-bold text-brand-600 dark:text-brand-400">Measured: {metric.value}</span>
               <span>•</span>
               <span className="font-mono font-bold bg-brand-50 dark:bg-brand-950 px-2 py-0.5 rounded text-brand-700 dark:text-brand-300">
-                SAW: {Number(totalScore).toFixed(4)}
+                Priority: {Number(totalScore).toFixed(1)} / 100
               </span>
             </div>
           </div>
@@ -63,7 +61,7 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         {/* Contributing Factors Breakdown */}
         <div className="space-y-2">
           <span className="text-[11px] font-display font-bold text-surface-700 dark:text-surface-300 uppercase tracking-wider block">
-            What influenced this priority
+            How this priority was calculated
           </span>
 
           <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
@@ -84,10 +82,11 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
                       <p className="text-surface-800 dark:text-surface-200 text-xs leading-snug font-medium">
                         {factor.reason}
                       </p>
+                      <p className="text-[10px] text-surface-500 dark:text-surface-400">Rating {factor.rawRating} × effective weight {(factor.criterionWeight * 100).toFixed(1)}%</p>
                     </div>
 
                     <span className="font-mono font-bold text-brand-600 dark:text-brand-400 shrink-0 text-xs bg-white dark:bg-surface-800 px-2 py-1 rounded-lg border border-surface-200 dark:border-surface-700 shadow-sm">
-                      +{Number(factor.contribution || 0).toFixed(4)}
+                      +{Number(factor.contribution || 0).toFixed(1)} pts
                     </span>
                   </div>
                 );
@@ -103,10 +102,10 @@ export default function AskWhy({ metric, rankLabel, onClose }) {
         {/* Final Calculation Summary */}
         <div className="p-3 bg-surface-100 dark:bg-surface-800 rounded-2xl flex items-center justify-between text-xs">
           <span className="text-surface-600 dark:text-surface-400 font-medium">
-            Final SAW preference score:
+            Relative priority score:
           </span>
           <span className="font-mono font-black text-sm text-surface-900 dark:text-white">
-            {Number(totalScore).toFixed(4)}
+            {Number(totalScore).toFixed(1)} / 100
           </span>
         </div>
 

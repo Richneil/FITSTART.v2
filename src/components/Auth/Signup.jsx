@@ -13,6 +13,7 @@ export default function Signup({ onLoginSuccess }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const pendingGuest = getPendingGuestAssessment();
+  const [savePendingAssessment, setSavePendingAssessment] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,10 +21,12 @@ export default function Signup({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const res = await api.register({ email, password, firstName, lastName });
+      const res = await api.register({ email, password, firstName, lastName, savePendingAssessment });
       if (onLoginSuccess) onLoginSuccess(res.user);
       if (res.linkedProfileId) {
         navigate(`/results/${res.linkedProfileId}`);
+      } else if (pendingGuest) {
+        navigate('/results/guest');
       } else {
         navigate('/dashboard');
       }
@@ -56,7 +59,7 @@ export default function Signup({ onLoginSuccess }) {
           <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
           <div className="leading-snug font-sans">
             <strong className="block font-display font-semibold">Active Assessment Detected</strong>
-            <span>Your current assessment results will be automatically saved to your new account upon registration!</span>
+            <span>Your current assessment remains in this browser session unless you choose to save it below.</span>
           </div>
         </div>
       )}
@@ -69,6 +72,7 @@ export default function Signup({ onLoginSuccess }) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-3.5 mb-5">
+        {pendingGuest && <label className="flex items-start gap-2 rounded-xl border border-brand-200 bg-brand-50 p-3 text-xs text-surface-800 dark:border-brand-800 dark:bg-brand-950/30 dark:text-surface-200"><input type="checkbox" checked={savePendingAssessment} onChange={(event) => setSavePendingAssessment(event.target.checked)} className="mt-0.5" /><span>I agree to save my current FitStart assessment in this account.</span></label>}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-display font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-1.5">
@@ -155,10 +159,13 @@ export default function Signup({ onLoginSuccess }) {
       </div>
 
       <GoogleOAuthButton
+        savePendingAssessment={savePendingAssessment}
         onSuccess={(user, res) => {
           if (onLoginSuccess) onLoginSuccess(user);
           if (res?.linkedProfileId) {
             navigate(`/results/${res.linkedProfileId}`);
+          } else if (pendingGuest) {
+            navigate('/results/guest');
           } else {
             navigate('/dashboard');
           }

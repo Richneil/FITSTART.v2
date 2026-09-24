@@ -2,7 +2,7 @@
 // Supports universal QR decoding using jsQR + canvas image processing with native BarcodeDetector fallback.
 import jsQR from 'jsqr';
 
-export function parseQrPayload(rawText, baseDefaults = {}) {
+export function parseQrPayload(rawText) {
   if (!rawText || typeof rawText !== 'string') return null;
 
   let parsed = {};
@@ -44,89 +44,41 @@ export function parseQrPayload(rawText, baseDefaults = {}) {
     return null;
   }
 
-  // Normalize field aliases from various FitMao / InBody scan formats
-  const cleanNumber = (val, fallback) => {
-    if (val === undefined || val === null) return fallback;
-    const num = parseFloat(String(val).replace(/[^0-9.-]/g, ''));
-    return isNaN(num) ? fallback : num;
+  // Preserve only fields actually present in the payload. Derived FitMao scores,
+  // ranges, target values, and missing body-composition values must never be invented.
+  const aliases = {
+    memberName: ['memberName', 'name', 'client', 'user'], gender: ['gender', 'sex'],
+    age: ['age'], height: ['height', 'ht', 'h'], weight: ['weight', 'wt', 'w'],
+    bodyFatPercentage: ['bodyFatPercentage', 'bodyFat', 'pbf', 'fatPercentage', 'bfp'],
+    skeletalMuscleMass: ['skeletalMuscleMass', 'smm', 'skeletalMuscle'],
+    visceralFat: ['visceralFat', 'vfat', 'visceral'], bmi: ['bmi'],
+    bodyWater: ['bodyWater', 'tbw'], waistToHipRatio: ['waistToHipRatio', 'whr'],
+    fatMass: ['fatMass'], fatFreeMass: ['fatFreeMass'], muscleMass: ['muscleMass'],
+    bmr: ['bmr'], bodyWaterRatio: ['bodyWaterRatio'], proteinMass: ['proteinMass'],
+    boneMineralContent: ['boneMineralContent', 'bmc'], healthScore: ['healthScore', 'score'],
+    bodyType: ['bodyType'], bodyAge: ['bodyAge'], targetWeight: ['targetWeight'],
+    weightControl: ['weightControl'], fatControl: ['fatControl'], muscleControl: ['muscleControl'],
+    testDate: ['testDate'], testTime: ['testTime'], scannerDevice: ['scannerDevice'], gymLocation: ['gymLocation']
   };
-
-  const memberName = parsed.memberName || parsed.name || parsed.client || parsed.user || baseDefaults.memberName || 'Alex Rivera';
-  const gender = parsed.gender || parsed.sex || baseDefaults.gender || 'Male';
-  const age = cleanNumber(parsed.age || parsed.bodyAge, cleanNumber(baseDefaults.age, 28));
-  const height = cleanNumber(parsed.height || parsed.ht || parsed.h, cleanNumber(baseDefaults.height, 175));
-  const weight = cleanNumber(parsed.weight || parsed.wt || parsed.w, cleanNumber(baseDefaults.weight, 78.0));
-  const bodyFatPercentage = cleanNumber(parsed.bodyFatPercentage || parsed.bodyFat || parsed.pbf || parsed.fatPercentage || parsed.bfp, cleanNumber(baseDefaults.bodyFatPercentage, 24.5));
-  const skeletalMuscleMass = cleanNumber(parsed.skeletalMuscleMass || parsed.smm || parsed.skeletalMuscle, cleanNumber(baseDefaults.skeletalMuscleMass, 32.1));
-  const visceralFat = Math.round(cleanNumber(parsed.visceralFat || parsed.vfat || parsed.visceral, cleanNumber(baseDefaults.visceralFat, 11)));
-  
-  // Calculate or extract derived metrics
-  const bmi = cleanNumber(parsed.bmi, (weight / Math.pow(height / 100, 2)).toFixed(1));
-  const fatMass = cleanNumber(parsed.fatMass, (weight * (bodyFatPercentage / 100)).toFixed(1));
-  const fatFreeMass = cleanNumber(parsed.fatFreeMass, (weight * (1 - bodyFatPercentage / 100)).toFixed(1));
-  const muscleMass = cleanNumber(parsed.muscleMass, (weight * 0.71).toFixed(1));
-  const bmr = Math.round(cleanNumber(parsed.bmr, 10 * weight + 6.25 * height - 5 * age + (gender === 'Male' ? 5 : -161)));
-  const bodyWater = cleanNumber(parsed.bodyWater || parsed.tbw, (fatFreeMass * 0.73).toFixed(1));
-  const bodyWaterRatio = cleanNumber(parsed.bodyWaterRatio, ((bodyWater / weight) * 100).toFixed(1));
-  const proteinMass = cleanNumber(parsed.proteinMass, (weight * 0.164).toFixed(1));
-  const boneMineralContent = cleanNumber(parsed.boneMineralContent || parsed.bmc, (weight * 0.048).toFixed(1));
-  const waistToHipRatio = parsed.waistToHipRatio || parsed.whr || (gender === 'Male' ? '0.88' : '0.74');
-  
-  // Health Score calculation
-  let healthScore = cleanNumber(parsed.healthScore || parsed.score, null);
-  if (!healthScore) {
-    healthScore = Math.max(50, Math.min(98, Math.round(100 - (bodyFatPercentage > 20 ? (bodyFatPercentage - 18) * 1.8 : (15 - bodyFatPercentage) * 1.5) - (visceralFat > 9 ? (visceralFat - 9) * 2 : 0))));
+  const result = {};
+  const parsedByLowercaseKey = Object.fromEntries(
+    Object.entries(parsed).map(([key, value]) => [key.toLowerCase(), value])
+  );
+  for (const [field, names] of Object.entries(aliases)) {
+    const found = names.find((name) => {
+      const value = parsedByLowercaseKey[name.toLowerCase()];
+      return value !== undefined && value !== null && String(value).trim() !== '';
+    });
+    if (found) result[field] = String(parsedByLowercaseKey[found.toLowerCase()]);
   }
-
-  // Target and Control Values
-  const targetWeight = cleanNumber(parsed.targetWeight, (height > 100 ? (height - 100) * 0.9 : weight).toFixed(1));
-  const diffWeight = (weight - targetWeight).toFixed(1);
-  const weightControl = parsed.weightControl || (diffWeight > 0 ? `-${diffWeight}` : `+${Math.abs(diffWeight)}`);
-  const fatControl = parsed.fatControl || (bodyFatPercentage > 20 ? `-${((bodyFatPercentage - 18) * 0.5).toFixed(1)}` : '0.0');
-  const muscleControl = parsed.muscleControl || (skeletalMuscleMass < 30 ? '+2.0' : '0.0');
-  
-  let bodyType = parsed.bodyType;
-  if (!bodyType) {
-    if (bodyFatPercentage < 16 && skeletalMuscleMass > 33) bodyType = 'Athletic Muscular';
-    else if (bodyFatPercentage > 24) bodyType = 'Standard Overweight';
-    else if (bodyFatPercentage > 20) bodyType = 'Hidden Obese';
-    else bodyType = 'Balanced Standard';
+  if (!['bodyFatPercentage', 'skeletalMuscleMass', 'visceralFat', 'bmi', 'bodyWater', 'waistToHipRatio']
+    .some((key) => result[key] !== undefined)) return null;
+  if (parsed.referenceCategories && typeof parsed.referenceCategories === 'object') {
+    result.referenceCategories = parsed.referenceCategories;
   }
-
-  const bodyAge = String(cleanNumber(parsed.bodyAge, age + (bodyFatPercentage > 22 ? 3 : -3)));
-
-  return {
-    memberName: String(memberName),
-    gender: String(gender),
-    age: String(age),
-    height: String(height),
-    testDate: parsed.testDate || new Date().toISOString().split('T')[0],
-    testTime: parsed.testTime || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    scannerDevice: parsed.scannerDevice || 'FitMao 3D Scanner Pro',
-    gymLocation: parsed.gymLocation || 'KSYN Fitness Alabang',
-    healthScore: String(healthScore),
-    bodyType: String(bodyType),
-    bodyAge,
-    weight: String(weight),
-    targetWeight: String(targetWeight),
-    weightControl: String(weightControl),
-    bodyFatPercentage: String(bodyFatPercentage),
-    fatMass: String(fatMass),
-    fatFreeMass: String(fatFreeMass),
-    skeletalMuscleMass: String(skeletalMuscleMass),
-    muscleMass: String(muscleMass),
-    fatControl: String(fatControl),
-    muscleControl: String(muscleControl),
-    bmi: String(bmi),
-    visceralFat: String(visceralFat),
-    bmr: String(bmr),
-    bodyWater: String(bodyWater),
-    bodyWaterRatio: String(bodyWaterRatio),
-    proteinMass: String(proteinMass),
-    boneMineralContent: String(boneMineralContent),
-    waistToHipRatio: String(waistToHipRatio),
-    isDecodedFromLiveQr: true
-  };
+  result.isDecodedFromLiveQr = true;
+  result.isConfirmed = false;
+  return result;
 }
 
 /**

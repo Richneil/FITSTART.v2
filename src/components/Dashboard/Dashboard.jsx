@@ -116,9 +116,9 @@ export default function Dashboard({ user }) {
           )}
           <div className="grid grid-cols-3 gap-2.5">
             {[
-              ['Muscle Mass', metricValue(latestMetrics, 'skeletalMuscleMass', '32.4 kg')],
-              ['Body Fat %', metricValue(latestMetrics, 'bodyFatPercentage', '24.8%')],
-              ['BMR', metricValue(latestMetrics, 'bmr', '1,620 kcal')]
+              ['Muscle Mass', metricValue(latestMetrics, 'skeletalMuscleMass', 'Not shown')],
+              ['Body Fat %', metricValue(latestMetrics, 'bodyFatPercentage', 'Not shown')],
+              ['BMR', metricValue(latestMetrics, 'bmr', 'Not shown')]
             ].map(([label, value]) => (
               <div key={label} className="rounded-2xl border border-brand-100/70 dark:border-brand-900 bg-brand-50/70 dark:bg-brand-950/30 px-2 py-3 text-center">
                 <span className="block text-[10px] text-surface-500 dark:text-surface-400">{label}</span>

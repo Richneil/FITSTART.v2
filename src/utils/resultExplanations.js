@@ -19,6 +19,11 @@ const METRIC_COPY = {
     context: 'exercise readiness, recovery and your broader body composition',
     coachPrompt: 'Ask whether this measurement should be monitored and how to prepare consistently before future assessments.'
   },
+  waistHipRatio: {
+    definition: 'This compares waist and hip measurements in the FitMao report. It is one part of the body-composition picture, not a diagnosis.',
+    context: 'how body measurements are distributed',
+    coachPrompt: 'Ask how this ratio should be read alongside your other confirmed FitMao measurements.'
+  },
   bmr: {
     definition: 'This is FitMao’s estimate of the energy your body uses while at rest. It is not a daily calorie prescription.',
     context: 'resting energy-use information',
@@ -32,6 +37,10 @@ const METRIC_COPY = {
 };
 
 const CATEGORY_LABELS = {
+  'FitMao Result Review': 'the available review category',
+  'Primary Goal Alignment': 'your primary goal',
+  'Secondary Goal Alignment': 'your secondary goal',
+  'Corroborating Evidence': 'distinct supporting report fields',
   'Primary Goal': 'your primary goal',
   'Secondary Goal': 'your secondary goal',
   'Activity Style': 'your preferred workout focus',
@@ -69,8 +78,8 @@ export function getMetricExplanation(metric, role = 'supporting', mainFocus = nu
     context: 'your overall assessment',
     coachPrompt: 'Ask your coach how this measurement relates to your selected goal.'
   };
-
   const evidence = [...new Set((metric?.contributingFactors || [])
+    .filter((factor) => Number(factor.contribution || 0) > 0)
     .map((factor) => CATEGORY_LABELS[factor.category])
     .filter(Boolean))]
     .slice(0, 3);
@@ -79,14 +88,14 @@ export function getMetricExplanation(metric, role = 'supporting', mainFocus = nu
   if (role === 'main') {
     return {
       ...copy,
-      why: `FitStart selected ${metric?.title || 'this measurement'} as your Main Focus because it had the strongest connection to ${evidenceText}. This does not automatically mean the result is unhealthy; it is the most relevant measurement to discuss first for the goals and preferences you selected.`,
+      why: `Under the proposed SAW rules, ${metric?.title || 'this measurement'} ranked highest using ${evidenceText}. The score explains why it comes first for review; it does not say that this measurement is unhealthy or medically severe.`,
       focusLabel: 'Start here and monitor'
     };
   }
 
   return {
     ...copy,
-    why: `FitStart included ${metric?.title || 'this measurement'} because it adds ${copy.context} alongside ${mainFocus?.title || 'your Main Focus'}. Its relevance came from ${evidenceText}. It is supporting rather than primary because ${mainFocus?.title || 'the Main Focus'} had the stronger overall connection to your answers.`,
+    why: `This adds ${copy.context} alongside ${mainFocus?.title || 'your Main Focus'}. It ranked as a supporting priority because its weighted score was lower under the same criteria; ${evidenceText} contributed to its position. Being listed does not by itself mean a problem was found.`,
     focusLabel: 'Understand and monitor'
   };
 }
@@ -118,7 +127,7 @@ export function getOverallInterpretation(mainFocus, topPriorities = [], parqAnsw
       : 'No additional supporting priority was available from the confirmed measurements.';
 
   return {
-    basis: 'This explanation is based on your confirmed FitMao measurements and the fitness goals you selected.',
+    basis: 'This educational interpretation uses the available FitMao report information and the goals you selected under the proposed FitStart rule set. It is not a medical diagnosis.',
     summary: mainFocus
       ? `For your goal of ${goalLabel}, FitStart identified ${mainFocus.title} (${mainFocus.value}) as the measurement to review first. ${supportingSummary} Being selected as a priority does not necessarily mean that something is wrong; these results provide a clearer starting point for a conversation with your coach.`
       : 'FitStart could not identify a Main Focus because no supported FitMao measurements were available. Review the report with a qualified coach before drawing conclusions.',

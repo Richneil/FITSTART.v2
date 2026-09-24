@@ -48,6 +48,17 @@ export const REFERENCE_ASSESSMENTS = [
       proteinMass: '10.4 kg',
       boneMineralContent: '3.1 kg',
       waistToHipRatio: '0.82',
+      // Demonstration-only review categories and supporting-field decisions.
+      // They are not extracted FitMao reference ranges or validated expert rules.
+      referenceCategoriesSource: 'Illustrative prototype categories',
+      referenceCategories: {
+        bodyFatPercentage: 'outside', skeletalMuscleMass: 'boundary', visceralFat: 'within',
+        bmi: 'within', bodyWater: 'boundary', waistToHipRatio: 'within'
+      },
+      corroboratingEvidence: {
+        bodyFat: ['fatMass', 'waistToHipRatio'], muscleMass: ['muscleControl'],
+        visceralFat: ['waistToHipRatio'], bmi: [], bodyWater: [], waistHipRatio: []
+      },
       dataSource: 'Demo assessment data',
       correctedFields: []
     },
@@ -96,6 +107,15 @@ export const REFERENCE_ASSESSMENTS = [
       proteinMass: '10.2 kg',
       boneMineralContent: '3.0 kg',
       waistToHipRatio: '0.84',
+      referenceCategoriesSource: 'Illustrative prototype categories',
+      referenceCategories: {
+        bodyFatPercentage: 'outside', skeletalMuscleMass: 'boundary', visceralFat: 'within',
+        bmi: 'within', bodyWater: 'boundary', waistToHipRatio: 'within'
+      },
+      corroboratingEvidence: {
+        bodyFat: ['fatMass', 'waistToHipRatio'], muscleMass: ['muscleControl'],
+        visceralFat: ['waistToHipRatio'], bmi: [], bodyWater: [], waistHipRatio: []
+      },
       dataSource: 'Demo assessment data',
       correctedFields: []
     },

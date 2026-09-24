@@ -18,7 +18,7 @@ function generateToken(user) {
 
 // Helper to link or create a pending guest assessment under newly authenticated user
 async function linkPendingAssessment(userId, pendingAssessment) {
-  if (!pendingAssessment) return null;
+  if (!pendingAssessment || pendingAssessment.saveConsent !== true) return null;
   try {
     let savedProfile = null;
     if (pendingAssessment.profileId && pendingAssessment.profileId !== 'guest') {

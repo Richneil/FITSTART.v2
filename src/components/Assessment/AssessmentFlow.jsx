@@ -12,13 +12,14 @@ export default function AssessmentFlow({ user }) {
   const navigate = useNavigate();
 
   const [step, setStep] = useState('capture'); // 'capture', 'intro', 'parq', 'checkin', 'processing'
-  const [fitMaoData] = useState(() => ({
+  const [fitMaoData, setFitMaoData] = useState(() => ({
     ...REFERENCE_ASSESSMENTS[0].fitMao_report_data,
     dataSource: 'Prototype FitMao assessment data',
     correctedFields: []
   }));
   const [parqAnswers, setParqAnswers] = useState(null);
   const [changeLog, setChangeLog] = useState([]);
+  const [processingError, setProcessingError] = useState(null);
 
   const handleRecordChange = (field, from, to) => {
     setChangeLog(prev => [
@@ -37,7 +38,8 @@ export default function AssessmentFlow({ user }) {
     setStep('checkin');
   };
 
-  const handleConfirmGoal = async () => {
+  const handleConfirmGoal = async (saveConsent = false) => {
+    setProcessingError(null);
     setStep('processing');
     const assessedDate = fitMaoData?.testDate
       ? new Date(`${fitMaoData.testDate}T09:00:00`).toISOString()
@@ -47,20 +49,19 @@ export default function AssessmentFlow({ user }) {
       const created = await api.createAssessment({
         fitMao_report_data: fitMaoData,
         parq_answers: parqAnswers,
-        assessed_date: assessedDate
+        assessed_date: assessedDate,
+        saveConsent: Boolean(user && saveConsent)
       });
 
       const profileId = created.profile_id || 'guest';
 
-      // Store in guest session state for account linking prompt
-      setPendingGuestAssessment({
-        profileId,
-        fitMao_report_data: fitMaoData,
-        parq_answers: parqAnswers,
-        assessed_date: assessedDate,
-        changeLog,
-        isGuest: !user
-      });
+      // Unsaved assessments remain in this browser session only.
+      if (profileId === 'guest') {
+        setPendingGuestAssessment({
+          profileId, fitMao_report_data: fitMaoData, parq_answers: parqAnswers,
+          assessed_date: assessedDate, changeLog, isGuest: true
+        });
+      }
 
       // 2. Compute results
       await api.calculateResults(profileId, { changeLog });
@@ -70,6 +71,11 @@ export default function AssessmentFlow({ user }) {
         navigate(`/results/${profileId}`);
       }, 1200);
     } catch (err) {
+      if (user && saveConsent) {
+        setProcessingError(err.message || 'Could not save your assessment. Please try again or choose Analyze Without Saving.');
+        setStep('checkin');
+        return;
+      }
       console.warn('Proceeding with guest local calculation:', err.message);
       setPendingGuestAssessment({
         profileId: 'guest',
@@ -90,7 +96,7 @@ export default function AssessmentFlow({ user }) {
       {step === 'capture' && (
         <UploadStep
           prototypeMode
-          onDataExtracted={() => setStep('parq')}
+          onDataExtracted={(data) => { setFitMaoData(data); setStep('parq'); }}
           onCancel={() => user ? navigate('/dashboard') : navigate('/')}
         />
       )}
@@ -175,6 +181,8 @@ export default function AssessmentFlow({ user }) {
       {step === 'checkin' && (
         <GoalCheckIn
           currentGoal={parqAnswers?.goal || (parqAnswers?.goals && parqAnswers.goals[0]) || 'fat_loss'}
+          signedIn={Boolean(user)}
+          error={processingError}
           onConfirmYes={handleConfirmGoal}
           onConfirmNo={() => setStep('parq')}
         />

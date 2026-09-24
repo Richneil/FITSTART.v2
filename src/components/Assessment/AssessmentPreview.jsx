@@ -14,8 +14,8 @@ const PERSONALIZED_FIELDS = [
   { key: 'skeletalMuscleMass', label: 'Skeletal Muscle', unit: 'kg', help: 'Estimated muscle used for movement and strength.' },
   { key: 'visceralFat', label: 'Visceral Fat Level', unit: 'level', help: 'Device-estimated fat stored around the abdominal organs.' },
   { key: 'bodyWater', label: 'Body Water', unit: 'L', help: 'Estimated total body water.' },
-  { key: 'bmr', label: 'BMR', unit: 'kcal', help: 'Estimated energy used by the body at rest.' },
-  { key: 'bmi', label: 'BMI', unit: '', help: 'Weight-to-height screening value.' }
+  { key: 'bmi', label: 'BMI', unit: '', help: 'Weight-to-height screening value.' },
+  { key: 'waistToHipRatio', label: 'Waist-to-Hip Ratio', unit: '', help: 'Compares waist and hip measurements.' }
 ];
 
 const SUPPORTING_FIELDS = [
@@ -26,7 +26,7 @@ const SUPPORTING_FIELDS = [
   { key: 'bodyWaterRatio', label: 'Body Water Ratio', unit: '%' },
   { key: 'proteinMass', label: 'Protein Mass', unit: 'kg' },
   { key: 'boneMineralContent', label: 'Bone Mineral Content', unit: 'kg' },
-  { key: 'waistToHipRatio', label: 'Waist-to-Hip Ratio', unit: '' },
+  { key: 'bmr', label: 'BMR', unit: 'kcal' },
   { key: 'targetWeight', label: 'Target Weight', unit: 'kg' },
   { key: 'weightControl', label: 'Weight Control', unit: 'kg' },
   { key: 'fatControl', label: 'Fat Control', unit: 'kg' },

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
+  Activity,
   ArrowRight,
   BarChart3,
   CheckCircle2,
@@ -10,7 +11,6 @@ import {
   LogIn,
   MessageCircleQuestion,
   QrCode,
-  ShieldCheck,
   Target,
   UserRound
 } from 'lucide-react';
@@ -55,8 +55,8 @@ const steps = [
 
 const metrics = [
   { icon: Droplets, label: 'Body Fat', value: '24.8%', width: '58%' },
-  { icon: Dumbbell, label: 'Muscle Mass', value: '56.3 kg', width: '62%' },
-  { icon: ShieldCheck, label: 'Lifestyle', value: 'Moderate', width: '60%' }
+  { icon: Dumbbell, label: 'Skeletal Muscle', value: '32.4 kg', width: '62%' },
+  { icon: Activity, label: 'Visceral Fat Level', value: '7', width: '60%' }
 ];
 
 export default function LandingPage() {
@@ -140,7 +140,7 @@ export default function LandingPage() {
                   Improve body composition
                 </strong>
                 <p className="mt-1 text-xs leading-relaxed text-surface-500 dark:text-surface-400">
-                  Based on your measurements, goals, and daily habits
+                  Based on your FitMao measurements and selected goals
                 </p>
               </div>
             </div>

@@ -116,11 +116,11 @@ export default function SettingsModal({ isOpen, onClose, user, onToggle2FA, twoF
           <div className="p-3 bg-surface-100 dark:bg-surface-800 rounded-2xl text-[10px] text-surface-500 dark:text-surface-400 space-y-1 font-mono">
             <div className="flex justify-between">
               <span>FitStart Core:</span>
-              <span className="font-bold text-surface-800 dark:text-surface-200">v2.4 (Thesis Final)</span>
+              <span className="font-bold text-surface-800 dark:text-surface-200">Thesis prototype</span>
             </div>
             <div className="flex justify-between">
               <span>Scoring Rules:</span>
-              <span className="font-bold text-surface-800 dark:text-surface-200">SAW (MCDM)</span>
+              <span className="font-bold text-surface-800 dark:text-surface-200">Proposed 4-criterion SAW</span>
             </div>
           </div>
         </div>

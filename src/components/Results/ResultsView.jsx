@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Activity, AlertCircle, ArrowRight, Award, BookmarkCheck,
   ChevronLeft, Download, FileSearch, LayoutDashboard, PlusCircle,
@@ -11,10 +11,10 @@ import OverallInterpretation from './OverallInterpretation.jsx';
 import CalculationDetails from './CalculationDetails.jsx';
 import SaveResultsPrompt from './SaveResultsPrompt.jsx';
 import PrintableSummary from './PrintableSummary.jsx';
-import { api } from '../../utils/api.js';
+import { api, clearPendingGuestAssessment } from '../../utils/api.js';
 import { scoreMetrics } from '../../utils/scoreMetrics.js';
 
-function RecommendedNextStep({ mainFocus, topPriorities, isGuest, onDownload }) {
+function RecommendedNextStep({ mainFocus, topPriorities, isGuest, user, onSave, saving, onDownload }) {
   const discussionOrder = [mainFocus, ...topPriorities].filter(Boolean);
   return (
     <section className="rounded-3xl border border-surface-200 bg-white p-5 shadow-card dark:border-surface-800 dark:bg-surface-900 sm:p-6">
@@ -39,7 +39,9 @@ function RecommendedNextStep({ mainFocus, topPriorities, isGuest, onDownload }) 
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <Link to={isGuest ? '/signup?reason=save_assessment' : '/dashboard'} className="btn-primary flex items-center justify-center gap-2 py-3 text-xs font-display font-bold"><BookmarkCheck className="h-4 w-4" /> {isGuest ? 'Save Results' : 'View Saved Results'}</Link>
+        {isGuest && user
+          ? <button type="button" onClick={onSave} disabled={saving} className="btn-primary flex items-center justify-center gap-2 py-3 text-xs font-display font-bold"><BookmarkCheck className="h-4 w-4" /> {saving ? 'Saving...' : 'Save Results to My Account'}</button>
+          : <Link to={isGuest ? '/signup?reason=save_assessment' : '/dashboard'} className="btn-primary flex items-center justify-center gap-2 py-3 text-xs font-display font-bold"><BookmarkCheck className="h-4 w-4" /> {isGuest ? 'Save Results' : 'View Saved Results'}</Link>}
         <button type="button" onClick={onDownload} className="btn-secondary flex items-center justify-center gap-2 py-3 text-xs font-display font-bold"><Download className="h-4 w-4" /> Download Summary</button>
       </div>
     </section>
@@ -102,6 +104,7 @@ function findPreviousAssessment(assessments, currentProfile, currentProfileId) {
 }
 
 export default function ResultsView({ user }) {
+  const navigate = useNavigate();
   const { profileId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -109,6 +112,8 @@ export default function ResultsView({ user }) {
   const [resultsData, setResultsData] = useState(null);
   const [assessmentHistory, setAssessmentHistory] = useState([]);
   const [showPrintModal, setShowPrintModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -156,10 +161,43 @@ export default function ResultsView({ user }) {
   const rawMetrics = profile?.fitMao_report_data || {};
   const parqAnswers = profile?.parq_answers || {};
   const currentCalculation = scoreMetrics(rawMetrics, parqAnswers);
-  const mainFocus = currentCalculation.mainFocus || resultsData.main_focus;
-  const topPriorities = currentCalculation.topPriorities || resultsData.top_priorities || [];
-  const otherPriorities = currentCalculation.otherPriorities || resultsData.otherPriorities || [];
+  if (!currentCalculation.mainFocus) {
+    return (
+      <div className="mx-auto flex min-h-[70vh] max-w-md flex-col items-center justify-center p-6 text-center">
+        <AlertCircle className="h-10 w-10 text-amber-500" />
+        <h2 className="mt-3 text-xl font-display font-bold text-surface-900 dark:text-white">Priority ranking unavailable</h2>
+        <p className="mt-2 text-xs leading-relaxed text-surface-500 dark:text-surface-400">{currentCalculation.limitation} FitStart will not fill missing values or present an older ranking as a new SAW result.</p>
+        <Link to={user ? '/dashboard' : '/assessment'} className="btn-primary mt-5 text-xs">{user ? 'Return to Dashboard' : 'Start Assessment'}</Link>
+      </div>
+    );
+  }
+  const showsRecalculatedPreview = resultsData.savedRuleVersion && resultsData.savedRuleVersion !== currentCalculation.ruleVersion;
+  const mainFocus = currentCalculation.mainFocus;
+  const topPriorities = currentCalculation.topPriorities;
+  const otherPriorities = currentCalculation.otherPriorities;
+  const displayMainFocus = mainFocus;
+  const displayTopPriorities = topPriorities;
   const previousAssessment = findPreviousAssessment(assessmentHistory, profile, profileId);
+
+  const saveCurrentAssessment = async () => {
+    if (!user || saving) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const created = await api.createAssessment({
+        fitMao_report_data: rawMetrics, parq_answers: parqAnswers,
+        assessed_date: profile?.assessed_date, saveConsent: true
+      });
+      if (!created.profile_id || created.profile_id === 'guest') throw new Error('Your assessment was not saved. Check your connection and try again.');
+      await api.calculateResults(created.profile_id);
+      clearPendingGuestAssessment();
+      navigate(`/results/${created.profile_id}`);
+    } catch (err) {
+      setSaveError(err.message || 'Could not save this assessment.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <main className="relative mx-auto min-h-screen max-w-6xl bg-surface-50 px-3 pb-28 font-sans dark:bg-surface-950 sm:px-6 lg:px-8">
@@ -175,18 +213,23 @@ export default function ResultsView({ user }) {
         </div>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-surface-500 dark:text-surface-400">Understand which FitMao measurements are most relevant to your goals before speaking with a fitness professional.</p>
         <p className="mt-2 text-[11px] text-surface-400"><Activity className="mr-1 inline h-3.5 w-3.5" /> {rawMetrics.memberName || 'FitStart member'} · {rawMetrics.testDate || profile?.assessed_date?.split('T')[0] || 'Assessment date'}</p>
+        <p className="mt-2 text-[11px] text-surface-500 dark:text-surface-400">Proposed thesis SAW rules: {currentCalculation.ruleVersion}. Priority scores are for discussion, not health or severity scores.</p>
+        {showsRecalculatedPreview && <p className="mt-1 text-[11px] text-amber-700 dark:text-amber-300">This older saved assessment is being previewed with the proposed new rules. Its original saved ranking has not been overwritten.</p>}
+        {currentCalculation.limitation && <p className="mt-1 text-[11px] text-amber-700 dark:text-amber-300">{currentCalculation.limitation}</p>}
+        {rawMetrics.referenceCategoriesSource && <p className="mt-1 text-[11px] text-amber-700 dark:text-amber-300">{rawMetrics.referenceCategoriesSource} are demonstration inputs, not confirmed FitMao reference classifications.</p>}
       </header>
 
       <div className="space-y-5">
-        <MainFocusCard mainFocus={mainFocus} />
-        <PriorityList topPriorities={topPriorities} mainFocus={mainFocus} />
-        <OverallInterpretation mainFocus={mainFocus} topPriorities={topPriorities} parqAnswers={parqAnswers} />
-        <RecommendedNextStep mainFocus={mainFocus} topPriorities={topPriorities} isGuest={isGuest} onDownload={() => setShowPrintModal(true)} />
+        <MainFocusCard mainFocus={displayMainFocus} />
+        <PriorityList topPriorities={displayTopPriorities} mainFocus={displayMainFocus} />
+        <OverallInterpretation mainFocus={displayMainFocus} topPriorities={displayTopPriorities} parqAnswers={parqAnswers} />
+        <RecommendedNextStep mainFocus={displayMainFocus} topPriorities={displayTopPriorities} isGuest={isGuest} user={user} onSave={saveCurrentAssessment} saving={saving} onDownload={() => setShowPrintModal(true)} />
+        {saveError && <p role="alert" className="text-xs text-red-700 dark:text-red-300">{saveError}</p>}
         <FullReportLink profileId={profileId} />
         <SourceGuide />
 
         {isGuest ? (
-          <SaveResultsPrompt onContinueAsGuest={() => {}} />
+          <SaveResultsPrompt user={user} onSave={saveCurrentAssessment} saving={saving} onContinueAsGuest={() => {}} />
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
             <Link to="/assessment" className="btn-primary flex items-center justify-center gap-2 py-3.5 text-xs font-display font-bold"><PlusCircle className="h-4 w-4" /> Start New Assessment</Link>
@@ -194,10 +237,10 @@ export default function ResultsView({ user }) {
           </div>
         )}
 
-        <CalculationDetails mainFocus={mainFocus} topPriorities={topPriorities} otherPriorities={otherPriorities} />
+        <CalculationDetails mainFocus={mainFocus} topPriorities={topPriorities} otherPriorities={otherPriorities} calculation={currentCalculation} />
       </div>
 
-      {showPrintModal && <PrintableSummary profile={profile} fitMao={rawMetrics} mainFocus={mainFocus} topPriorities={topPriorities} parqAnswers={parqAnswers} previousAssessment={previousAssessment} user={user} onClose={() => setShowPrintModal(false)} />}
+      {showPrintModal && <PrintableSummary profile={profile} fitMao={rawMetrics} mainFocus={displayMainFocus} topPriorities={displayTopPriorities} parqAnswers={parqAnswers} previousAssessment={previousAssessment} calculation={currentCalculation} recalculatedPreview={showsRecalculatedPreview} user={user} onClose={() => setShowPrintModal(false)} />}
     </main>
   );
 }

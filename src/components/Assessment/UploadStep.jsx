@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Camera, ChevronRight, Image, QrCode, AlertCircle, Zap } from 'lucide-react';
 import { parseQrPayload, decodeQrFromImage } from '../../utils/qrParser.js';
 import { DEFAULT_EXTRACTED } from '../../data/demoAssessments.js';
+import { REFERENCE_ASSESSMENTS } from '../../data/memberExperience.js';
 import CameraCapture from './CameraCapture.jsx';
 import AssessmentPreview from './AssessmentPreview.jsx';
 import PrivacyUploadModal from './PrivacyUploadModal.jsx';
@@ -50,15 +51,14 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
 
   const handleFileProcessed = (_dataUrl, rawQr, inputSource = 'uploaded_qr') => {
     setErrorMsg('');
-
-    setStage('scanning');
-    const parsed = rawQr ? parseQrPayload(rawQr, REFERENCE_RAW) : null;
-    setExtractedData(parsed
-      ? { ...parsed, _inputSource: inputSource }
-      : { ...REFERENCE_RAW, _inputSource: 'demo' });
-    if (!rawQr) {
-      setErrorMsg('No embedded QR code was detected. We loaded the demo values so you can review or correct them before continuing.');
+    const parsed = rawQr ? parseQrPayload(rawQr) : null;
+    if (!parsed) {
+      setErrorMsg('No supported FitMao values could be read from this QR code. Try another image or choose the separate demo option.');
+      setStage('upload');
+      return;
     }
+    setStage('scanning');
+    setExtractedData({ ...parsed, _inputSource: inputSource });
     setTimeout(() => setStage('review'), 800);
   };
 
@@ -135,7 +135,7 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
     clearTimeout(prototypeTimerRef.current);
     prototypeTimerRef.current = setTimeout(() => {
       onDataExtracted({
-        ...REFERENCE_RAW,
+        ...REFERENCE_ASSESSMENTS[0].fitMao_report_data,
         dataSource: 'Prototype FitMao assessment data',
         correctedFields: []
       });
@@ -171,54 +171,14 @@ export default function UploadStep({ onDataExtracted, onCancel, prototypeMode = 
   useEffect(() => () => clearTimeout(prototypeTimerRef.current), []);
 
   const handleConfirmAndContinue = (reviewedData = extractedData) => {
-    const weightVal = parseFloat(reviewedData.weight) || 78.0;
-    const fatPercentVal = parseFloat(reviewedData.bodyFatPercentage) || 24.5;
-    const heightVal = parseFloat(reviewedData.height) || 175;
-    const signedKilograms = (value, fallback) => {
-      const numericValue = parseFloat(String(value ?? fallback).replace(/[^\d.-]/g, ''));
-      const safeValue = Number.isFinite(numericValue) ? numericValue : fallback;
-      return `${safeValue > 0 ? '+' : ''}${safeValue.toFixed(1)} kg`;
-    };
-
-    const formattedData = {
-      memberName: reviewedData.memberName || 'Alex Rivera',
-      gender: reviewedData.gender || 'Male',
-      age: reviewedData.age
-        ? (String(reviewedData.age).includes('yrs') ? reviewedData.age : `${reviewedData.age} yrs`)
-        : '28 yrs',
-      height: `${heightVal} cm`,
-      testDate: reviewedData.testDate || new Date().toISOString().split('T')[0],
-      testTime: reviewedData.testTime || '10:30 AM',
-      scannerDevice: reviewedData.scannerDevice || 'FitMao 3D Scanner Pro',
-      gymLocation: reviewedData.gymLocation || 'KSYN Fitness Alabang',
-      healthScore: `${reviewedData.healthScore || '74'} / 100`,
-      bodyType: reviewedData.bodyType || 'Standard Overweight',
-      bodyAge: reviewedData.bodyAge
-        ? (String(reviewedData.bodyAge).includes('yrs') ? reviewedData.bodyAge : `${reviewedData.bodyAge} yrs`)
-        : '31 yrs',
-      weight: `${weightVal.toFixed(1)} kg`,
-      targetWeight: `${parseFloat(reviewedData.targetWeight || 72.0).toFixed(1)} kg`,
-      weightControl: signedKilograms(reviewedData.weightControl, -6),
-      bodyFatPercentage: `${fatPercentVal.toFixed(1)}%`,
-      fatMass: `${reviewedData.fatMass || (weightVal * (fatPercentVal / 100)).toFixed(1)} kg`,
-      fatFreeMass: `${reviewedData.fatFreeMass || (weightVal * (1 - fatPercentVal / 100)).toFixed(1)} kg`,
-      skeletalMuscleMass: `${parseFloat(reviewedData.skeletalMuscleMass || 32.1).toFixed(1)} kg`,
-      muscleMass: `${parseFloat(reviewedData.muscleMass || 55.4).toFixed(1)} kg`,
-      fatControl: signedKilograms(reviewedData.fatControl, -6),
-      muscleControl: signedKilograms(reviewedData.muscleControl, 0),
-      bmi: String(reviewedData.bmi || (weightVal / Math.pow(heightVal / 100, 2)).toFixed(1)),
-      visceralFat: `Level ${reviewedData.visceralFat || 11}`,
-      bmr: `${Number(reviewedData.bmr || 1650).toLocaleString()} kcal`,
-      bodyWater: `${parseFloat(reviewedData.bodyWater || 42.3).toFixed(1)} L`,
-      bodyWaterRatio: `${parseFloat(reviewedData.bodyWaterRatio || 54.2).toFixed(1)}%`,
-      proteinMass: `${parseFloat(reviewedData.proteinMass || 12.8).toFixed(1)} kg`,
-      boneMineralContent: `${parseFloat(reviewedData.boneMineralContent || 3.8).toFixed(1)} kg`,
-      waistToHipRatio: String(reviewedData.waistToHipRatio || '0.88'),
+    const fields = ['bodyFatPercentage', 'skeletalMuscleMass', 'visceralFat', 'bmi', 'bodyWater', 'waistToHipRatio'];
+    onDataExtracted({
+      ...reviewedData,
       dataSource: reviewedData._inputSource === 'demo' ? 'Demo assessment data' : 'FitMao QR code',
-      correctedFields: reviewedData._correctedFields || []
-    };
-
-    onDataExtracted(formattedData);
+      correctedFields: reviewedData._correctedFields || [],
+      confirmedFields: fields.filter((key) => reviewedData[key] !== undefined && String(reviewedData[key]).trim() !== ''),
+      isConfirmed: true
+    });
   };
 
   return (

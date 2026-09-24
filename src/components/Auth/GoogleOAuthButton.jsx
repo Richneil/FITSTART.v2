@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../../utils/api.js';
 
-export default function GoogleOAuthButton({ onSuccess, onError }) {
+export default function GoogleOAuthButton({ onSuccess, onError, savePendingAssessment = false }) {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -12,7 +12,8 @@ export default function GoogleOAuthButton({ onSuccess, onError }) {
         email: 'demo.member@ksynfitness.com',
         firstName: 'Demo',
         lastName: 'Member',
-        googleId: 'google_oauth_123456789'
+        googleId: 'google_oauth_123456789',
+        savePendingAssessment
       });
       if (onSuccess) onSuccess(res.user, res);
     } catch (err) {

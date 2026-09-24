@@ -10,11 +10,11 @@ const TOOLTIP_DEFINITIONS = {
   },
   goals: {
     title: 'Objective Prioritization',
-    desc: 'Setting a primary and secondary focus allows FitStart to mathematically weigh which scanner metrics need action first.'
+    desc: 'Your primary goal and optional secondary goal help FitStart rank which supported report measurements to discuss first. A priority is not a diagnosis or action plan.'
   },
   activity_profile: {
     title: 'Activity Preference',
-    desc: 'Your preferred activity helps FitStart identify which FitMao measurements are most relevant to your starting goal.'
+    desc: 'Your preferred activity provides context for a conversation with your coach. It does not change the measurement ranking.'
   },
   nutrition_hydration: {
     title: 'Nutrition and Hydration Context',
@@ -30,7 +30,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
   const [answers, setAnswers] = useState(() => {
     if (initialAnswers) return initialAnswers;
     try {
-      const saved = localStorage.getItem('fitstart_parq_draft');
+      const saved = sessionStorage.getItem('fitstart_parq_draft');
       if (saved) return JSON.parse(saved);
     } catch (_) {}
     return {
@@ -60,7 +60,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
   // Auto-save form draft
   useEffect(() => {
     try {
-      localStorage.setItem('fitstart_parq_draft', JSON.stringify(answers));
+      sessionStorage.setItem('fitstart_parq_draft', JSON.stringify(answers));
     } catch (_) {}
   }, [answers]);
 
@@ -109,7 +109,7 @@ export default function ParQForm({ initialAnswers, onComplete, onBack, onRecordC
       setCurrentSectionIdx(s => s + 1);
     } else {
       try {
-        localStorage.removeItem('fitstart_parq_draft');
+        sessionStorage.removeItem('fitstart_parq_draft');
       } catch (_) {}
       onComplete(answers);
     }

@@ -7,14 +7,14 @@ import {
   BookmarkCheck
 } from 'lucide-react';
 
-export default function SaveResultsPrompt({ onContinueAsGuest }) {
+export default function SaveResultsPrompt({ user, onSave, saving = false, onContinueAsGuest }) {
   const navigate = useNavigate();
   const [dismissed, setDismissed] = useState(false);
 
   if (dismissed) {
     return (
       <div className="p-4 bg-surface-100 dark:bg-surface-850 border border-surface-200 dark:border-surface-800 rounded-3xl text-center text-xs text-surface-600 dark:text-surface-400 font-medium animate-fade-in font-sans">
-        <span>Continuing as guest. You can review your assessment interpretation anytime during this session.</span>
+        <span>This unsaved result remains available only during this browser session.</span>
       </div>
     );
   }
@@ -25,7 +25,7 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
   };
 
   return (
-    <div className="card p-6 sm:p-8 bg-surface-900  border border-brand-200 dark:border-brand-900/60 rounded-3xl shadow-card font-sans space-y-5">
+    <div className="card p-6 sm:p-8 bg-white dark:bg-surface-900 border border-brand-200 dark:border-brand-900/60 rounded-3xl shadow-card font-sans space-y-5">
       
       {/* Header */}
       <div className="text-center max-w-md mx-auto space-y-2">
@@ -39,7 +39,7 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
           Want to keep your FitStart results?
         </h3>
         <p className="text-xs sm:text-sm text-surface-500 dark:text-surface-400 leading-relaxed">
-          Create a free account to save this assessment and revisit your personalized interpretation later.
+          {user ? 'You are viewing this result without saving it. Choose to keep it in your member history.' : 'Create a free account to save this assessment and revisit your personalized interpretation later.'}
         </p>
       </div>
 
@@ -76,6 +76,7 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
 
       {/* 3 Optional Action Buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto pt-2">
+        {user ? <button type="button" onClick={onSave} disabled={saving} className="btn-primary w-full py-3.5 px-5 text-xs font-display font-extrabold">{saving ? 'Saving...' : 'Save This Assessment to My Account'}</button> : <>
         <button
           type="button"
           onClick={() => navigate('/signup?reason=save_assessment')}
@@ -91,13 +92,14 @@ export default function SaveResultsPrompt({ onContinueAsGuest }) {
         >
           <LogIn className="w-4 h-4" /> Sign In
         </button>
+        </>}
 
         <button
           type="button"
           onClick={handleGuestChoice}
           className="w-full sm:w-auto py-3 px-4 text-xs font-display font-bold text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white transition-colors cursor-pointer"
         >
-          Continue as Guest
+          {user ? 'Keep Unsaved' : 'Continue as Guest'}
         </button>
       </div>
     </div>

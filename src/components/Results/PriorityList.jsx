@@ -9,12 +9,14 @@ const METRIC_ICONS = {
   visceralFat: Activity,
   bodyWater: Droplet,
   bmr: HeartPulse,
-  bmi: Scale
+  bmi: Scale,
+  waistHipRatio: Scale
 };
 
 const GLOSSARY_IDS = {
   bodyFat: 'bodyFatPercentage',
-  muscleMass: 'skeletalMuscleMass'
+  muscleMass: 'skeletalMuscleMass',
+  waistHipRatio: 'waistToHipRatio'
 };
 
 function PriorityExplanation({ icon: Icon, title, text }) {

@@ -18,7 +18,7 @@ function getOptionalUserId(req) {
   }
 }
 
-// POST /results/:profileId - Calculate and store results (supports both members and guests)
+// POST /results/:profileId - Calculate and store a consenting member's result.
 router.post('/:profileId', async (req, res) => {
   try {
     const userId = getOptionalUserId(req);
@@ -29,6 +29,9 @@ router.post('/:profileId', async (req, res) => {
 
     const { changeLog } = req.body;
     const calculation = scoreMetrics(profile.fitMao_report_data, profile.parq_answers);
+    if (!calculation.mainFocus) {
+      return res.status(422).json({ error: calculation.limitation });
+    }
 
     const saved = await db.saveResult({
       profile_id: profile.id,
@@ -54,7 +57,7 @@ router.post('/:profileId', async (req, res) => {
   }
 });
 
-// GET /results/:profileId - Fetch stored results or calculate if missing (supports both members and guests)
+// GET /results/:profileId - Fetch a member's saved result without rewriting its original ranking.
 router.get('/:profileId', async (req, res) => {
   try {
     const userId = getOptionalUserId(req);
@@ -63,30 +66,21 @@ router.get('/:profileId', async (req, res) => {
       return res.status(404).json({ error: 'Assessment profile not found.' });
     }
 
-    let storedResult = await db.getResultByProfileId(profile.id);
+    const storedResult = await db.getResultByProfileId(profile.id);
 
     // Rebuild the plain-language explanation from the confirmed assessment and survey.
     const calculation = scoreMetrics(profile.fitMao_report_data, profile.parq_answers);
 
-    const isLegacyScoring = !storedResult
-      || storedResult?.main_focus?.scoringMethod !== 'SAW'
-      || !Array.isArray(storedResult?.scored_metrics)
-      || storedResult.scored_metrics.some((metric) => metric?.scoringMethod !== 'SAW');
-
-    // Automatically migrate legacy point-based results to the current SAW model when viewed.
-    if (isLegacyScoring) {
-      storedResult = await db.saveResult({
-        profile_id: profile.id,
-        scored_metrics: calculation.scoredMetrics,
-        main_focus: calculation.mainFocus,
-        top_priorities: calculation.topPriorities,
-        change_log: storedResult?.change_log || []
-      });
-    }
-
     return res.json({
       result: {
-        ...storedResult,
+        ...(storedResult || {
+          profile_id: profile.id,
+          scored_metrics: calculation.scoredMetrics,
+          main_focus: calculation.mainFocus,
+          top_priorities: calculation.topPriorities,
+          change_log: []
+        }),
+        savedRuleVersion: storedResult?.main_focus?.ruleVersion || (storedResult ? 'legacy-or-unversioned' : null),
         otherPriorities: calculation.otherPriorities,
         becauseYouToldUs: calculation.becauseYouToldUs
       },

@@ -22,6 +22,7 @@ export default function Login({ onLoginSuccess }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const pendingGuest = getPendingGuestAssessment();
+  const [savePendingAssessment, setSavePendingAssessment] = useState(false);
 
   // 2FA state
   const [twoFactorData, setTwoFactorData] = useState(null);
@@ -44,7 +45,7 @@ export default function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const res = await api.login({ email, password });
+      const res = await api.login({ email, password, savePendingAssessment });
       
       // Check if user requires Two-Factor Authentication
       if (res.require2FA) {
@@ -55,6 +56,8 @@ export default function Login({ onLoginSuccess }) {
       if (onLoginSuccess) onLoginSuccess(res.user);
       if (res.linkedProfileId) {
         navigate(`/results/${res.linkedProfileId}`);
+      } else if (pendingGuest) {
+        navigate('/results/guest');
       } else {
         navigate('/dashboard');
       }
@@ -73,11 +76,14 @@ export default function Login({ onLoginSuccess }) {
     try {
       const res = await api.verify2FALogin({
         userId: twoFactorData.userId,
-        code: twoFactorCode
+        code: twoFactorCode,
+        savePendingAssessment
       });
       if (onLoginSuccess) onLoginSuccess(res.user);
       if (res.linkedProfileId) {
         navigate(`/results/${res.linkedProfileId}`);
+      } else if (pendingGuest) {
+        navigate('/results/guest');
       } else {
         navigate('/dashboard');
       }
@@ -201,7 +207,7 @@ export default function Login({ onLoginSuccess }) {
     <div className="min-h-[calc(100vh-80px)] flex flex-col justify-center p-4 sm:p-6 max-w-md mx-auto w-full font-sans pb-24">
       
       {/* 3-Slide Landing Carousel */}
-      <div className="card p-5 sm:p-6 mb-6 bg-surface-900 border border-brand-200/60 dark:border-surface-800 shadow-card text-center relative overflow-hidden transition-all duration-300">
+      <div className="card p-5 sm:p-6 mb-6 bg-white dark:bg-surface-900 border border-brand-200/60 dark:border-surface-800 shadow-card text-center relative overflow-hidden transition-all duration-300">
         <div className="w-12 h-12 bg-brand-500/10 dark:bg-brand-400/10 rounded-2xl flex items-center justify-center mx-auto mb-3 text-brand-600 dark:text-brand-400 border border-brand-500/20">
           <SlideIcon className="w-6 h-6" />
         </div>
@@ -243,7 +249,7 @@ export default function Login({ onLoginSuccess }) {
           <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />
           <div className="leading-snug font-sans">
             <strong className="block font-display font-semibold">Active Assessment Detected</strong>
-            <span>Signing in will link your current assessment to your permanent history.</span>
+            <span>Your current assessment stays in this browser session unless you choose to save it below.</span>
           </div>
         </div>
       )}
@@ -256,6 +262,7 @@ export default function Login({ onLoginSuccess }) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-3.5 mb-5">
+        {pendingGuest && <label className="flex items-start gap-2 rounded-xl border border-brand-200 bg-brand-50 p-3 text-xs text-surface-800 dark:border-brand-800 dark:bg-brand-950/30 dark:text-surface-200"><input type="checkbox" checked={savePendingAssessment} onChange={(event) => setSavePendingAssessment(event.target.checked)} className="mt-0.5" /><span>I agree to save my current FitStart assessment in this account.</span></label>}
         <div>
           <label className="block text-xs font-display font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wider mb-1.5">
             Email Address
@@ -301,10 +308,12 @@ export default function Login({ onLoginSuccess }) {
 
       {/* Google OAuth Option */}
       <div className="mb-5">
-        <GoogleOAuthButton onSuccess={(user, res) => {
+        <GoogleOAuthButton savePendingAssessment={savePendingAssessment} onSuccess={(user, res) => {
           if (onLoginSuccess) onLoginSuccess(user);
           if (res?.linkedProfileId) {
             navigate(`/results/${res.linkedProfileId}`);
+          } else if (pendingGuest) {
+            navigate('/results/guest');
           } else {
             navigate('/dashboard');
           }

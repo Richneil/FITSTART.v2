@@ -293,19 +293,12 @@ export const db = {
   },
 
   async getProfileById(id, user_id) {
+    if (!user_id) return null;
     if (usePostgres) {
-      const query = user_id 
-        ? `SELECT * FROM user_profiles WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)`
-        : `SELECT * FROM user_profiles WHERE id = $1`;
-      const params = user_id ? [id, user_id] : [id];
-      const res = await pool.query(query, params);
+      const res = await pool.query('SELECT * FROM user_profiles WHERE id = $1 AND user_id = $2', [id, user_id]);
       return res.rows[0] || null;
     }
-    return localDb.user_profiles.find(p => {
-      if (p.id !== Number(id)) return false;
-      if (!user_id || p.user_id === null) return true;
-      return p.user_id === Number(user_id);
-    }) || null;
+    return localDb.user_profiles.find(p => p.id === Number(id) && p.user_id === Number(user_id)) || null;
   },
 
   async updateProfile(id, user_id, { parq_answers, fitMao_report_data }) {
@@ -315,16 +308,12 @@ export const db = {
          SET parq_answers = COALESCE($1, parq_answers), 
              fitMao_report_data = COALESCE($2, fitMao_report_data),
              updated_at = NOW()
-         WHERE id = $3 AND (user_id = $4 OR user_id IS NULL) RETURNING *`,
+         WHERE id = $3 AND user_id = $4 RETURNING *`,
         [parq_answers ? JSON.stringify(parq_answers) : null, fitMao_report_data ? JSON.stringify(fitMao_report_data) : null, id, user_id || null]
       );
       return res.rows[0] || null;
     }
-    const profile = localDb.user_profiles.find(p => {
-      if (p.id !== Number(id)) return false;
-      if (!user_id || p.user_id === null) return true;
-      return p.user_id === Number(user_id);
-    });
+    const profile = localDb.user_profiles.find(p => p.id === Number(id) && p.user_id === Number(user_id));
     if (!profile) return null;
     if (parq_answers) profile.parq_answers = parq_answers;
     if (fitMao_report_data) profile.fitMao_report_data = fitMao_report_data;
@@ -335,14 +324,17 @@ export const db = {
 
   async deleteProfile(id, user_id) {
     if (usePostgres) {
-      const res = await pool.query('DELETE FROM user_profiles WHERE id = $1 AND (user_id = $2 OR user_id IS NULL) RETURNING id', [id, user_id || null]);
+      const res = await pool.query('DELETE FROM user_profiles WHERE id = $1 AND user_id = $2 RETURNING id', [id, user_id]);
       return res.rowCount > 0;
     }
     const initialLen = localDb.user_profiles.length;
-    localDb.user_profiles = localDb.user_profiles.filter(p => !(p.id === Number(id) && (!user_id || p.user_id === Number(user_id) || p.user_id === null)));
-    localDb.assessment_results = localDb.assessment_results.filter(r => r.profile_id !== Number(id));
-    saveLocalDb();
-    return localDb.user_profiles.length < initialLen;
+    localDb.user_profiles = localDb.user_profiles.filter(p => !(p.id === Number(id) && p.user_id === Number(user_id)));
+    const deleted = localDb.user_profiles.length < initialLen;
+    if (deleted) {
+      localDb.assessment_results = localDb.assessment_results.filter(r => r.profile_id !== Number(id));
+      saveLocalDb();
+    }
+    return deleted;
   },
 
   // Results

@@ -25,16 +25,19 @@ router.get('/parq-template', (req, res) => {
   return res.json(parqTemplate);
 });
 
-// POST /assessments - Create new assessment profile (supports both members and guests)
+// POST /assessments - Persist an assessment only for a consenting member.
 router.post('/', async (req, res) => {
   try {
-    const { fitMao_report_data, parq_answers, assessed_date } = req.body;
+    const { fitMao_report_data, parq_answers, assessed_date, saveConsent } = req.body;
 
     if (!fitMao_report_data || !parq_answers) {
       return res.status(400).json({ error: 'Both fitMao_report_data and parq_answers are required.' });
     }
 
     const userId = getOptionalUserId(req);
+    if (!userId || saveConsent !== true) {
+      return res.status(403).json({ error: 'Sign in and explicitly choose to save this assessment.' });
+    }
 
     const profile = await db.createProfile({
       user_id: userId,
@@ -47,7 +50,7 @@ router.post('/', async (req, res) => {
       message: 'Assessment created successfully.',
       profile_id: profile.id,
       profile,
-      isGuest: !userId
+      isGuest: false
     });
   } catch (err) {
     console.error('[Assessment Create Error]:', err);

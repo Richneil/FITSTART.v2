@@ -19,7 +19,7 @@ export function setToken(token) {
 // Guest Assessment Storage Helpers
 export function getPendingGuestAssessment() {
   try {
-    const data = sessionStorage.getItem('fitstart_guest_assessment') || localStorage.getItem('fitstart_guest_assessment');
+    const data = sessionStorage.getItem('fitstart_guest_assessment');
     return data ? JSON.parse(data) : null;
   } catch (_) {
     return null;
@@ -30,7 +30,7 @@ export function setPendingGuestAssessment(assessmentData) {
   try {
     const str = JSON.stringify(assessmentData);
     sessionStorage.setItem('fitstart_guest_assessment', str);
-    localStorage.setItem('fitstart_guest_assessment', str);
+    localStorage.removeItem('fitstart_guest_assessment');
   } catch (_) {}
 }
 
@@ -78,8 +78,8 @@ async function request(endpoint, options = {}) {
 
 export const api = {
   // Auth
-  async register({ email, password, firstName, lastName }) {
-    const pendingAssessment = getPendingGuestAssessment();
+  async register({ email, password, firstName, lastName, savePendingAssessment = false }) {
+    const pendingAssessment = savePendingAssessment ? { ...getPendingGuestAssessment(), saveConsent: true } : null;
     const res = await request('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ 
@@ -92,13 +92,13 @@ export const api = {
     });
     if (res.token) {
       setToken(res.token);
-      clearPendingGuestAssessment();
+      if (res.linkedProfileId) clearPendingGuestAssessment();
     }
     return res;
   },
 
-  async login({ email, password }) {
-    const pendingAssessment = getPendingGuestAssessment();
+  async login({ email, password, savePendingAssessment = false }) {
+    const pendingAssessment = savePendingAssessment ? { ...getPendingGuestAssessment(), saveConsent: true } : null;
     const res = await request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ 
@@ -109,13 +109,13 @@ export const api = {
     });
     if (res.token) {
       setToken(res.token);
-      clearPendingGuestAssessment();
+      if (res.linkedProfileId) clearPendingGuestAssessment();
     }
     return res;
   },
 
   async googleAuth(data) {
-    const pendingAssessment = getPendingGuestAssessment();
+    const pendingAssessment = data.savePendingAssessment ? { ...getPendingGuestAssessment(), saveConsent: true } : null;
     const res = await request('/api/auth/google', {
       method: 'POST',
       body: JSON.stringify({
@@ -125,7 +125,7 @@ export const api = {
     });
     if (res.token) {
       setToken(res.token);
-      clearPendingGuestAssessment();
+      if (res.linkedProfileId) clearPendingGuestAssessment();
     }
     return res;
   },
@@ -141,8 +141,8 @@ export const api = {
     });
   },
 
-  async verify2FALogin({ userId, code }) {
-    const pendingAssessment = getPendingGuestAssessment();
+  async verify2FALogin({ userId, code, savePendingAssessment = false }) {
+    const pendingAssessment = savePendingAssessment ? { ...getPendingGuestAssessment(), saveConsent: true } : null;
     const res = await request('/api/auth/2fa/verify-login', {
       method: 'POST',
       body: JSON.stringify({ 
@@ -153,7 +153,7 @@ export const api = {
     });
     if (res.token) {
       setToken(res.token);
-      clearPendingGuestAssessment();
+      if (res.linkedProfileId) clearPendingGuestAssessment();
     }
     return res;
   },
@@ -192,25 +192,20 @@ export const api = {
     return request(`/api/assessments/${id}`);
   },
 
-  async createAssessment({ fitMao_report_data, parq_answers, assessed_date }) {
-    try {
-      const res = await request('/api/assessments', {
-        method: 'POST',
-        body: JSON.stringify({ fitMao_report_data, parq_answers, assessed_date })
-      });
-      return res;
-    } catch (err) {
-      // If offline or guest connection issue, save guest session locally
+  async createAssessment({ fitMao_report_data, parq_answers, assessed_date, saveConsent = false }) {
+    if (saveConsent && !getToken()) throw new Error('Sign in again before saving this assessment.');
+    if (!saveConsent) {
       const guestObj = {
-        profile_id: 'guest',
-        fitMao_report_data,
-        parq_answers,
-        assessed_date: assessed_date || new Date().toISOString(),
-        isGuest: true
+        profile_id: 'guest', fitMao_report_data, parq_answers,
+        assessed_date: assessed_date || new Date().toISOString(), isGuest: true
       };
       setPendingGuestAssessment(guestObj);
       return guestObj;
     }
+    return request('/api/assessments', {
+      method: 'POST',
+      body: JSON.stringify({ fitMao_report_data, parq_answers, assessed_date, saveConsent: true })
+    });
   },
 
   async updateAssessment(id, data) {
@@ -254,35 +249,7 @@ export const api = {
       }
     }
 
-    try {
-      return await request(`/api/results/${profileId}`);
-    } catch (err) {
-      // Fallback to local guest data if available
-      const guestData = getPendingGuestAssessment();
-      if (guestData) {
-        const calculation = scoreMetrics(guestData.fitMao_report_data, guestData.parq_answers);
-        return {
-          profile: {
-            id: profileId,
-            user_id: null,
-            fitMao_report_data: guestData.fitMao_report_data,
-            parq_answers: guestData.parq_answers,
-            assessed_date: guestData.assessed_date
-          },
-          result: {
-            profile_id: profileId,
-            scored_metrics: calculation.scoredMetrics,
-            main_focus: calculation.mainFocus,
-            top_priorities: calculation.topPriorities,
-            otherPriorities: calculation.otherPriorities,
-            becauseYouToldUs: calculation.becauseYouToldUs,
-            change_log: guestData.changeLog || []
-          },
-          isGuest: true
-        };
-      }
-      throw err;
-    }
+    return request(`/api/results/${profileId}`);
   },
 
   async calculateResults(profileId, data = {}) {
@@ -306,31 +273,10 @@ export const api = {
       }
     }
 
-    try {
-      return await request(`/api/results/${profileId}`, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      });
-    } catch (err) {
-      const guestData = getPendingGuestAssessment();
-      if (guestData) {
-        const calculation = scoreMetrics(guestData.fitMao_report_data, guestData.parq_answers);
-        return {
-          message: 'Calculated results fallback.',
-          result: {
-            profile_id: profileId,
-            scored_metrics: calculation.scoredMetrics,
-            main_focus: calculation.mainFocus,
-            top_priorities: calculation.topPriorities,
-            otherPriorities: calculation.otherPriorities,
-            becauseYouToldUs: calculation.becauseYouToldUs,
-            change_log: data.changeLog || []
-          },
-          isGuest: true
-        };
-      }
-      throw err;
-    }
+    return request(`/api/results/${profileId}`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
   },
 
   // Chat

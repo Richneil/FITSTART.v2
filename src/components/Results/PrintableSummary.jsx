@@ -107,6 +107,8 @@ export default function PrintableSummary({
   topPriorities = [],
   parqAnswers = {},
   previousAssessment = null,
+  calculation = {},
+  recalculatedPreview = false,
   user,
   onClose
 }) {
@@ -196,6 +198,9 @@ export default function PrintableSummary({
           <div className="mb-4">
             <h1 className="text-xl font-display font-extrabold text-surface-950">Your FitStart Results</h1>
             <p className="mt-1 text-[9px] text-surface-500">A personalized starting point for your discussion with a qualified fitness professional.</p>
+            <p className="mt-1 text-[8px] text-surface-500">Proposed SAW rule {calculation.ruleVersion || 'not available'} · Scores show relative priority, not medical severity.</p>
+            {fitMao.referenceCategoriesSource && <p className="mt-1 text-[8px] text-amber-700">Review categories in this sample are illustrative prototype inputs, not confirmed FitMao classifications.</p>}
+            {recalculatedPreview && <p className="mt-1 text-[8px] text-amber-700">Preview recalculated from an older assessment; the original saved ranking was not overwritten.</p>}
           </div>
 
           <section className="mb-3 grid grid-cols-3 gap-2 rounded-2xl border border-surface-200 bg-surface-50 p-3">

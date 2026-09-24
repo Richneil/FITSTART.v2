@@ -12,12 +12,14 @@ const METRIC_ICONS = {
   visceralFat: Activity,
   bodyWater: Droplet,
   bmr: HeartPulse,
-  bmi: Scale
+  bmi: Scale,
+  waistHipRatio: Scale
 };
 
 const GLOSSARY_IDS = {
   bodyFat: 'bodyFatPercentage',
-  muscleMass: 'skeletalMuscleMass'
+  muscleMass: 'skeletalMuscleMass',
+  waistHipRatio: 'waistToHipRatio'
 };
 
 function ExplanationBlock({ icon: Icon, title, text }) {
@@ -55,7 +57,7 @@ export default function MainFocusCard({ mainFocus }) {
 
       <h2 className="relative z-10 mb-4 text-2xl font-display font-extrabold tracking-tight text-surface-900 dark:text-white sm:text-3xl">Your Main Focus</h2>
 
-      <div className="relative z-10 rounded-3xl border border-accent-200 bg-surface-900 p-5 shadow-subtle dark:border-accent-800/60  sm:p-6">
+      <div className="relative z-10 rounded-3xl border border-accent-200 bg-accent-50/50 p-5 shadow-subtle dark:border-accent-800/60 dark:bg-surface-800 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-accent-300 bg-accent-100 shadow-sm dark:border-accent-700 dark:bg-accent-900/60 sm:h-16 sm:w-16">
@@ -64,7 +66,7 @@ export default function MainFocusCard({ mainFocus }) {
             <div>
               <Link to={`/glossary?term=${GLOSSARY_IDS[mainFocus.id] || mainFocus.id}`} className="text-base font-display font-bold text-surface-900 hover:underline dark:text-white sm:text-lg">{mainFocus.title}</Link>
               <p className="text-2xl font-mono font-bold tracking-tight text-accent-600 dark:text-accent-400 sm:text-3xl">{mainFocus.value}</p>
-              <span className="mt-1 block text-[11px] text-surface-500 dark:text-surface-400">Confirmed FitMao measurement</span>
+              <span className="mt-1 block text-[11px] text-surface-500 dark:text-surface-400">FitMao report measurement</span>
             </div>
           </div>
           <span className="self-start rounded-xl border border-accent-300 bg-white/70 px-3 py-1.5 text-[11px] font-display font-bold text-accent-800 dark:border-accent-800 dark:bg-surface-900/70 dark:text-accent-200">{explanation.focusLabel}</span>
